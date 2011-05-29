@@ -23,6 +23,10 @@ protracer_SOURCES=Baselex.l \
 	Sphere.c \
 	SphereOptions.c \
 	Tracer.c \
+	Triangle.c \
 	Vector.c \
 	World.c
 
+BUILT_SOURCES=Baseparse.h
+
+AM_YFLAGS=-d
