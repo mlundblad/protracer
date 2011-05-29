@@ -1,0 +1,25 @@
+Protracer is a simple raytracer originally written in 1999 as a university
+course project.
+Please beware that, despite the name, there is nothing especially professional
+about Protracer. The name is meant to be a pun on the Protracker music tracker
+application.
+
+Protracer is now released under the GNU General Public License.
+
+Protracer currently supports a very limited subset of the POV-Ray file format.
+
+To build Protracer run "make" in the source directory.
+There is currently no install system, but Autotools support is planned.
+
+The program expects an input on stdin. Thus to run issue a command like:
+
+./tracer <options> output.ppm < input.pov
+
+Where input.pov is the input scene description and output.ppm is the output in
+PPM format (this is the only possible output format right now).
+
+The command line syntax is planned to be santitised in a later release.
+
+For further information or questions, contact the author on: ml@update.uu.se
+
+ 
