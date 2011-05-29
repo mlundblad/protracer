@@ -265,7 +265,7 @@ opt_pigment:	/* empty */
                                                             PIGMENT_DEFAULT_BLUE));
                 }
           
-	| pigment { $$ = $1 }
+        | pigment { $$ = $1; }
 	;
 
 pigment:
@@ -284,7 +284,7 @@ image:	KEY_IMAGE LBRACE KEY_PPM STRING RBRACE { global_image_file =
 
 opt_finish: { $$ = Finish_create( DIFFUSE_DEFAULT, REFLECTION_DEFAULT ); }
         /* empty */
-      | finish { $$ = $1 } 
+        | finish { $$ = $1; } 
 	;
 
 finish:
@@ -294,20 +294,20 @@ finish:
 	RBRACE { $$ = Finish_create( $3, $4 ); }
 	;
 
-opt_diffuse: 	{ $$ = DIFFUSE_DEFAULT }		/* empty */
-	| diffuse { $$ = $1 }
-	;
+opt_diffuse: 	{ $$ = DIFFUSE_DEFAULT; }		/* empty */
+        | diffuse { $$ = $1; }
+        ;
 
 diffuse:
-	KEY_DIFFUSE number { $$ = $2 }
+        KEY_DIFFUSE number { $$ = $2; }
 	;
 
-opt_reflection:	 { $$ = REFLECTION_DEFAULT }		/* empty */
-	| reflection { $$ = $1 }
+opt_reflection:	 { $$ = REFLECTION_DEFAULT; }		/* empty */
+        | reflection { $$ = $1; }
 	;
 
 reflection:
-	KEY_REFLECTION number { $$ = $2 }
+        KEY_REFLECTION number { $$ = $2; }
 	;
 
 color:
