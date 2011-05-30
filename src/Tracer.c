@@ -119,7 +119,7 @@ int main( int argc, char **argv )
 {
     int c;
     extern char *optarg;
-    extern int  optind;
+    int  opt_ind = 0;
     bool        noShadowNoReflection = FALSE;
     scalar      zoom = 1.0;
     long        xpix = 240;
@@ -137,11 +137,27 @@ int main( int argc, char **argv )
     char        *out_file = NULL;
     FILE        *in_file;
 
+    static struct option long_options[] =
+      {
+	{"no-shadows", no_argument, 0, 'q'},
+	{"reflection-depth", required_argument, 0, 'r'},
+	{"zoom-value", required_argument, 0, 'z'},
+	{"x-pixels", required_argument, 0, 'x'},
+	{"y-pixels", required_argument, 0, 'y'},
+	{"width", required_argument, 0, 'w'},
+	{"height", required_argument, 0, 'e'},
+	{"output-file", required_argument, 0, 'o'},
+	{"help", no_argument, 0, 'h'},
+	{0, 0, 0, 0}
+      };
+
     /* Welcome Message. */
     printWelcomeMessage();
     
-    while( ( c = getopt(argc, argv, "qtr:z:x:y:w:e:o:h" ) ) != EOF )
+    while ((c = getopt_long(argc, argv, "qhr:z:x:y:w:e:o:", long_options,
+			    &opt_ind) ) != EOF )
     {
+      fprintf(stderr, "arg: %c\n", c);
 	switch( c ) 
 	{
 	    case 'q':
@@ -231,10 +247,11 @@ int main( int argc, char **argv )
     }
     
     /* open in file */
-    if (argv[optind] != NULL)
+    if (argv[optind] != NULL) {
       in_file = fopen(argv[optind], "r");
-    else
+    } else {
       in_file = stdin;
+    }
 
     the_world = parse(in_file, zoom, xpix, ypix, width, height );
  
