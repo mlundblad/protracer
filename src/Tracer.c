@@ -26,6 +26,7 @@
 
 #include <stdlib.h>
 #include <getopt.h>
+#include <string.h>
 
 #include "config.h"
 
@@ -61,11 +62,12 @@ void printWelcomeMessage( void )
 
 }
 
-World parse( scalar zoom, long xpix, long ypix, scalar width, scalar height)
+World parse(FILE *input, scalar zoom, long xpix, long ypix, scalar width,
+	    scalar height)
 {
     extern int yyparse();
-    /*extern YYSTYPE yylval;*/
 
+    extern FILE        *yyin;
     extern Parameters  global_parameters;
     extern ObjectList  global_objectList; 
     extern LightList   global_lightList;
@@ -79,6 +81,7 @@ World parse( scalar zoom, long xpix, long ypix, scalar width, scalar height)
 
     global_background = DEFAULT_BACKGROUND;
 
+    yyin = input;
     yyparse();
     
     the_world = World_create( global_objectList,
@@ -118,7 +121,6 @@ int main( int argc, char **argv )
     extern char *optarg;
     extern int  optind;
     bool        noShadowNoReflection = FALSE;
-    /*bool        printTraceTime = FALSE;*/
     scalar      zoom = 1.0;
     long        xpix = 240;
     long        ypix = 240;
@@ -128,16 +130,17 @@ int main( int argc, char **argv )
     char        numFlagsSet = 0;
     long        errflg = 0;
     long        reflectionDepth = 5;
-    /*long        timeExpired;*/
 
     World       the_world;
     Bitmap      result;
     PPMFile     ppm_out;
+    char        *out_file = NULL;
+    FILE        *in_file;
 
     /* Welcome Message. */
     printWelcomeMessage();
     
-    while( ( c = getopt(argc, argv, "qtr:z:x:y:w:h:" ) ) != EOF )
+    while( ( c = getopt(argc, argv, "qtr:z:x:y:w:e:o:h" ) ) != EOF )
     {
 	switch( c ) 
 	{
@@ -145,12 +148,6 @@ int main( int argc, char **argv )
 		noShadowNoReflection = TRUE;
 		fprintf( stderr, "- No Shadows or Reflecions will be used\n" );
 		break;
-	    
-	    /*case 't':
-		printTraceTime = TRUE;
-		fprintf( stderr, "- Trace time will be displayed\n" );
-		break; */
-		
 	    case 'r':
                 reflectionDepth = atol( optarg );
 		fprintf( stderr, "- reflectionDepth = %ld\n", atol( optarg ) );
@@ -177,13 +174,16 @@ int main( int argc, char **argv )
 		flagsSet |= WIDTH_MASK;
 		numFlagsSet++;
                 break;		
-	    case 'h':
+	    case 'e':
 		height = atof( optarg );
 		fprintf( stderr, "- height = %ld\n", atol( optarg ) );
 		flagsSet |= HEIGHT_MASK;
 		numFlagsSet++;
-                break;		
-	    case '?':
+                break;
+	    case 'o':
+	        out_file = strdup(optarg);
+		break;
+	    case 'h':
 		errflg++;
 		break;
 	}
@@ -195,14 +195,14 @@ int main( int argc, char **argv )
 	fprintf( stderr, "usage: tracer <-flags>  files...\n");
 	fprintf( stderr, "Available flags are:\n" );
 	fprintf( stderr, "-q = No Shadows or Reflecions will be used\n" );
-	/*fprintf( stderr, "-t = Trace time will be displayed\n\n" );*/
 	fprintf( stderr, "-r <reflectionDepth> = Set the reflectiondepth\n" );
 	fprintf( stderr, "-z <zoom> = set zoom factor\n" );
 	fprintf( stderr, "-x <xpix> = set # pixels in x-axel\n" );
 	fprintf( stderr, "-y <ypix> = set # pixels in y-axel\n" );
 	fprintf( stderr, "-w <width> = set picture width\n" );
-	fprintf( stderr, "-h <height> = set picture height\n" );
-	Error_printErrorAndExit( "" );
+	fprintf( stderr, "-e <height> = set picture height\n" );
+	fprintf( stderr, "-o <output> = write to the file <output>\n");
+	exit(0);
     }
     
     /* Check if only three args, if so calculate the last one. */
@@ -230,7 +230,13 @@ int main( int argc, char **argv )
 	}
     }
     
-    the_world = parse( zoom, xpix, ypix, width, height );
+    /* open in file */
+    if (argv[optind] != NULL)
+      in_file = fopen(argv[optind], "r");
+    else
+      in_file = stdin;
+
+    the_world = parse(in_file, zoom, xpix, ypix, width, height );
  
     /* Start the tracing */
     
@@ -240,7 +246,11 @@ int main( int argc, char **argv )
     /*timeExpired = Timer_getMilliseconds();*/ /* Stop timer. */
     fprintf( stderr, "100%% - done!\n" );
 
-    ppm_out = PPMFile_openOut( argv[optind], PPM_BINARY );
+    if (out_file != NULL)
+      ppm_out = PPMFile_openOut(out_file, PPM_BINARY );
+    else
+      ppm_out = PPMFile_openStdOut(PPM_BINARY);
+
     PPMFile_writeBitmap( ppm_out, result );
     
     return( 0 ); /* Success */
