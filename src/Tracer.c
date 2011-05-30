@@ -27,6 +27,8 @@
 #include <stdlib.h>
 #include <getopt.h>
 
+#include "config.h"
+
 #include "Scalar.h"
 
 #include "Bitmap.h"
@@ -52,7 +54,7 @@
 void printWelcomeMessage( void )
 {
     fprintf( stderr, "********************************************\n" );
-    fprintf( stderr, "* PRO-Tracer v0.8                          *\n" );
+    fprintf( stderr, "* PRO-Tracer "VERSION"                           *\n");
     fprintf( stderr, "* Who knew nice code could be this fast... *\n" );
     fprintf( stderr, "********************************************\n\n" );
     fflush( stderr );
