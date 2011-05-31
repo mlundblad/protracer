@@ -115,16 +115,35 @@ Bitmap trace( World w, int xpix, int ypix, int reflectionDepth,
      
 static void usage(void)
 {
-  fprintf(stderr, "usage: "PACKAGE" <-flags>  files...\n");
-  fprintf(stderr, "Available flags are:\n" );
-  fprintf(stderr, "-q = No Shadows or Reflecions will be used\n" );
-  fprintf(stderr, "-r <reflectionDepth> = Set the reflectiondepth\n" );
-  fprintf(stderr, "-z <zoom> = set zoom factor\n" );
-  fprintf(stderr, "-x <xpix> = set # pixels in x-axel\n" );
-  fprintf(stderr, "-y <ypix> = set # pixels in y-axel\n" );
-  fprintf(stderr, "-w <width> = set picture width\n" );
-  fprintf(stderr, "-e <height> = set picture height\n" );
-  fprintf(stderr, "-o <output> = write to the file <output>\n");
+  fprintf(stderr, PACKAGE"\n");
+  fprintf(stderr, "\n");
+  fprintf(stderr, "   usage: "PACKAGE" [options] [input file]\n");
+  fprintf(stderr, "\n");
+  fprintf(stderr, "   -q, --no-shadows                          "
+	  "no shadows or Reflecions will be"
+	  "                                                used\n");
+  fprintf(stderr, "   -r, --reflection-depth=REFLECTION_DEPTH   "
+	  "set the reflection depth\n");
+  fprintf(stderr, "   -z, --zoom-factor=ZOOM                    "
+	  "set zoom factor\n");
+  fprintf(stderr, "   -x, --x-pixels=X_PIX                      "
+	  "set the pixel width of the\n"
+	  "                                             resulting image\n");
+  fprintf(stderr, "   -y, --y-pixels=Y_PIX                      "
+	  "set the pixel height of the\n"
+	  "                                             resulting image\n");
+  fprintf(stderr, "   -w, --width=WIDTH                         "
+	  "set picture width\n");
+  fprintf(stderr, "   -e, --height                              "
+	  "set picture height\n");
+  fprintf(stderr, "   -o, --output=FILE                         "
+	  "set output file\n");
+  fprintf(stderr, "   -h, --help                                "
+	  "print this help\n");
+  fprintf(stderr, "\n");
+  fprintf(stderr, "If no input file is given, input is read from stdin.\n");
+  fprintf(stderr, "Likewise, if no output file is given, output "
+	  "(in PPM format) is written to\nstdout\n");
 }
 
 int main( int argc, char **argv )
