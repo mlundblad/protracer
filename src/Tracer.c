@@ -188,8 +188,7 @@ int main( int argc, char **argv )
     while ((c = getopt_long(argc, argv, "qhr:z:x:y:w:e:o:", long_options,
 			    &opt_ind) ) != EOF )
     {
-      fprintf(stderr, "arg: %c\n", c);
-	switch( c ) 
+      switch( c ) 
 	{
 	    case 'q':
 		noShadowNoReflection = TRUE;
