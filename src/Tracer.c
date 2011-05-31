@@ -55,7 +55,7 @@
 void printWelcomeMessage( void )
 {
     fprintf( stderr, "********************************************\n" );
-    fprintf( stderr, "* PRO-Tracer "VERSION"                           *\n");
+    fprintf( stderr, "* "PACKAGE" "VERSION"                            *\n");
     fprintf( stderr, "* Who knew nice code could be this fast... *\n" );
     fprintf( stderr, "********************************************\n\n" );
     fflush( stderr );
@@ -182,9 +182,6 @@ int main( int argc, char **argv )
 	{0, 0, 0, 0}
       };
 
-    /* Welcome Message. */
-    printWelcomeMessage();
-    
     while ((c = getopt_long(argc, argv, "qhr:z:x:y:w:e:o:", long_options,
 			    &opt_ind) ) != EOF )
     {
@@ -240,6 +237,9 @@ int main( int argc, char **argv )
       usage();
       exit(0);
     }
+
+    /* Welcome Message. */
+    printWelcomeMessage();
     
     /* Check if only three args, if so calculate the last one. */
     if( numFlagsSet == 3 )
