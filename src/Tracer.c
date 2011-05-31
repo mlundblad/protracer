@@ -115,7 +115,7 @@ Bitmap trace( World w, int xpix, int ypix, int reflectionDepth,
      
 static void usage(void)
 {
-  fprintf(stderr, "usage: tracer <-flags>  files...\n");
+  fprintf(stderr, "usage: "PACKAGE" <-flags>  files...\n");
   fprintf(stderr, "Available flags are:\n" );
   fprintf(stderr, "-q = No Shadows or Reflecions will be used\n" );
   fprintf(stderr, "-r <reflectionDepth> = Set the reflectiondepth\n" );
