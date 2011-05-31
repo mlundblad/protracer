@@ -115,8 +115,6 @@ Bitmap trace( World w, int xpix, int ypix, int reflectionDepth,
      
 static void usage(void)
 {
-  fprintf(stderr, PACKAGE"\n");
-  fprintf(stderr, "\n");
   fprintf(stderr, "   usage: "PACKAGE" [options] [input file]\n");
   fprintf(stderr, "\n");
   fprintf(stderr, "   -q, --no-shadows                          "
