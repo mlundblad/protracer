@@ -113,7 +113,19 @@ Bitmap trace( World w, int xpix, int ypix, int reflectionDepth,
     return bm;
 }
      
-
+static void usage(void)
+{
+  fprintf(stderr, "usage: tracer <-flags>  files...\n");
+  fprintf(stderr, "Available flags are:\n" );
+  fprintf(stderr, "-q = No Shadows or Reflecions will be used\n" );
+  fprintf(stderr, "-r <reflectionDepth> = Set the reflectiondepth\n" );
+  fprintf(stderr, "-z <zoom> = set zoom factor\n" );
+  fprintf(stderr, "-x <xpix> = set # pixels in x-axel\n" );
+  fprintf(stderr, "-y <ypix> = set # pixels in y-axel\n" );
+  fprintf(stderr, "-w <width> = set picture width\n" );
+  fprintf(stderr, "-e <height> = set picture height\n" );
+  fprintf(stderr, "-o <output> = write to the file <output>\n");
+}
 
 int main( int argc, char **argv )
 {
@@ -207,18 +219,8 @@ int main( int argc, char **argv )
     
     if( errflg > 0 ) /* Any errors in commandline? */
     {
-	fprintf( stderr, "%ld Commandline error(s)\n", errflg );
-	fprintf( stderr, "usage: tracer <-flags>  files...\n");
-	fprintf( stderr, "Available flags are:\n" );
-	fprintf( stderr, "-q = No Shadows or Reflecions will be used\n" );
-	fprintf( stderr, "-r <reflectionDepth> = Set the reflectiondepth\n" );
-	fprintf( stderr, "-z <zoom> = set zoom factor\n" );
-	fprintf( stderr, "-x <xpix> = set # pixels in x-axel\n" );
-	fprintf( stderr, "-y <ypix> = set # pixels in y-axel\n" );
-	fprintf( stderr, "-w <width> = set picture width\n" );
-	fprintf( stderr, "-e <height> = set picture height\n" );
-	fprintf( stderr, "-o <output> = write to the file <output>\n");
-	exit(0);
+      usage();
+      exit(0);
     }
     
     /* Check if only three args, if so calculate the last one. */
