@@ -52,14 +52,9 @@
 #define WIDTH_MASK 0x4
 #define HEIGHT_MASK 0x8
 
-void printWelcomeMessage( void )
+static void print_version(void)
 {
-    fprintf( stderr, "********************************************\n" );
-    fprintf( stderr, "* "PACKAGE" "VERSION"                            *\n");
-    fprintf( stderr, "* Who knew nice code could be this fast... *\n" );
-    fprintf( stderr, "********************************************\n\n" );
-    fflush( stderr );
-
+  fprintf(stderr, PACKAGE " " VERSION "\n");
 }
 
 World parse(FILE *input, scalar zoom, long xpix, long ypix, scalar width,
@@ -138,6 +133,8 @@ static void usage(void)
 	  "set output file\n");
   fprintf(stderr, "   -h, --help                                "
 	  "print this help\n");
+  fprintf(stderr, "   -v, --version                             "
+	  "print version information\n");
   fprintf(stderr, "\n");
   fprintf(stderr, "If no input file is given, input is read from stdin.\n");
   fprintf(stderr, "Likewise, if no output file is given, output "
@@ -177,10 +174,11 @@ int main( int argc, char **argv )
 	{"height", required_argument, 0, 'e'},
 	{"output-file", required_argument, 0, 'o'},
 	{"help", no_argument, 0, 'h'},
+	{"version", no_argument, 0, 'v'},
 	{0, 0, 0, 0}
       };
 
-    while ((c = getopt_long(argc, argv, "qhr:z:x:y:w:e:o:", long_options,
+    while ((c = getopt_long(argc, argv, "qhvr:z:x:y:w:e:o:", long_options,
 			    &opt_ind) ) != EOF )
     {
       switch( c ) 
@@ -227,6 +225,10 @@ int main( int argc, char **argv )
 	    case 'h':
 		errflg++;
 		break;
+	    case 'v':
+	        print_version();
+		exit(0);
+		break;
 	}
     }
     
@@ -235,9 +237,6 @@ int main( int argc, char **argv )
       usage();
       exit(0);
     }
-
-    /* Welcome Message. */
-    printWelcomeMessage();
     
     /* Check if only three args, if so calculate the last one. */
     if( numFlagsSet == 3 )
