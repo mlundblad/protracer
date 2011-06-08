@@ -127,11 +127,11 @@ static void usage(void)
 	  "                                             resulting image\n");
   fprintf(stderr, "   -w, --width=WIDTH                         "
 	  "set picture width\n");
-  fprintf(stderr, "   -e, --height                              "
+  fprintf(stderr, "   -h, --height                              "
 	  "set picture height\n");
   fprintf(stderr, "   -o, --output=FILE                         "
 	  "set output file\n");
-  fprintf(stderr, "   -h, --help                                "
+  fprintf(stderr, "   -?, --help                                "
 	  "print this help\n");
   fprintf(stderr, "   -v, --version                             "
 	  "print version information\n");
@@ -171,9 +171,9 @@ int main( int argc, char **argv )
 	{"x-pixels", required_argument, 0, 'x'},
 	{"y-pixels", required_argument, 0, 'y'},
 	{"width", required_argument, 0, 'w'},
-	{"height", required_argument, 0, 'e'},
+	{"height", required_argument, 0, 'h'},
 	{"output-file", required_argument, 0, 'o'},
-	{"help", no_argument, 0, 'h'},
+	{"help", no_argument, 0, '?'},
 	{"version", no_argument, 0, 'v'},
 	{0, 0, 0, 0}
       };
@@ -213,7 +213,7 @@ int main( int argc, char **argv )
 		flagsSet |= WIDTH_MASK;
 		numFlagsSet++;
                 break;		
-	    case 'e':
+	    case 'h':
 		height = atof( optarg );
 		fprintf( stderr, "- height = %ld\n", atol( optarg ) );
 		flagsSet |= HEIGHT_MASK;
@@ -222,7 +222,7 @@ int main( int argc, char **argv )
 	    case 'o':
 	        out_file = strdup(optarg);
 		break;
-	    case 'h':
+	    case '?':
 		errflg++;
 		break;
 	    case 'v':
