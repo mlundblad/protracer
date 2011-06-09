@@ -8,17 +8,22 @@ Protracer is now released under the GNU General Public License.
 
 Protracer currently supports a very limited subset of the POV-Ray file format.
 
-To build Protracer run "make" in the source directory.
-There is currently no install system, but Autotools support is planned.
+To install run
+$ ./configure
+$ make
+and (as root)
+# make install
 
-The program expects an input on stdin. Thus to run issue a command like:
+To process a scene description you can run a command like:
 
-./tracer <options> output.ppm < input.pov
+$ protracer -o output.ppm input.pov
 
 Where input.pov is the input scene description and output.ppm is the output in
 PPM format (this is the only possible output format right now).
 
-The command line syntax is planned to be santitised in a later release.
+For a list of available options, run:
+
+$ protracer -?
 
 For further information or questions, contact the author on: ml@update.uu.se
 
