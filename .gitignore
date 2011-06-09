@@ -12,6 +12,7 @@ Makefile.in
 *#
 .#*
 *.stamp
+*.pov
 
 
 aclocal.m4
