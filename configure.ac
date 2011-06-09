@@ -30,5 +30,8 @@ AC_C_INLINE
 AC_FUNC_MALLOC
 AC_CHECK_FUNCS([sqrt strdup strtol])
 
-AC_CONFIG_FILES([Makefile src/Makefile])
+AC_CONFIG_FILES([Makefile
+		data/Makefile
+		data/examples/example1.pov 
+		src/Makefile])
 AC_OUTPUT
