@@ -35,7 +35,6 @@
 #include "Bitmap.h"
 #include "PPMFile.h"
 #include "Error.h"
-/*#include "Timer.h"*/
 #include "World.h"
 
 #include "ObjectMods.h"
@@ -277,7 +276,6 @@ int main( int argc, char **argv )
     result = trace( the_world, xpix, ypix, reflectionDepth,
                     noShadowNoReflection );
 
-    /*timeExpired = Timer_getMilliseconds();*/ /* Stop timer. */
     fprintf( stderr, "100%% - done!\n" );
 
     if (out_file != NULL)
