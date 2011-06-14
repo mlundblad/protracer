@@ -87,7 +87,7 @@ World parse(FILE *input, scalar zoom, long xpix, long ypix, scalar width,
 }
 
 Bitmap trace( World w, int xpix, int ypix, int reflectionDepth,
-              bool noShadowNoReflection )
+              bool noShadowNoReflection, bool quiet )
 {
     int x,y;
     
@@ -102,7 +102,8 @@ Bitmap trace( World w, int xpix, int ypix, int reflectionDepth,
                                                        noShadowNoReflection ),
                                x, y );
         }
-        fprintf( stderr, "%d%%\r", (int)((scalar)y/(scalar)ypix * 100) );
+	if (!quiet)
+	  fprintf( stderr, "%d%%\r", (int)((scalar)y/(scalar)ypix * 100) );
     }
     return bm;
 }
@@ -111,7 +112,7 @@ static void usage(void)
 {
   fprintf(stderr, "   usage: "PACKAGE" [options] [input file]\n");
   fprintf(stderr, "\n");
-  fprintf(stderr, "   -q, --no-shadows                          "
+  fprintf(stderr, "   -n, --no-shadows                          "
 	  "no shadows or Reflecions will be"
 	  "                                                used\n");
   fprintf(stderr, "   -r, --reflection-depth=REFLECTION_DEPTH   "
@@ -134,6 +135,8 @@ static void usage(void)
 	  "print this help\n");
   fprintf(stderr, "   -v, --version                             "
 	  "print version information\n");
+  fprintf(stderr, "   -q, --quiet                               "
+	  "don't print a progress meter\n");
   fprintf(stderr, "\n");
   fprintf(stderr, "If no input file is given, input is read from stdin.\n");
   fprintf(stderr, "Likewise, if no output file is given, output "
@@ -155,6 +158,7 @@ int main( int argc, char **argv )
     char        numFlagsSet = 0;
     long        errflg = 0;
     long        reflectionDepth = 5;
+    bool        quiet = FALSE;
 
     World       the_world;
     Bitmap      result;
@@ -164,7 +168,7 @@ int main( int argc, char **argv )
 
     static struct option long_options[] =
       {
-	{"no-shadows", no_argument, 0, 'q'},
+	{"no-shadows", no_argument, 0, 'n'},
 	{"reflection-depth", required_argument, 0, 'r'},
 	{"zoom-value", required_argument, 0, 'z'},
 	{"x-pixels", required_argument, 0, 'x'},
@@ -174,6 +178,7 @@ int main( int argc, char **argv )
 	{"output-file", required_argument, 0, 'o'},
 	{"help", no_argument, 0, '?'},
 	{"version", no_argument, 0, 'v'},
+	{"quiet", no_argument, 0, 'q'},
 	{0, 0, 0, 0}
       };
 
@@ -182,7 +187,7 @@ int main( int argc, char **argv )
     {
       switch( c ) 
 	{
-	    case 'q':
+	    case 'n':
 		noShadowNoReflection = TRUE;
 		fprintf( stderr, "- No Shadows or Reflecions will be used\n" );
 		break;
@@ -227,6 +232,9 @@ int main( int argc, char **argv )
 	    case 'v':
 	        print_version();
 		exit(0);
+		break;
+	    case 'q':
+	        quiet = TRUE;
 		break;
 	}
     }
@@ -274,9 +282,10 @@ int main( int argc, char **argv )
     /* Start the tracing */
     
     result = trace( the_world, xpix, ypix, reflectionDepth,
-                    noShadowNoReflection );
+                    noShadowNoReflection, quiet );
 
-    fprintf( stderr, "100%% - done!\n" );
+    if (!quiet)
+      fprintf( stderr, "100%% - done!\n" );
 
     if (out_file != NULL)
       ppm_out = PPMFile_openOut(out_file, PPM_BINARY );
