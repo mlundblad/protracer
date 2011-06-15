@@ -127,7 +127,7 @@ static void usage(void)
 	  "                                             resulting image\n");
   fprintf(stderr, "   -w, --width=WIDTH                         "
 	  "set picture width\n");
-  fprintf(stderr, "   -h, --height                              "
+  fprintf(stderr, "   -h, --height=HEIGHT                       "
 	  "set picture height\n");
   fprintf(stderr, "   -o, --output=FILE                         "
 	  "set output file\n");
@@ -141,6 +141,13 @@ static void usage(void)
   fprintf(stderr, "If no input file is given, input is read from stdin.\n");
   fprintf(stderr, "Likewise, if no output file is given, output "
 	  "(in PPM format) is written to\nstdout\n");
+}
+
+static void
+usage_and_exit(void)
+{
+  usage();
+  exit(-1);
 }
 
 int main( int argc, char **argv )
@@ -182,7 +189,7 @@ int main( int argc, char **argv )
 	{0, 0, 0, 0}
       };
 
-    while ((c = getopt_long(argc, argv, "qhvr:z:x:y:w:e:o:", long_options,
+    while ((c = getopt_long(argc, argv, "qhvn?r:z:x:y:w:e:o:", long_options,
 			    &opt_ind) ) != EOF )
     {
       switch( c ) 
@@ -192,38 +199,59 @@ int main( int argc, char **argv )
 		fprintf( stderr, "- No Shadows or Reflecions will be used\n" );
 		break;
 	    case 'r':
+	        if (!optarg)
+		  usage_and_exit();
+
                 reflectionDepth = atol( optarg );
 		fprintf( stderr, "- reflectionDepth = %ld\n", atol( optarg ) );
                 break;
 	    case 'z':
+	        if (!optarg)
+		  usage_and_exit();
+
 		zoom = atof( optarg );
 		fprintf( stderr, "- Zoom value = %f\n", atof( optarg ) );
                 break;		
 	    case 'x':
+	        if (!optarg)
+		  usage_and_exit();
+
 		xpix = atol( optarg );
 		fprintf( stderr, "- xpix = %ld\n", atol( optarg ) );
 		flagsSet |= XPIX_MASK;
 		numFlagsSet++;
                 break;		
 	    case 'y':
+	        if (!optarg)
+		  usage_and_exit();
+
 		ypix = atol( optarg );
 		fprintf( stderr, "- ypix = %ld\n", atol( optarg ) );
 		flagsSet |= YPIX_MASK;
 		numFlagsSet++;
                 break;		
 	    case 'w':
+	        if (!optarg)
+		  usage_and_exit();
+
 		width = atof( optarg );
 		fprintf( stderr, "- width = %ld\n", atol( optarg ) );
 		flagsSet |= WIDTH_MASK;
 		numFlagsSet++;
                 break;		
 	    case 'h':
+	        if (!optarg)
+		  usage_and_exit();
+
 		height = atof( optarg );
 		fprintf( stderr, "- height = %ld\n", atol( optarg ) );
 		flagsSet |= HEIGHT_MASK;
 		numFlagsSet++;
                 break;
 	    case 'o':
+	        if (!optarg)
+		  usage_and_exit();
+
 	        out_file = strdup(optarg);
 		break;
 	    case '?':
