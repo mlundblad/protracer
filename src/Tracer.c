@@ -196,28 +196,24 @@ int main( int argc, char **argv )
 	{
 	    case 'n':
 		noShadowNoReflection = TRUE;
-		fprintf( stderr, "- No Shadows or Reflecions will be used\n" );
 		break;
 	    case 'r':
 	        if (!optarg)
 		  usage_and_exit();
 
                 reflectionDepth = atol( optarg );
-		fprintf( stderr, "- reflectionDepth = %ld\n", atol( optarg ) );
                 break;
 	    case 'z':
 	        if (!optarg)
 		  usage_and_exit();
 
 		zoom = atof( optarg );
-		fprintf( stderr, "- Zoom value = %f\n", atof( optarg ) );
                 break;		
 	    case 'x':
 	        if (!optarg)
 		  usage_and_exit();
 
 		xpix = atol( optarg );
-		fprintf( stderr, "- xpix = %ld\n", atol( optarg ) );
 		flagsSet |= XPIX_MASK;
 		numFlagsSet++;
                 break;		
@@ -226,7 +222,6 @@ int main( int argc, char **argv )
 		  usage_and_exit();
 
 		ypix = atol( optarg );
-		fprintf( stderr, "- ypix = %ld\n", atol( optarg ) );
 		flagsSet |= YPIX_MASK;
 		numFlagsSet++;
                 break;		
@@ -235,7 +230,6 @@ int main( int argc, char **argv )
 		  usage_and_exit();
 
 		width = atof( optarg );
-		fprintf( stderr, "- width = %ld\n", atol( optarg ) );
 		flagsSet |= WIDTH_MASK;
 		numFlagsSet++;
                 break;		
@@ -244,7 +238,6 @@ int main( int argc, char **argv )
 		  usage_and_exit();
 
 		height = atof( optarg );
-		fprintf( stderr, "- height = %ld\n", atol( optarg ) );
 		flagsSet |= HEIGHT_MASK;
 		numFlagsSet++;
                 break;
