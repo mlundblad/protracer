@@ -12,3 +12,7 @@ examples/example1.pov: examples/example1.pov.in Makefile
 
 examples/example2.pov: examples/example2.pov.in Makefile
 	$(edit) $< >$@
+
+EXTRA_DIST = examples/example1.pov.in\
+	examples/example2.pov.in\
+	examples/sky.ppm
