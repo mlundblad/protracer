@@ -1,5 +1,5 @@
 examplesdir = $(pkgdatadir)/examples
-examples_DATA = examples/example1.pov examples/example2.pov
+examples_DATA = examples/example1.pov examples/example2.pov examples/sky.ppm
 
 CLEANFILES=$(examples_DATA)
 DISTCLEANFILES=$(examples_DATA)
