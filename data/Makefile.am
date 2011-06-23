@@ -1,8 +1,8 @@
 examplesdir = $(pkgdatadir)/examples
 examples_DATA = example1.pov example2.pov sky.ppm
 
-CLEANFILES=$(example1.pov example2.pov)
-DISTCLEANFILES=$(example1.pov example2.pov)
+CLEANFILES=example1.pov example2.pov
+DISTCLEANFILES=example1.pov example2.pov
 
 edit = sed \
 	-e 's|@EXAMPLESDIR[@]|$(examplesdir)|g'
