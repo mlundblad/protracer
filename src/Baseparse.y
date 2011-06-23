@@ -361,3 +361,8 @@ yyerror(char *s) {
   fprintf(stderr, "** line %d:%s\n", linecount, s);
   return 1;
 }
+
+int 
+yywrap() {
+	return 1;
+}
