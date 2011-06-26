@@ -6,7 +6,7 @@ AC_INIT([protracer], [0.9], [ml@update.uu.se])
 AC_CONFIG_SRCDIR([src/Object.h])
 AC_CONFIG_HEADERS([config.h])
 
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE([1.10 dist-bzip2 no-dist-gzip])
 
 # Checks for programs.
 AC_PROG_YACC
