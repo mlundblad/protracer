@@ -131,9 +131,9 @@ static void usage(void)
 	  "set picture height\n");
   fprintf(stderr, "   -o, --output=FILE                         "
 	  "set output file\n");
-  fprintf(stderr, "   -?, --help                                "
+  fprintf(stderr, "       --help                                "
 	  "print this help\n");
-  fprintf(stderr, "   -v, --version                             "
+  fprintf(stderr, "       --version                             "
 	  "print version information\n");
   fprintf(stderr, "   -q, --quiet                               "
 	  "don't print a progress meter\n");
@@ -189,7 +189,7 @@ int main( int argc, char **argv )
 	{0, 0, 0, 0}
       };
 
-    while ((c = getopt_long(argc, argv, "qhvn?r:z:x:y:w:e:o:", long_options,
+    while ((c = getopt_long(argc, argv, "qnr:z:x:y:w:h:e:o:", long_options,
 			    &opt_ind) ) != EOF )
     {
       switch( c ) 

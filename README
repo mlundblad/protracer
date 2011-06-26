@@ -23,7 +23,7 @@ PPM format (this is the only possible output format right now).
 
 For a list of available options, run:
 
-$ protracer -?
+$ protracer --help
 
 For further information or questions, contact the author on: ml@update.uu.se
 
