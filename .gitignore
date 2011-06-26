@@ -13,7 +13,9 @@ Makefile.in
 .#*
 *.stamp
 *.pov
-
+*.tar.gz
+*.tar.bz2
+*.tar.xz
 
 aclocal.m4
 autom4te.cache
@@ -34,8 +36,10 @@ ltmain.sh
 missing
 stamp-h.in
 stamp-h1
+ylwrap
 
 src/Baseparse.c
 src/Baseparse.h
 src/Baselex.c
 src/Baselex.h
+src/protracer
