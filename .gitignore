@@ -16,6 +16,7 @@ Makefile.in
 *.tar.gz
 *.tar.bz2
 *.tar.xz
+*.exe
 
 aclocal.m4
 autom4te.cache
