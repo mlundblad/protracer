@@ -1,6 +1,7 @@
 #define APPNAME="protracer"
 #define APPVERS="1"
 #define LOGO="logo-trans.png"
+#define MINGW="C:\MinGW\bin"
 
 [Setup]
 AppId={{8EA21DB7-BAD9-4BEC-AC14-289D2B6523A4}
@@ -80,6 +81,7 @@ Name: Malay; MessagesFile: compiler:Malaysian-2-5.1.0.isl
 Source: website.url; DestDir: {app}
 Source: ..\ChangeLog.txt; DestDir: {app}
 Source: ..\src\{#APPNAME}.exe; DestDir: {app}; Flags: ignoreversion
+Source: {MINGW}\mingwm10.dll; DestDir: {app}; Flags: ignoreversion
 
 [Tasks]
 Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
