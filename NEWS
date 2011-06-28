@@ -1,3 +1,10 @@
+version 1.0 (2011-xx-xx)
+	* Switch to using automake for building.
+	* Fix building on Windows.
+	* Changed command line syntax to be consistent with other Unix-like tools.
+	* Allow piping both input and output files.
+	* Added example files.
+
 version 0.9 (2011-05-29)
 	* Re-license in GPL.
 	* Added README.

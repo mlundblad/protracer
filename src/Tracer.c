@@ -113,7 +113,7 @@ static void usage(void)
   fprintf(stderr, "   usage: "PACKAGE" [options] [input file]\n");
   fprintf(stderr, "\n");
   fprintf(stderr, "   -n, --no-shadows                          "
-	  "no shadows or Reflecions will be"
+	  "no shadows or reflecions will be"
 	  "                                                used\n");
   fprintf(stderr, "   -r, --reflection-depth=REFLECTION_DEPTH   "
 	  "set the reflection depth\n");
