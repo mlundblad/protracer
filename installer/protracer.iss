@@ -1,5 +1,5 @@
 #define APPNAME="protracer"
-#define APPVERS="1"
+#define APPVERS="1.0"
 #define LOGO="logo.png"
 
 [Setup]
