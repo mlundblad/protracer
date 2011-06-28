@@ -1,6 +1,6 @@
 #define APPNAME="protracer"
 #define APPVERS="1"
-#define LOGO="logo-trans.png"
+#define LOGO="logo.png"
 
 [Setup]
 AppId={{8EA21DB7-BAD9-4BEC-AC14-289D2B6523A4}
