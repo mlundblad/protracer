@@ -1,4 +1,4 @@
-version 1.0 (2011-xx-xx)
+version 1.0 (2011-07-01)
 	* Switch to using automake for building.
 	* Fix building on Windows.
 	* Changed command line syntax to be consistent with other Unix-like tools.
