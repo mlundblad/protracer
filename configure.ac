@@ -11,6 +11,7 @@ AM_INIT_AUTOMAKE([1.10 dist-bzip2 no-dist-gzip])
 # Checks for programs.
 AC_PROG_YACC
 AC_PROG_CC
+AC_PROG_CXX
 AC_PROG_LEX
 
 # Checks for libraries.
