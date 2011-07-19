@@ -29,7 +29,18 @@
 #ifndef BOOL_H
 #define BOOL_H
 
-typedef enum {FALSE=0, TRUE=1} bool;
+#ifndef __cplusplus
+typedef int bool;
+
+#define FALSE 0
+#define TRUE 1
+
+#else
+
+#define FALSE false
+#define TRUE true
+
+#endif
 
 #endif /* BOOL_H */
 
