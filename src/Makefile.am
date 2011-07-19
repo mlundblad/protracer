@@ -1,7 +1,6 @@
 bin_PROGRAMS=protracer
 
 protracer_SOURCES=Baselex.l \
-	Baseparse.y \
 	Bitmap.c \
 	Bitmap.h \
 	Bool.h \
@@ -32,6 +31,7 @@ protracer_SOURCES=Baselex.l \
 	ObjectMods.h \
 	Parameters.c \
 	Parameters.h \
+	parser.yy \
 	Pigment.c \
 	Pigment.h \
 	Plane.c \
@@ -53,9 +53,9 @@ protracer_SOURCES=Baselex.l \
 	World.c \
 	World.h
 
-BUILT_SOURCES=Baseparse.h
+BUILT_SOURCES=parser.h
 
-CLEANFILES=Baseparse.c Baseparse.h Baselex.c
-DISTCLEANFILES=Baseparse.c Baseparse.h Baselex.c
+CLEANFILES=parser.cc parser.h Baselex.c
+DISTCLEANFILES=parser.cc parser.h Baselex.c
 
 AM_YFLAGS=-d
