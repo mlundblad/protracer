@@ -30,13 +30,13 @@
 #include "Light.h"
 #include "Bool.h"
 
-struct LightList
+struct _LightList
 {
     Light             head;
-    struct LightList *tail;
+    struct _LightList *tail;
 };
 
-typedef struct LightList *LightList;
+typedef struct _LightList *LightList;
 
 /**************************************************************************
   Function:  LightList_createEmpty

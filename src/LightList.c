@@ -38,7 +38,7 @@ LightList LightList_createEmpty( void )
 
 LightList LightList_insert(Light l, LightList ll)
 {
-    LightList new = malloc( sizeof( struct LightList ) );
+    LightList new = malloc( sizeof( struct _LightList ) );
     
     if(new == NULL)
         Error_printErrorAndExit( "Out of memory inserting Light in list" );
