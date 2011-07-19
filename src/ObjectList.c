@@ -39,7 +39,7 @@ ObjectList ObjectList_createEmpty( void )
 
 ObjectList ObjectList_insert(Object o, ObjectList ol)
 {
-    ObjectList new = malloc( sizeof( struct ObjectList ) );
+    ObjectList new = malloc( sizeof( struct _ObjectList ) );
     
     if(new == NULL)
         Error_printErrorAndExit( "Out of memory inserting Object in list" );

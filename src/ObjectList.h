@@ -29,13 +29,13 @@
 
 #include "Object.h"
 
-struct ObjectList
+struct _ObjectList
 {
     Object             head;
-    struct ObjectList *tail;
+    struct _ObjectList *tail;
 };
 
-typedef struct ObjectList *ObjectList;
+typedef struct _ObjectList *ObjectList;
 
 /**************************************************************************
   Function:  ObjectList_createEmpty
