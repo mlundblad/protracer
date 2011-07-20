@@ -21,6 +21,7 @@ protracer_SOURCES=Baselex.l \
 	Light.h \
 	LightList.c \
 	LightList.h \
+	main.cc \
 	ObjectArray.c \
 	ObjectArray.h \
 	Object.c \
@@ -45,7 +46,6 @@ protracer_SOURCES=Baselex.l \
 	Sphere.h \
 	SphereOptions.c \
 	SphereOptions.h \
-	Tracer.c \
 	Triangle.c \
 	Triangle.h \
 	Vector.c \

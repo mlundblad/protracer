@@ -33,13 +33,18 @@
 #include <math.h>
 #include "Error.h"
 
-typedef struct
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+struct _Vector
 {
     scalar x;
     scalar y;
     scalar z;
-} Vector;
+};
 
+typedef struct _Vector Vector;
 
 /**************************************************************************
  Function:  Vector_createFromCartesian          
@@ -235,12 +240,16 @@ typedef struct
 
 static inline Vector Vector_normalize(Vector u)
 {
-    scalar len = Vector_length( u );
+  scalar len = Vector_length( u );
 
     if( len == 0.0 )
 	Error_printErrorAndExit( "0" ); /* Cant normalize zero vector */
 
     return Vector_multiply( 1 / len , u );
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* VECTOR_H */
