@@ -70,20 +70,20 @@ int yyerror(char *s);
 %union {
     double	value;		        /* for numbers */
     char		*string;	/* for names */
-    Vector	Vector;
-    Sphere      Sphere;
-    Triangle    Triangle;
-    Plane       Plane;
-    Object      Object;
-    ObjectList  ObjectList;
-    Camera      Camera;
-    Color       Color;
-    SphereOptions   SphereOptions;
-    ObjectMods  ObjectMods;
-    Finish      Finish;
-    Pigment     Pigment;
-    Bitmap      Bitmap;
-    Light       Light;
+    Vector	vector;
+    Sphere      sphere;
+    Triangle    triangle;
+    Plane       plane;
+    Object      object;
+    ObjectList  objectList;
+    Camera      camera;
+    Color       color;
+    SphereOptions   sphereOptions;
+    ObjectMods  objectMods;
+    Finish      finish;
+    Pigment     pigment;
+    Bitmap      bitmap;
+    Light       light;
 };
 
 %start scene
@@ -105,28 +105,28 @@ int yyerror(char *s);
 %token KEY_POLE KEY_EQUATOR
 
 
-%type <ObjectList> scene
-%type <Object> item
-%type <Plane> plane
-%type <Triangle> triangle
-%type <Sphere> sphere
-%type <Vector> vector
+%type <objectList> scene
+%type <object> item
+%type <plane> plane
+%type <triangle> triangle
+%type <sphere> sphere
+%type <vector> vector
 %type <value> number
-%type <Camera> camera
-%type <Color> color
-%type <SphereOptions> sphere_opt
-%type <ObjectMods> object_mods  /* opt_pigment, opt_finish*/
-%type <Pigment> opt_pigment
-%type <Pigment> pigment
-%type <Finish> opt_finish       /* opt_diffuse, opt_reflection */
-%type <Finish> finish
-%type <Bitmap> image
+%type <camera> camera
+%type <color> color
+%type <sphereOptions> sphere_opt
+%type <objectMods> object_mods  /* opt_pigment, opt_finish*/
+%type <pigment> opt_pigment
+%type <pigment> pigment
+%type <finish> opt_finish       /* opt_diffuse, opt_reflection */
+%type <finish> finish
+%type <bitmap> image
 %type <value> reflection
 %type <value> diffuse
 %type <value> opt_diffuse
 %type <value> opt_reflection
-%type <Light> light
-%type <Color> background
+%type <light> light
+%type <color> background
 
 %%
 
