@@ -1,6 +1,6 @@
 #define APPNAME="protracer"
-#define APPVERS="1"
-#define LOGO="logo-trans.png"
+#define APPVERS="1.1-devel"
+#define LOGO="logo.png"
 #define MINGW="C:\MinGW\bin"
 
 [Setup]

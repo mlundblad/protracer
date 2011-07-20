@@ -55,4 +55,7 @@ protracer_SOURCES=Baselex.l \
 
 BUILT_SOURCES=Baseparse.h
 
+CLEANFILES=Baseparse.c Baseparse.h Baselex.c
+DISTCLEANFILES=Baseparse.c Baseparse.h Baselex.c
+
 AM_YFLAGS=-d
