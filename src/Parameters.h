@@ -27,6 +27,10 @@
 #ifndef PARAMETERS_H
 #define PARAMETERS_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "Scalar.h"
 
 typedef struct
@@ -102,6 +106,10 @@ int Parameters_pixelWidth( Parameters p );
  *************************************************************************/
 
 int Parameters_pixelHeight( Parameters p );
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif /* PARAMETERS_H */
 
