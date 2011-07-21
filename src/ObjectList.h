@@ -27,6 +27,10 @@
 #ifndef OBJECTLIST_H
 #define OBJECTLIST_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "Object.h"
 
 struct _ObjectList
@@ -86,7 +90,9 @@ Object ObjectList_head( ObjectList ol );
 
 ObjectList ObjectList_tail( ObjectList ol );
 
-
+#ifdef __cplusplus
+};
+#endif
 
 #endif /* OBJECTLIST_H */
  
