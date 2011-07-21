@@ -27,6 +27,9 @@
 #ifndef FINISH_H
 #define FINISH_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define REFLECTION_DEFAULT (scalar)0.0
 #define DIFFUSE_DEFAULT (scalar)1.0
@@ -69,5 +72,9 @@ scalar Finish_diffuse( Finish fi );
  *************************************************************************/
 
 scalar Finish_reflection( Finish fi );
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif /* FINISH_H */
