@@ -27,6 +27,10 @@
 #ifndef PIGMENT_H
 #define PIGMENT_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "Color.h"
 #include "Bitmap.h"
 
@@ -96,6 +100,9 @@ Pigment Pigment_createBitmap( Bitmap bitmap );
 
 Bitmap Pigment_bitmap( Pigment pigment );
 
+#ifdef __cplusplus
+};
+#endif
 
 #endif /* PIGMENT_H */
 
