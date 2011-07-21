@@ -28,6 +28,10 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "Sphere.h"
 #include "Triangle.h"
 #include "Plane.h"
@@ -125,9 +129,9 @@ Object Object_createPlane( Plane p );
 #define Object_reflection( o ) ((*o->reflection)(o))
 
 
-
-
-
+#ifdef __cplusplus
+};
+#endif
 
 #endif /* OBJECT_H */
 
