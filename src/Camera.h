@@ -28,6 +28,10 @@
 #ifndef _CAMERA_H
 #define _CAMERA_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "Vector.h"
 #include "Bool.h"
 #include "Scalar.h"
@@ -173,5 +177,8 @@ static inline scalar Camera_worldHeight( Camera cam )
     return cam.worldHeight;
 }
 
+#ifdef __cplusplus
+};
+#endif
 
 #endif
