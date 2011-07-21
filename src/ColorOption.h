@@ -28,6 +28,10 @@
 #ifndef COLOROPTION_H
 #define COLOROPTION_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "Color.h"
 #include "Bool.h"
 
@@ -67,5 +71,9 @@ Color ColorOption_color( ColorOption co );
  *************************************************************************/
 
 bool ColorOption_isBackground( ColorOption co );
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif /* COLOROPTION_H */
