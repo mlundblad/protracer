@@ -27,6 +27,10 @@
 #ifndef LIGHTLIST_H
 #define LIGHTLIST_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "Light.h"
 #include "Bool.h"
 
@@ -87,7 +91,9 @@ Light LightList_head( LightList ll );
 
 LightList LightList_tail( LightList ll );
 
-
+#ifdef __cplusplus
+};
+#endif
 
 #endif /* LIGHTLIST_H */
  
