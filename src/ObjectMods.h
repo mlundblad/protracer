@@ -27,6 +27,10 @@
 #ifndef OBJECTMODS_H
 #define OBJECTMODS_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "Pigment.h"
 #include "Finish.h"
 
@@ -64,6 +68,10 @@ Pigment ObjectMods_pigment( ObjectMods om );
  *************************************************************************/
 
 Finish ObjectMods_finish( ObjectMods om );
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif /* OBJECTMODS_H */
 
