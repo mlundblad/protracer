@@ -27,6 +27,10 @@
 #ifndef COLOR_H
 #define COLOR_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "Scalar.h"
 
 #define COLOR_COMPONENT_MAX (Color_component)255
@@ -165,5 +169,9 @@ static inline Color Color_combine( Color color1, Color color2 )
     return col;
 }
 
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif /* COLOR_H */
