@@ -27,6 +27,10 @@
 #ifndef OBJECTARRAY_H
 #define OBJECTARRAY_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "Object.h"
 #include "ObjectList.h"
 #include "Error.h"
@@ -98,5 +102,9 @@ void ObjectArray_destroy( ObjectArray oa );
  *************************************************************************/
 
 void ObjectArray_setObjectAt( ObjectArray oa, Object o, unsigned int index );
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif /* OBJECTARRAY_H */
