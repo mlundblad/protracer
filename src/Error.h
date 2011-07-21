@@ -27,6 +27,10 @@
 #ifndef ERROR_H
 #define ERROR_H 
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdio.h>
 
 /**************************************************************************
@@ -39,5 +43,9 @@
 void Error_printErrorAndExit( char *err );
 
 #define ERROR_PRINT_DEBUG(ds) fputs(ds, stderr)
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif /*ERROR_H */
