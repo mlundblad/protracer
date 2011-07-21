@@ -27,6 +27,10 @@
 #ifndef LIGHT_H
 #define LIGHT_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "Vector.h"
 
 typedef struct
@@ -55,5 +59,8 @@ typedef struct
 
 #define Light_position( l ) (l.position)
 
+#ifdef __cplusplus
+};
+#endif
 
 #endif /* LIGHT_H */
