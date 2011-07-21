@@ -27,6 +27,10 @@
 #ifndef LIGHTARRAY_H
 #define LIGHTARRAY_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "Light.h"
 #include "LightList.h"
 
@@ -99,5 +103,8 @@ void LightArray_destroy( LightArray oa );
 
 void LightArray_setLightAt( LightArray oa, Light o, unsigned int index );
 
+#ifdef __cplusplus
+};
+#endif
 
 #endif /* OBJECTARRAY_H */
