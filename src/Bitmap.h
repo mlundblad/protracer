@@ -28,6 +28,9 @@
 #ifndef BITMAP_H
 #define BITMAP_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include "Color.h"
 #include "Bool.h"
@@ -118,6 +121,10 @@ static inline void Bitmap_setColorAt( Bitmap bm, Color col, unsigned int x, unsi
 
     bm.pixels[x + y * Bitmap_width(bm)] = col;
 }
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif /* BITMAP_H */
 
