@@ -27,6 +27,10 @@
 #ifndef HIT_DATA_H
 #define HIT_DATA_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "Scalar.h"
 #include "Vector.h"
 #include "Color.h"
@@ -119,5 +123,8 @@ static inline HitData HitData_createNoHit( void )
 
 #define HitData_setColor( hitdata, col ) (hitdata.color = (col) )
 
+#ifdef __cplusplus
+};
+#endif
 
 #endif
