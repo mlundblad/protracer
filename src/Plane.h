@@ -27,6 +27,10 @@
 #ifndef PLANE_H
 #define PLANE_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "Pigment.h"
 #include "Vector.h"
 #include "Ray.h"
@@ -140,5 +144,8 @@ HitData Plane_rayHitData( Plane pl, Ray ray );
 
 #define Plane_reflection( p ) (p->reflection)
 
+#ifdef __cplusplus
+};
+#endif
 
 #endif /* PLANE_H */
