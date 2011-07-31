@@ -27,6 +27,10 @@
 #ifndef _RAY_H
 #define _RAY_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "Vector.h"
 
 typedef struct
@@ -67,5 +71,9 @@ static inline Ray Ray_create( Vector origin, Vector direction )
  *************************************************************************/
 
 #define Ray_direction( ray ) (ray.direction)
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif
