@@ -29,6 +29,10 @@
 #ifndef PPMFILE_H
 #define PPMFILE_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdio.h>
 
 #define PPM_MAX_COLOR_VALUE (Color_component)255
@@ -103,6 +107,9 @@ Bitmap PPMFile_readBitmap( PPMFile file );
 
 void PPMFile_writeBitmap( PPMFile file, Bitmap bm );
 
+#ifdef __cplusplus
+};
+#endif
 
 #endif /* PPMFILE_H */
 
