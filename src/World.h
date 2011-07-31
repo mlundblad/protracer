@@ -27,6 +27,10 @@
 #ifndef WORLD_H
 #define WORLD_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "ObjectList.h"
 #include "LightList.h"
 #include "ObjectArray.h"
@@ -175,6 +179,8 @@ static inline Color World_colorOfPixel( World world, int x, int y, int reflDepth
                                                      noShadowNoReflection );
 }
 
-
+#ifdef __cplusplus
+};
+#endif
 
 #endif /* WORLD_H */

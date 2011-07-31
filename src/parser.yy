@@ -58,7 +58,9 @@ Camera     global_camera;
 
 extern char *yytext;
 extern int linecount;
-extern int yylex(void);
+extern "C" {
+       extern int yylex(void);
+};
 
 
 PPMFile    global_image_file;
