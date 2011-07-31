@@ -27,6 +27,10 @@
 #ifndef SPHEREOPTIONS_H
 #define SPHEREOPTIONS_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "Vector.h"
 
 typedef struct
@@ -71,6 +75,10 @@ static inline Vector SphereOptions_equator( SphereOptions so )
 {
     return so.equator;
 }
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif /* SPHEREOPTIONS_H */
 
