@@ -27,6 +27,10 @@
 #ifndef _TRIANGLE_H
 #define _TRIANGLE_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "Scalar.h"
 
 #include "Vector.h"
@@ -150,6 +154,10 @@ HitData Triangle_rayHitData( Triangle tr, Ray ray );
  *************************************************************************/
 
 #define Triangle_reflection( t ) (t->reflection)
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif /* _TRIANGLE_H */
 
