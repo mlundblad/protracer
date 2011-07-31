@@ -28,6 +28,10 @@
 #ifndef SPHERE_H
 #define SPHERE_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "Vector.h"
 #include "Pigment.h"
 #include "Ray.h"
@@ -106,6 +110,9 @@ HitData Sphere_rayHitData( Sphere s, Ray ray );
 
 #define Sphere_reflection( s ) (s->reflection)
 
+#ifdef __cplusplus
+};
+#endif
 
 #endif /* SPHERE_H */
 
