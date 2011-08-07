@@ -45,12 +45,15 @@ extern "C" {
 typedef enum {OBJECT_SPHERE, OBJECT_TRIANGLE, OBJECT_PLANE} 
 ObjectType;
 
+  struct ObjectStruct;
+  typedef struct ObjectStruct* Object;
+
 struct ObjectStruct
 {
     ObjectType type;
-    HitData    (*hitData)();
-    scalar     (*reflection)();
-    scalar     (*diffuse)();
+  HitData    (*hitData)(Object o, Ray ray);
+    scalar     (*reflection)(Object o);
+    scalar     (*diffuse)(Object o);
     union
     {
         Sphere   sphere;
@@ -58,15 +61,6 @@ struct ObjectStruct
         Plane    plane;
     } object;
 };
-
-typedef struct ObjectStruct* Object;
-
-
-
-
-
-
-
 
 /**************************************************************************
   Function:  Object_createSphere

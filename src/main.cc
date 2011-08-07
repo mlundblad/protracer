@@ -35,7 +35,7 @@
 #include "Bitmap.h"
 #include "PPMFile.h"
 #include "Error.h"
-#include "World.h"
+#include "world.h"
 
 #include "ObjectMods.h"
 #include "Finish.h"
@@ -44,6 +44,7 @@
 #include "Parameters.h"
 
 #include "parser.h"
+#include "constants.h"
 
 
 #define XPIX_MASK 0x1
@@ -56,7 +57,8 @@ static void print_version(void)
   fprintf(stderr, PACKAGE " " VERSION "\n");
 }
 
-World parse(FILE *input, scalar zoom, long xpix, long ypix, scalar width,
+Protracer::World
+parse(FILE *input, scalar zoom, long xpix, long ypix, scalar width,
 	    scalar height)
 {
     extern int yyparse();
@@ -67,26 +69,26 @@ World parse(FILE *input, scalar zoom, long xpix, long ypix, scalar width,
     extern LightList   global_lightList;
     extern Color       global_background;
     extern Camera      global_camera;
-    World the_world;
 
     global_parameters = Parameters_create(zoom, width, height, xpix, ypix );
     global_objectList = ObjectList_createEmpty();
     global_lightList = LightList_createEmpty();
 
-    global_background = DEFAULT_BACKGROUND;
+    global_background = Protracer::DEFAULT_BACKGROUND;
 
     yyin = input;
     yyparse();
     
-    the_world = World_create( global_objectList,
-                              global_lightList,
-                              global_camera,
-                              global_background);
+    Protracer::World the_world = Protracer::World(global_objectList,
+				 global_lightList,
+				 global_camera,
+				 global_background);
     
     return the_world;
 }
 
-Bitmap trace( World w, int xpix, int ypix, int reflectionDepth,
+Bitmap
+trace( const Protracer::World& w, int xpix, int ypix, int reflectionDepth,
               bool noShadowNoReflection, bool quiet )
 {
     int x,y;
@@ -97,9 +99,9 @@ Bitmap trace( World w, int xpix, int ypix, int reflectionDepth,
     {
         for( x = 0 ; x < xpix ; x++ )
         {
-            Bitmap_setColorAt( bm, World_colorOfPixel( w, x, y,
-                                                       reflectionDepth,
-                                                       noShadowNoReflection ),
+            Bitmap_setColorAt( bm, w.color_of_pixel(x, y,
+						    reflectionDepth,
+						    noShadowNoReflection ),
                                x, y );
         }
 	if (!quiet)
@@ -167,7 +169,6 @@ int main( int argc, char **argv )
     long        reflectionDepth = 5;
     bool        quiet = FALSE;
 
-    World       the_world;
     Bitmap      result;
     PPMFile     ppm_out;
     char        *out_file = NULL;
@@ -298,7 +299,8 @@ int main( int argc, char **argv )
       in_file = stdin;
     }
 
-    the_world = parse(in_file, zoom, xpix, ypix, width, height );
+    Protracer::World the_world =
+      parse(in_file, zoom, xpix, ypix, width, height );
  
     /* Start the tracing */
     

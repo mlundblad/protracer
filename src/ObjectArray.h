@@ -93,7 +93,6 @@ void ObjectArray_destroy( ObjectArray oa );
 
 #define ObjectArray_objectAt( oa, index ) (oa.objects[index])
 
-
 /**************************************************************************
   Function:  ObjectArray_setObjectAt
   Arguments: Object, unsigned int index

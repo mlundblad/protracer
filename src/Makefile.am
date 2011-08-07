@@ -10,6 +10,7 @@ protracer_SOURCES=Baselex.l \
 	Color.h \
 	ColorOption.c \
 	ColorOption.h \
+	constants.h \
 	Error.c \
 	Error.h \
 	Finish.c \
@@ -48,10 +49,13 @@ protracer_SOURCES=Baselex.l \
 	SphereOptions.h \
 	Triangle.c \
 	Triangle.h \
+	util.cc \
+	util.h \
 	Vector.c \
 	Vector.h \
-	World.c \
-	World.h
+	world.cc \
+	world.h
+
 
 BUILT_SOURCES=parser.h
 

@@ -35,13 +35,14 @@ extern "C" {
 #include "Vector.h"
 #include "Color.h"
 #include "Scalar.h"
+#include "Bool.h"
 
 typedef struct
 {
     scalar distance;
     Vector normal;
     Color  color;
-    bool   hit;
+    int   hit;
 } HitData;
 
 
@@ -55,7 +56,7 @@ typedef struct
 static inline HitData HitData_createNoHit( void )
 {
     HitData hd;
-    hd.hit = FALSE;
+    hd.hit = 0;
     return hd;
 }
 
@@ -70,7 +71,7 @@ static inline HitData HitData_createNoHit( void )
   *************************************************************************/
 
 #define HitData_createHit( dist, normal, color ) ((HitData) \
-{ dist, normal, color, TRUE } )
+{ dist, normal, color, 1 } )
 
 
 
