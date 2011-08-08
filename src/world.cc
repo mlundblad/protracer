@@ -24,7 +24,6 @@
 #include "constants.h"
 #include "Ray.h"
 #include "Object.h"
-#include "ObjectArray.h"
 
 namespace Protracer {
   

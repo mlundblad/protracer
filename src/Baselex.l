@@ -35,8 +35,6 @@
 #include "Plane.h"
 #include "Sphere.h"
 #include "Triangle.h"
-#include "ObjectList.h"
-#include "LightList.h"
 #include "Camera.h"
 
 #include "SphereOptions.h"
@@ -45,6 +43,8 @@
 #include "Pigment.h"
 #include "Bitmap.h"
 
+#include "Object.h"
+#include "Light.h"
 
 /* WARNING DO NOT MOVE THIS INCLUDE BEFORE THE PREVIUOS!!! */
 #include "parser.h"

@@ -35,10 +35,10 @@
 #include "Plane.h"
 #include "Sphere.h"
 #include "Triangle.h"
-#include "ObjectList.h"
-#include "LightList.h"
 #include "Camera.h"
 #include "Color.h"
+#include "Object.h"
+#include "Light.h"
 
 #include "SphereOptions.h"
 #include "ObjectMods.h"
@@ -77,7 +77,6 @@ int yyerror(char *s);
     Triangle    triangle;
     Plane       plane;
     Object      object;
-    ObjectList  objectList;
     Camera      camera;
     Color       color;
     SphereOptions   sphereOptions;

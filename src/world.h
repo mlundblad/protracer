@@ -21,12 +21,10 @@
 
 #include <vector>
 
-#include "ObjectList.h"
-#include "LightList.h"
-#include "ObjectArray.h"
-#include "LightArray.h"
 #include "Color.h"
 #include "Vector.h"
+#include "Object.h"
+#include "Light.h"
 
 namespace Protracer {
   class World {
