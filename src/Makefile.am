@@ -16,19 +16,11 @@ protracer_SOURCES=Baselex.l \
 	Finish.c \
 	Finish.h \
 	HitData.h \
-	LightArray.c \
-	LightArray.h \
 	Light.c \
 	Light.h \
-	LightList.c \
-	LightList.h \
 	main.cc \
-	ObjectArray.c \
-	ObjectArray.h \
 	Object.c \
 	Object.h \
-	ObjectList.c \
-	ObjectList.h \
 	ObjectMods.c \
 	ObjectMods.h \
 	Parameters.c \

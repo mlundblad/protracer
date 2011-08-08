@@ -19,6 +19,8 @@
 #ifndef WORLD_H
 #define WORLD_H
 
+#include <vector>
+
 #include "ObjectList.h"
 #include "LightList.h"
 #include "ObjectArray.h"
@@ -29,7 +31,8 @@
 namespace Protracer {
   class World {
   public:
-    World(const ObjectList& objects, const LightList& lights,
+    World(const std::vector<Object>& objects, 
+	  const std::vector<Light>& lights,
 	  const Camera& cam, const Color& background);
 
     virtual ~World();
@@ -39,16 +42,16 @@ namespace Protracer {
     const Vector& get_c_right() const { return c_right; };
     const Vector& get_c_down() const { return c_down; };
     const Camera& get_camera() const { return camera; };
-    const ObjectArray& get_objects() const { return objects; };
+    const std::vector<Object>& get_objects() const { return objects; };
     const Color& get_background() const { return background; };
-    const LightArray& get_lights() const { return lights; }
+    const std::vector<Light>& get_lights() const { return lights; }
     
     Color color_of_pixel(int x, int y, int refl_depth, 
 				bool no_shadow_no_reflection) const;
 
   private:
-    ObjectArray objects;
-    LightArray  lights;
+    std::vector<Object> objects;
+    std::vector<Light>  lights;
     Camera      camera;
     Color       background;
     Vector      c_corner;

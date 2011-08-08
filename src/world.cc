@@ -17,6 +17,7 @@
  */
 
 #include <iostream>
+#include <vector>
 
 #include "world.h"
 #include "util.h"
@@ -27,14 +28,15 @@
 
 namespace Protracer {
   
-  World::World(const ObjectList& objects, const LightList& lights, 
+  World::World(const std::vector<Object>& objects,
+	       const std::vector<Light>& lights, 
 	       const Camera& cam, const Color& background )
   {
     Vector c;
        
     this->camera =     cam;
-    this->lights =     LightArray_createFromList( lights );
-    this->objects =    ObjectArray_createFromList( objects );
+    this->lights =     lights;
+    this->objects =    objects;
     this->background = background;
 
     c = Vector_normalize(Vector_subtract(Camera_lookAt(camera),
@@ -58,8 +60,12 @@ namespace Protracer {
 
   World::~World()
   {
-    LightArray_destroy(lights);
-    ObjectArray_destroy(objects);
+    for (std::vector<Object>::iterator it = objects.begin() ;
+	 it != objects.end() ; it++) {
+      Object o = *it;
+
+      free(o);
+    }
   }
 
   Color
@@ -67,9 +73,6 @@ namespace Protracer {
 			    bool no_shadow_no_reflection) const
   {
     Vector      hitPoint;
-
-    int         numItems = ObjectArray_numObjects(objects);
-    int         numLights = LightArray_numLights(lights);
 
     int         j;
     int         index = 0;
@@ -87,19 +90,18 @@ namespace Protracer {
     HitData     hd;
     HitData     nearestHit;
 
+    Object hit_object;
 
-    //std::cerr << "Num objects: " << numItems << std::endl;
-    //std::cerr << "dist: " << leastDistance << std::endl;
-
-    for(int i = 0 ; i < numItems ; i++)
-    {
-      hd = Object_rayHitData( ObjectArray_objectAt(objects,i), ray);
+    for(std::vector<Object>::const_iterator it = objects.begin() ;
+	it != objects.end() ; it++) {
+      Object o = *it;
+      hd = Object_rayHitData(o, ray);
 
         if (HitData_hit(hd)) {
             if (HitData_distance(hd) < leastDistance) {
                 leastDistance = HitData_distance(hd);
                 nearestHit = hd;
-                index = i;
+                hit_object = o;
             }
         }
     }
@@ -128,51 +130,43 @@ namespace Protracer {
 
      } else {
 
-	 /* iterate over light sources */
-	 for(int i = 0 ; i < numLights ; i++ ) {
-	     lightRay = Ray_create( Vector_add( hitPoint,
-						Vector_multiply(
-						    EPS,
-						    HitData_normal( nearestHit ) ) ),
-				    Vector_subtract(
-					Light_position(LightArray_lightAt(
-					    lights, i ) ),
-					Vector_add( 
-					    hitPoint,
-					    Vector_multiply(
-						EPS,
-						HitData_normal( nearestHit ) ) ) ) );
+      /* iterate over light sources */
+      for (std::vector<Light>::const_iterator it = lights.begin() ;
+	   it != lights.end() ; it++) {
+	const Light& l = *it;
+	
+	lightRay = Ray_create(Vector_add(hitPoint,
+					 Vector_multiply(EPS,
+							 HitData_normal(nearestHit))),
+			      Vector_subtract(Light_position(l),
+					      Vector_add(hitPoint,
+							 Vector_multiply(EPS,
+									 HitData_normal(nearestHit)))));
 
 
-	     isLit = true;
-	     int j = 0;
-	     while ((j < numItems) && isLit) {
-	       hd = Object_rayHitData(ObjectArray_objectAt(objects, j),
-				      lightRay);
+	bool is_lit = true;
+	for (std::vector<Object>::const_iterator it = objects.begin() ;
+	     it != objects.end() && is_lit ; it++) {
+	  Object o = *it;
+	  
+	  hd = Object_rayHitData(o, lightRay);
+	  
+	  if (HitData_hit(hd)) {
+	    if (HitData_distance(hd) < 
+		Vector_length(Vector_subtract(Light_position(l), hitPoint)))
+		       is_lit = false;
+	  }
+	}
 
-		 if (HitData_hit(hd)) {
-		     if (HitData_distance(hd) < Vector_length( 
-			 Vector_subtract( 
-			     Light_position(LightArray_lightAt(
-				 lights, i ) ),
-			     hitPoint ) ) )
-		       isLit = false;
-		 }
-		 j++;
-	     }
+	//std::cerr << "is lit: " << isLit << std::endl;
 
-	     //std::cerr << "is lit: " << isLit << std::endl;
-
-	     if (isLit) {
-	       shade += 
-		 Util::shade_factor( 
-			 Light_position( 
-			     LightArray_lightAt(
-				 lights, i ) ),
-			 hitPoint, 
-			 HitData_normal( nearestHit ) );
-	     }
-	 }
+	if (is_lit) {
+	  shade += 
+	    Util::shade_factor(Light_position(l),
+			       hitPoint, 
+			       HitData_normal(nearestHit));
+	}
+      }
 
 
 	 /* Base case: don't take reflection into acount, 
@@ -181,9 +175,7 @@ namespace Protracer {
 	   return
 	     Color_shade( HitData_color( nearestHit ),
 			  shade *
-			  Object_diffuse(
-					 ObjectArray_objectAt(
-							      objects, index ) ) );
+			  Object_diffuse(hit_object));
 	 } else {
 	   /* calculate reflected ray */
 	   /* move EPS in the normal direction, to avoid rounding errors */
@@ -209,16 +201,12 @@ namespace Protracer {
 		 Color_combine( 
 		     Color_shade(
 			 col,
-			 Object_reflection(
-			     ObjectArray_objectAt(
-				 objects, 
-				 index ) ) ),
+			 Object_reflection(hit_object)),
 
 		     Color_shade( 
 			 HitData_color( nearestHit ),
 			 shade *
-			 Object_diffuse(
-			     ObjectArray_objectAt(objects, index))));
+			 Object_diffuse(hit_object)));
 	 }
 
      }    

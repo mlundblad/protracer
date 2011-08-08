@@ -28,6 +28,8 @@
 #include <getopt.h>
 #include <string.h>
 
+#include <vector>
+
 #include "config.h"
 
 #include "Scalar.h"
@@ -65,22 +67,22 @@ parse(FILE *input, scalar zoom, long xpix, long ypix, scalar width,
 
     extern FILE        *yyin;
     extern Parameters  global_parameters;
-    extern ObjectList  global_objectList; 
-    extern LightList   global_lightList;
+    extern std::vector<Object>  global_object_list; 
+    extern std::vector<Light>   global_light_list;
     extern Color       global_background;
     extern Camera      global_camera;
 
     global_parameters = Parameters_create(zoom, width, height, xpix, ypix );
-    global_objectList = ObjectList_createEmpty();
-    global_lightList = LightList_createEmpty();
+    global_object_list = std::vector<Object>();
+    global_light_list = std::vector<Light>();
 
     global_background = Protracer::DEFAULT_BACKGROUND;
 
     yyin = input;
     yyparse();
     
-    Protracer::World the_world = Protracer::World(global_objectList,
-				 global_lightList,
+    Protracer::World the_world = Protracer::World(global_object_list,
+				 global_light_list,
 				 global_camera,
 				 global_background);
     

@@ -29,7 +29,7 @@
 
 
 #include <stdlib.h>
-
+#include <vector>
 
 #include "Vector.h"
 #include "Plane.h"
@@ -50,8 +50,8 @@
 #include "Parameters.h"
 
 Parameters global_parameters;
-ObjectList global_objectList;
-LightList  global_lightList;
+std::vector<Object> global_object_list;
+std::vector<Light> global_light_list;
 Color      global_background;
 Camera     global_camera;
 
@@ -138,20 +138,24 @@ scene	:
 	;
 
 item:	
-          sphere     { global_objectList = 
+          sphere     { global_object_list.push_back(Object_createSphere($1));
+	  	     /* global_objectList = 
                            ObjectList_insert( Object_createSphere( $1 ),
-                                              global_objectList); } 
-	| triangle   { global_objectList  = 
+                                              global_objectList);*/ } 
+	| triangle   { global_object_list.push_back(Object_createTriangle($1));
+	  	       /*global_objectList  = 
                            ObjectList_insert( Object_createTriangle( $1 ),
-                                              global_objectList); }
-        | plane      { global_objectList = 
+                                              global_objectList);*/ }
+        | plane      { global_object_list.push_back(Object_createPlane($1));
+	  	       /*global_objectList = 
                            ObjectList_insert( Object_createPlane( $1 ),
-                                              global_objectList); } 
+                                              global_objectList);*/ } 
         | camera     { }
         | background { }
-        | light      { global_lightList = 
+        | light      { global_light_list.push_back($1);
+	               /*global_lightList = 
                            LightList_insert(  $1,
-                                              global_lightList); } 
+                                              global_lightList);*/ } 
 	;
 
 light:
