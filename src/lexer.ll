@@ -35,7 +35,7 @@
 #include "Plane.h"
 #include "Sphere.h"
 #include "Triangle.h"
-#include "Camera.h"
+#include "camera.h"
 
 #include "SphereOptions.h"
 #include "ObjectMods.h"

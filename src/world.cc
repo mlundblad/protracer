@@ -38,23 +38,19 @@ namespace Protracer {
     this->objects =    objects;
     this->background = background;
 
-    c = Vector_normalize(Vector_subtract(Camera_lookAt(camera),
-					 Camera_location(camera)));
+    c = Vector_normalize(Vector_subtract(camera.get_look_at(),
+					 camera.get_location()));
  
-    this->c_right = Vector_normalize(Vector_crossProduct( 
-        Camera_upVector(camera), c));
+    this->c_right = Vector_normalize(Vector_crossProduct(camera.get_up(), c));
     this->c_down = Vector_normalize(Vector_crossProduct(c_right, c));
 
     
-    this->c_corner = Vector_add( 
-        Camera_location( cam ), 
-        Vector_subtract( 
-            Vector_multiply( 
-                Camera_zoom( cam ), 
-                c ),
-            Vector_add( 
-                Vector_multiply(Camera_worldWidth(cam) / 2, c_right),
-                Vector_multiply(Camera_worldHeight(cam) / 2, c_down))));
+    this->c_corner = Vector_add(cam.get_location(), 
+				Vector_subtract(Vector_multiply(cam.get_zoom(), 
+								c),
+						Vector_add( 
+							   Vector_multiply(cam.get_world_width() / 2, c_right),
+							   Vector_multiply(cam.get_world_height() / 2, c_down))));
   }
 
   World::~World()
@@ -224,20 +220,20 @@ namespace Protracer {
 	     Vector_subtract( 
 		 Vector_add( 
 		     Vector_add( 
-			 Vector_multiply( ( Camera_worldWidth(camera) /  
-					    Camera_pixelWidth(camera) ) 
+				Vector_multiply( ( camera.get_world_width() /  
+						   camera.get_pixel_width() ) 
 					  * x, 
 					  c_right),
-			 Vector_multiply( ( Camera_worldHeight(camera) / 
-					    Camera_pixelHeight(camera) ) * y, 
+				Vector_multiply( ( camera.get_world_height() / 
+						   camera.get_pixel_height() ) * y, 
 					  c_down) ),
 		     c_corner), 
-		 Camera_location(camera)));
+		 camera.get_location()));
 
 
 
 
-     ray = Ray_create( Camera_location(camera), 
+     ray = Ray_create( camera.get_location(), 
 		       rayDirection );
 
      Color c = color_at_hit_point(x, y, ray, refl_depth, no_shadow_no_reflection);

@@ -35,7 +35,6 @@ extern "C" {
 #include "Sphere.h"
 #include "Triangle.h"
 #include "Plane.h"
-#include "Camera.h"
 #include "Light.h"
 #include "Scalar.h"
 #include "HitData.h"

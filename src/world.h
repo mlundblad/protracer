@@ -21,6 +21,7 @@
 
 #include <vector>
 
+#include "camera.h"
 #include "Color.h"
 #include "Vector.h"
 #include "Object.h"

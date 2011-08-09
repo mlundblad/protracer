@@ -35,7 +35,7 @@
 #include "Plane.h"
 #include "Sphere.h"
 #include "Triangle.h"
-#include "Camera.h"
+#include "camera.h"
 #include "Color.h"
 #include "Object.h"
 #include "Light.h"
@@ -53,14 +53,12 @@ Parameters global_parameters;
 std::vector<Object> global_object_list;
 std::vector<Light> global_light_list;
 Color      global_background;
-Camera     global_camera;
+Protracer::Camera     global_camera;
 
 
 extern char *yytext;
 extern int linecount;
-extern "C" {
-       extern int yylex(void);
-};
+extern int yylex(void);
 
 
 PPMFile    global_image_file;
@@ -77,7 +75,7 @@ int yyerror(char *s);
     Triangle    triangle;
     Plane       plane;
     Object      object;
-    Camera      camera;
+    Protracer::Camera*      camera;
     Color       color;
     SphereOptions   sphereOptions;
     ObjectMods  objectMods;
@@ -337,14 +335,12 @@ camera:
 	KEY_SKY vector
 	KEY_LOOK vector
 	RBRACE { /*printf("Camera\n");*/
-                 global_camera = 
-                     Camera_create( $4, $8, $6, 
+                 global_camera = Protracer::Camera($4, $8, $6, 
                                     Parameters_zoom( global_parameters ),
                                     Parameters_worldWidth( global_parameters),
                                     Parameters_worldHeight( global_parameters ),
                                     Parameters_pixelWidth( global_parameters ),
-                                    Parameters_pixelHeight( global_parameters )
-                     ); 
+                                    Parameters_pixelHeight( global_parameters)); 
 		 /*printf("camera created\n");*/ }
 	;
 

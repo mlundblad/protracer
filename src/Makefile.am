@@ -1,11 +1,10 @@
 bin_PROGRAMS=protracer
 
-protracer_SOURCES=Baselex.l \
-	Bitmap.c \
+protracer_SOURCES=Bitmap.c \
 	Bitmap.h \
 	Bool.h \
-	Camera.c \
-	Camera.h \
+	camera.cc \
+	camera.h \
 	Color.c \
 	Color.h \
 	ColorOption.c \
@@ -16,6 +15,7 @@ protracer_SOURCES=Baselex.l \
 	Finish.c \
 	Finish.h \
 	HitData.h \
+	lexer.ll \
 	Light.c \
 	Light.h \
 	main.cc \

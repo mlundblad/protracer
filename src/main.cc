@@ -70,7 +70,7 @@ parse(FILE *input, scalar zoom, long xpix, long ypix, scalar width,
     extern std::vector<Object>  global_object_list; 
     extern std::vector<Light>   global_light_list;
     extern Color       global_background;
-    extern Camera      global_camera;
+    extern Protracer::Camera      global_camera;
 
     global_parameters = Parameters_create(zoom, width, height, xpix, ypix );
     global_object_list = std::vector<Object>();
@@ -160,11 +160,11 @@ int main( int argc, char **argv )
     extern char *optarg;
     int  opt_ind = 0;
     bool        noShadowNoReflection = FALSE;
-    scalar      zoom = 1.0;
-    long        xpix = 240;
-    long        ypix = 240;
-    scalar      width = 1.0;
-    scalar      height = 1.0;
+    scalar      zoom = Protracer::DEFAULT_ZOOM;
+    long        xpix = Protracer::DEFAULT_PIXEL_WIDTH;
+    long        ypix = Protracer::DEFAULT_PIXEL_HEIGHT;
+    scalar      width = Protracer::DEFAULT_WORLD_WIDTH;
+    scalar      height = Protracer::DEFAULT_WORLD_HEIGHT;
     char        flagsSet = 0;
     char        numFlagsSet = 0;
     long        errflg = 0;
