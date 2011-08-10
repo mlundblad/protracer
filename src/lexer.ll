@@ -20,16 +20,7 @@
  *
  */
 
-/*************************************************************************\
-|  File: Baselex.l                                                        |
-|                                                                         |
-|  The pov-file lexer                                                     |
-|                                                                         |
-\*************************************************************************/
-
-
 #include <string.h>
-
 
 #include "Vector.h"
 #include "Plane.h"
@@ -44,7 +35,6 @@
 #include "Bitmap.h"
 
 #include "Object.h"
-#include "Light.h"
 
 /* WARNING DO NOT MOVE THIS INCLUDE BEFORE THE PREVIUOS!!! */
 #include "parser.h"
