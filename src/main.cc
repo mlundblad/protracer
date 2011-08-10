@@ -28,6 +28,7 @@
 #include <getopt.h>
 #include <string.h>
 
+#include <iostream>
 #include <vector>
 
 #include "config.h"
@@ -57,7 +58,7 @@
 
 static void print_version(void)
 {
-  fprintf(stderr, PACKAGE " " VERSION "\n");
+  std::cerr << PACKAGE << " " << VERSION << std::endl;
 }
 
 Protracer::World
@@ -108,44 +109,50 @@ trace( const Protracer::World& w, int xpix, int ypix, int reflectionDepth,
                                x, y );
         }
 	if (!quiet)
-	  fprintf( stderr, "%d%%\r", (int)((scalar)y/(scalar)ypix * 100) );
+	  std::cerr << (int)((scalar)y/(scalar)ypix * 100) << "%\r";
     }
     return bm;
 }
      
 static void usage(void)
 {
-  fprintf(stderr, "   usage: "PACKAGE" [options] [input file]\n");
-  fprintf(stderr, "\n");
-  fprintf(stderr, "   -n, --no-shadows                          "
-	  "no shadows or reflecions will be"
-	  "                                                used\n");
-  fprintf(stderr, "   -r, --reflection-depth=REFLECTION_DEPTH   "
-	  "set the reflection depth\n");
-  fprintf(stderr, "   -z, --zoom-factor=ZOOM                    "
-	  "set zoom factor\n");
-  fprintf(stderr, "   -x, --x-pixels=X_PIX                      "
-	  "set the pixel width of the\n"
-	  "                                             resulting image\n");
-  fprintf(stderr, "   -y, --y-pixels=Y_PIX                      "
-	  "set the pixel height of the\n"
-	  "                                             resulting image\n");
-  fprintf(stderr, "   -w, --width=WIDTH                         "
-	  "set picture width\n");
-  fprintf(stderr, "   -h, --height=HEIGHT                       "
-	  "set picture height\n");
-  fprintf(stderr, "   -o, --output=FILE                         "
-	  "set output file\n");
-  fprintf(stderr, "       --help                                "
-	  "print this help\n");
-  fprintf(stderr, "       --version                             "
-	  "print version information\n");
-  fprintf(stderr, "   -q, --quiet                               "
-	  "don't print a progress meter\n");
-  fprintf(stderr, "\n");
-  fprintf(stderr, "If no input file is given, input is read from stdin.\n");
-  fprintf(stderr, "Likewise, if no output file is given, output "
-	  "(in PPM format) is written to\nstdout\n");
+  std::cerr << "   usage: " << PACKAGE << " [options] [input file]" 
+	    << std::endl
+            << std::endl
+	    << "   -n, --no-shadows                          "
+            << "no shadows or reflecions will be"
+	    << "                                                used"
+            << std::endl
+            << "   -r, --reflection-depth=REFLECTION_DEPTH   "
+	    << "set the reflection depth" << std::endl
+            << "   -z, --zoom-factor=ZOOM                    "
+	    << "set zoom factor" << std::endl
+            << "   -x, --x-pixels=X_PIX                      "
+	    << "set the pixel width of the" << std::endl
+	    << "                                             resulting image"
+            << std::endl
+            << "   -y, --y-pixels=Y_PIX                      "
+	    << "set the pixel height of the" << std::endl
+	    << "                                             resulting image"
+            << std::endl
+            << "   -w, --width=WIDTH                         "
+	    << "set picture width" << std::endl
+            << "   -h, --height=HEIGHT                       "
+	    << "set picture height" << std::endl
+            << "   -o, --output=FILE                         "
+	    << "set output file" << std::endl
+            << "       --help                                "
+	    << "print this help" << std::endl
+            << "       --version                             "
+	    << "print version information" << std::endl
+            << "   -q, --quiet                               "
+	    << "don't print a progress meter" << std::endl
+            << std::endl
+            << "If no input file is given, input is read from stdin."
+            << std::endl
+            << "Likewise, if no output file is given, output "
+            << "(in PPM format) is written to" << std::endl << "stdout"
+            << std::endl;
 }
 
 static void
