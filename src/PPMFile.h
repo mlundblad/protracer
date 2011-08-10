@@ -56,7 +56,7 @@ typedef struct
   Procedure: opens a PPMFile with given filname
  *************************************************************************/
 
-PPMFile PPMFile_openIn( char *filename );
+PPMFile PPMFile_openIn( const char *filename );
 
 /*************************************************************************
   Function:  PPMFile_openOut
@@ -65,7 +65,7 @@ PPMFile PPMFile_openIn( char *filename );
   Procedure: opens an existing PPMFile for reading
  *************************************************************************/
 
-PPMFile PPMFile_openOut( char *filename, PPMMode mode );
+PPMFile PPMFile_openOut( const char *filename, PPMMode mode );
 
 
 /**************************************************************************

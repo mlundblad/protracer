@@ -18,7 +18,6 @@
 
 #include <stdlib.h>
 #include <getopt.h>
-#include <string.h>
 
 #include <iostream>
 #include <vector>
@@ -171,7 +170,7 @@ int main( int argc, char **argv )
 
     Bitmap      result;
     PPMFile     ppm_out;
-    char        *out_file = NULL;
+    std::string out_file;
     FILE        *in_file;
 
     static struct option long_options[] =
@@ -244,7 +243,7 @@ int main( int argc, char **argv )
 	        if (!optarg)
 		  usage_and_exit();
 
-	        out_file = strdup(optarg);
+	        out_file = optarg;
 		break;
 	    case '?':
 		errflg++;
@@ -301,8 +300,8 @@ int main( int argc, char **argv )
     if (!quiet)
       std::cerr << "100%% - done!" << std::endl;
 
-    if (out_file != NULL)
-      ppm_out = PPMFile_openOut(out_file, PPM_BINARY);
+    if (out_file != "")
+      ppm_out = PPMFile_openOut(out_file.c_str(), PPM_BINARY);
     else
       ppm_out = PPMFile_openStdOut(PPM_BINARY);
 

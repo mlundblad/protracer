@@ -96,7 +96,7 @@ static void skip_ws_and_read_until_ws(FILE *file, char *buffer)
 
 
 
-PPMFile PPMFile_openIn( char *filename )
+PPMFile PPMFile_openIn(const char *filename)
 {
     PPMFile file;
     
@@ -108,7 +108,7 @@ PPMFile PPMFile_openIn( char *filename )
     return file;
 }
 
-PPMFile PPMFile_openOut(char *filename, PPMMode mode)
+PPMFile PPMFile_openOut(const char *filename, PPMMode mode)
 {
     PPMFile file;
 
