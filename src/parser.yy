@@ -38,7 +38,7 @@
 #include "camera.h"
 #include "Color.h"
 #include "Object.h"
-#include "Light.h"
+#include "light.h"
 
 #include "SphereOptions.h"
 #include "ObjectMods.h"
@@ -51,7 +51,7 @@
 
 Parameters global_parameters;
 std::vector<Object> global_object_list;
-std::vector<Light> global_light_list;
+std::vector<Protracer::Light> global_light_list;
 Color      global_background;
 Protracer::Camera     global_camera;
 
@@ -82,7 +82,6 @@ int yyerror(char *s);
     Finish      finish;
     Pigment     pigment;
     Bitmap      bitmap;
-    Light       light;
 };
 
 %start scene
@@ -149,17 +148,14 @@ item:
                                               global_objectList);*/ } 
         | camera     { }
         | background { }
-        | light      { global_light_list.push_back($1);
-	               /*global_lightList = 
-                           LightList_insert(  $1,
-                                              global_lightList);*/ } 
+        | light      { } 
 	;
 
 light:
 	KEY_LIGHT LBRACE
 	vector
 	RBRACE { /*printf("Light at "); Vector_print($3); printf("\n");*/
-                 $$ = Light_create( $3 );
+	         global_light_list.push_back(Protracer::Light($3));
 	       }
 	;
 

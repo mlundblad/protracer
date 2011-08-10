@@ -45,6 +45,7 @@
 
 #include "Parameters.h"
 
+#include "light.h"
 #include "parser.h"
 #include "constants.h"
 
@@ -68,13 +69,13 @@ parse(FILE *input, scalar zoom, long xpix, long ypix, scalar width,
     extern FILE        *yyin;
     extern Parameters  global_parameters;
     extern std::vector<Object>  global_object_list; 
-    extern std::vector<Light>   global_light_list;
+    extern std::vector<Protracer::Light>   global_light_list;
     extern Color       global_background;
     extern Protracer::Camera      global_camera;
 
     global_parameters = Parameters_create(zoom, width, height, xpix, ypix );
     global_object_list = std::vector<Object>();
-    global_light_list = std::vector<Light>();
+    global_light_list = std::vector<Protracer::Light>();
 
     global_background = Protracer::DEFAULT_BACKGROUND;
 

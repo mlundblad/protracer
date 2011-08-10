@@ -16,8 +16,8 @@ protracer_SOURCES=Bitmap.c \
 	Finish.h \
 	HitData.h \
 	lexer.ll \
-	Light.c \
-	Light.h \
+	light.cc \
+	light.h \
 	main.cc \
 	Object.c \
 	Object.h \

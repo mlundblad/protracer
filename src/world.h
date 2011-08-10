@@ -25,7 +25,7 @@
 #include "Color.h"
 #include "Vector.h"
 #include "Object.h"
-#include "Light.h"
+#include "light.h"
 
 namespace Protracer {
   class World {

@@ -133,7 +133,7 @@ namespace Protracer {
 	lightRay = Ray_create(Vector_add(hitPoint,
 					 Vector_multiply(EPS,
 							 HitData_normal(nearestHit))),
-			      Vector_subtract(Light_position(l),
+			      Vector_subtract(l.get_position(),
 					      Vector_add(hitPoint,
 							 Vector_multiply(EPS,
 									 HitData_normal(nearestHit)))));
@@ -148,7 +148,7 @@ namespace Protracer {
 	  
 	  if (HitData_hit(hd)) {
 	    if (HitData_distance(hd) < 
-		Vector_length(Vector_subtract(Light_position(l), hitPoint)))
+		Vector_length(Vector_subtract(l.get_position(), hitPoint)))
 		       is_lit = false;
 	  }
 	}
@@ -157,7 +157,7 @@ namespace Protracer {
 
 	if (is_lit) {
 	  shade += 
-	    Util::shade_factor(Light_position(l),
+	    Util::shade_factor(l.get_position(),
 			       hitPoint, 
 			       HitData_normal(nearestHit));
 	}
