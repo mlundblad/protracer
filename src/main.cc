@@ -298,7 +298,7 @@ int main( int argc, char **argv )
 		   noShadowNoReflection, quiet);
 
     if (!quiet)
-      std::cerr << "100%% - done!" << std::endl;
+      std::cerr << "100%- done!" << std::endl;
 
     if (out_file != "")
       ppm_out = PPMFile_openOut(out_file.c_str(), PPM_BINARY);
