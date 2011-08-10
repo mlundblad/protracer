@@ -99,14 +99,12 @@ trace( const Protracer::World& w, int xpix, int ypix, int reflectionDepth,
     
     Bitmap bm = Bitmap_create( xpix, ypix );
 
-    for( y = 0 ; y < ypix ; y++ )
-    {
-        for( x = 0 ; x < xpix ; x++ )
-        {
-            Bitmap_setColorAt( bm, w.color_of_pixel(x, y,
-						    reflectionDepth,
-						    noShadowNoReflection ),
-                               x, y );
+    for (y = 0 ; y < ypix ; y++ ) {
+        for (x = 0 ; x < xpix ; x++ ) {
+            Bitmap_setColorAt(bm, w.color_of_pixel(x, y,
+						   reflectionDepth,
+						   noShadowNoReflection),
+			      x, y);
         }
 	if (!quiet)
 	  std::cerr << (int)((scalar)y/(scalar)ypix * 100) << "%\r";
@@ -201,10 +199,8 @@ int main( int argc, char **argv )
       };
 
     while ((c = getopt_long(argc, argv, "qnr:z:x:y:w:h:e:o:", long_options,
-			    &opt_ind) ) != EOF )
-    {
-      switch( c ) 
-	{
+			    &opt_ind) ) != EOF ) {
+      switch (c) {
 	    case 'n':
 		noShadowNoReflection = TRUE;
 		break;
@@ -280,25 +276,18 @@ int main( int argc, char **argv )
     /* Check if only three args, if so calculate the last one. */
     if( numFlagsSet == 3 )
     {
-	if( !(flagsSet & XPIX_MASK) )
-	{
+	if (!(flagsSet & XPIX_MASK)) {
 	    xpix = width / height * ypix;
-	    fprintf( stderr, "Calculated xpix = %ld\n", xpix );
-	}
-	else if( !(flagsSet & YPIX_MASK) )
-	{
+	    std::cerr << "Calculated xpix = " << xpix << std::endl;
+	} else if (!(flagsSet & YPIX_MASK)) {
 	    ypix = height / width * xpix;
-	    fprintf( stderr, "Calculated ypix = %ld\n", ypix );
-	}
-	else if( !(flagsSet & WIDTH_MASK) )
-	{
+	    std::cerr << "Calculated ypix = " << ypix << std::endl;
+	} else if (!(flagsSet & WIDTH_MASK)) {
 	    width = (height * xpix) / ypix;
-	    fprintf( stderr, "Calculated width = %f\n", width );
-	}
-	else if( !(flagsSet & HEIGHT_MASK) )
-	{
+	    std::cerr << "Calculated width = " << width << std::endl;
+	} else if (!(flagsSet & HEIGHT_MASK)) {
 	    height = (width * ypix) / xpix;
-	    fprintf( stderr, "Calculated height = %f\n", height );
+	    std::cerr << "Calculated height = " << height << std::endl;
 	}
     }
     
@@ -314,18 +303,18 @@ int main( int argc, char **argv )
  
     /* Start the tracing */
     
-    result = trace( the_world, xpix, ypix, reflectionDepth,
-                    noShadowNoReflection, quiet );
+    result = trace(the_world, xpix, ypix, reflectionDepth,
+		   noShadowNoReflection, quiet);
 
     if (!quiet)
-      fprintf( stderr, "100%% - done!\n" );
+      std::cerr << "100%% - done!" << std::endl;
 
     if (out_file != NULL)
-      ppm_out = PPMFile_openOut(out_file, PPM_BINARY );
+      ppm_out = PPMFile_openOut(out_file, PPM_BINARY);
     else
       ppm_out = PPMFile_openStdOut(PPM_BINARY);
 
-    PPMFile_writeBitmap( ppm_out, result );
+    PPMFile_writeBitmap(ppm_out, result);
     
-    return( 0 ); /* Success */
+    return 0;
 }
