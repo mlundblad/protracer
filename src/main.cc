@@ -24,8 +24,6 @@
 
 #include "config.h"
 
-#include "Scalar.h"
-
 #include "Bitmap.h"
 #include "PPMFile.h"
 #include "Error.h"
@@ -95,7 +93,7 @@ trace(const Protracer::World& w, Bitmap& bitmap, int xpix, int ypix,
 			      x, y);
         }
 	if (!quiet)
-	  std::cerr << (int)((scalar)y/(scalar)ypix * 100) << "%\r";
+	  std::cerr << (int)((float)y/(float)ypix * 100) << "%\r";
     }
 }
      
@@ -153,11 +151,11 @@ int main(int argc, char **argv)
     extern char *optarg;
     int  opt_ind = 0;
     bool        no_shadow_no_reflection = false;
-    scalar      zoom = Protracer::DEFAULT_ZOOM;
+    float       zoom = Protracer::DEFAULT_ZOOM;
     long        xpix = Protracer::DEFAULT_PIXEL_WIDTH;
     long        ypix = Protracer::DEFAULT_PIXEL_HEIGHT;
-    scalar      width = Protracer::DEFAULT_WORLD_WIDTH;
-    scalar      height = Protracer::DEFAULT_WORLD_HEIGHT;
+    float       width = Protracer::DEFAULT_WORLD_WIDTH;
+    float       height = Protracer::DEFAULT_WORLD_HEIGHT;
     char        flagsSet = 0;
     char        numFlagsSet = 0;
     long        errflg = 0;
