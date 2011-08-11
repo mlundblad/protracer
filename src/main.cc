@@ -289,7 +289,7 @@ int main( int argc, char **argv )
     }
 
     Protracer::Parameters params =
-      Protracer::Parameters(zoom, xpix, ypix, width, height);
+      Protracer::Parameters(zoom, width, height, xpix, ypix);
 
     Protracer::World the_world =
       parse(in_file, params);
