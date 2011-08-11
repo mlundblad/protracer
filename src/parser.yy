@@ -39,9 +39,9 @@
 #include "Bitmap.h"
 #include "PPMFile.h"
 
-#include "Parameters.h"
+#include "parameters.h"
 
-Parameters global_parameters;
+Protracer::Parameters global_parameters;
 std::vector<Object> global_object_list;
 std::vector<Protracer::Light> global_light_list;
 Color      global_background;
@@ -323,13 +323,14 @@ camera:
 	KEY_SKY vector
 	KEY_LOOK vector
 	RBRACE { /*printf("Camera\n");*/
-                 global_camera = Protracer::Camera($4, $8, $6, 
-                                    Parameters_zoom( global_parameters ),
-                                    Parameters_worldWidth( global_parameters),
-                                    Parameters_worldHeight( global_parameters ),
-                                    Parameters_pixelWidth( global_parameters ),
-                                    Parameters_pixelHeight( global_parameters)); 
-		 /*printf("camera created\n");*/ }
+	  global_camera =
+	    Protracer::Camera($4, $8, $6,
+			      global_parameters.get_zoom(),
+			      global_parameters.get_world_width(),
+			      global_parameters.get_world_height(),
+			      global_parameters.get_pixel_width(),
+			      global_parameters.get_pixel_height());
+	  /*printf("camera created\n");*/ }
 	;
 
 background:

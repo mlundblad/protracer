@@ -35,7 +35,7 @@
 #include "Finish.h"
 #include "SphereOptions.h"
 
-#include "Parameters.h"
+#include "parameters.h"
 
 #include "light.h"
 #include "parser.h"
@@ -53,19 +53,18 @@ static void print_version(void)
 }
 
 Protracer::World
-parse(FILE *input, scalar zoom, long xpix, long ypix, scalar width,
-	    scalar height)
+parse(FILE *input, const Protracer::Parameters& params)
 {
     extern int yyparse();
 
     extern FILE        *yyin;
-    extern Parameters  global_parameters;
+    extern Protracer::Parameters  global_parameters;
     extern std::vector<Object>  global_object_list; 
     extern std::vector<Protracer::Light>   global_light_list;
     extern Color       global_background;
     extern Protracer::Camera      global_camera;
 
-    global_parameters = Parameters_create(zoom, width, height, xpix, ypix );
+    global_parameters = params;
     global_object_list = std::vector<Object>();
     global_light_list = std::vector<Protracer::Light>();
 
@@ -289,8 +288,11 @@ int main( int argc, char **argv )
       in_file = stdin;
     }
 
+    Protracer::Parameters params =
+      Protracer::Parameters(zoom, xpix, ypix, width, height);
+
     Protracer::World the_world =
-      parse(in_file, zoom, xpix, ypix, width, height );
+      parse(in_file, params);
  
     /* Start the tracing */
     

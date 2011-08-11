@@ -23,8 +23,8 @@ protracer_SOURCES=Bitmap.c \
 	Object.h \
 	ObjectMods.c \
 	ObjectMods.h \
-	Parameters.c \
-	Parameters.h \
+	parameters.cc \
+	parameters.h \
 	parser.yy \
 	Pigment.c \
 	Pigment.h \
