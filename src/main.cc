@@ -81,25 +81,22 @@ parse(FILE *input, const Protracer::Parameters& params)
     return the_world;
 }
 
-Bitmap
-trace( const Protracer::World& w, int xpix, int ypix, int reflectionDepth,
-              bool noShadowNoReflection, bool quiet )
+void
+trace(const Protracer::World& w, Bitmap& bitmap, int xpix, int ypix,
+      int reflectionDepth, bool no_shadow_no_reflection, bool quiet)
 {
     int x,y;
     
-    Bitmap bm = Bitmap_create( xpix, ypix );
-
     for (y = 0 ; y < ypix ; y++ ) {
         for (x = 0 ; x < xpix ; x++ ) {
-            Bitmap_setColorAt(bm, w.color_of_pixel(x, y,
-						   reflectionDepth,
-						   noShadowNoReflection),
+            Bitmap_setColorAt(bitmap, w.color_of_pixel(x, y,
+						       reflectionDepth,
+						       no_shadow_no_reflection),
 			      x, y);
         }
 	if (!quiet)
 	  std::cerr << (int)((scalar)y/(scalar)ypix * 100) << "%\r";
     }
-    return bm;
 }
      
 static void usage(void)
@@ -150,12 +147,12 @@ usage_and_exit(void)
   exit(-1);
 }
 
-int main( int argc, char **argv )
+int main(int argc, char **argv)
 {
     int c;
     extern char *optarg;
     int  opt_ind = 0;
-    bool        noShadowNoReflection = FALSE;
+    bool        no_shadow_no_reflection = false;
     scalar      zoom = Protracer::DEFAULT_ZOOM;
     long        xpix = Protracer::DEFAULT_PIXEL_WIDTH;
     long        ypix = Protracer::DEFAULT_PIXEL_HEIGHT;
@@ -192,7 +189,7 @@ int main( int argc, char **argv )
 			    &opt_ind) ) != EOF ) {
       switch (c) {
 	    case 'n':
-		noShadowNoReflection = TRUE;
+		no_shadow_no_reflection = true;
 		break;
 	    case 'r':
 	        if (!optarg)
@@ -296,8 +293,9 @@ int main( int argc, char **argv )
  
     /* Start the tracing */
     
-    result = trace(the_world, xpix, ypix, reflectionDepth,
-		   noShadowNoReflection, quiet);
+    result = Bitmap_create(xpix, ypix);
+    trace(the_world, result, xpix, ypix, reflectionDepth,
+	  no_shadow_no_reflection, quiet);
 
     if (!quiet)
       std::cerr << "100%- done!" << std::endl;
