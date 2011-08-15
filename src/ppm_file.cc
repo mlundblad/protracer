@@ -208,7 +208,6 @@ namespace Protracer {
   void
   PPMFile::write_bitmap(const Bitmap& bitmap)
   {
-    int             x,y;
     int             width =  Bitmap_width(bitmap);
     int             height = Bitmap_height(bitmap);
     Color_component temp;
@@ -239,7 +238,7 @@ namespace Protracer {
         }
     } else /*binary*/ {
       for (int y = 0 ; y < height ; y++) {
-	for(x = 0 ; x < width ; x++) {
+	for(int x = 0 ; x < width ; x++) {
 	  Color col = Bitmap_colorAt(bitmap, x, y);
 	  Color_component temp = Color_red(col);
           
