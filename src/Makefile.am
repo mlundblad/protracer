@@ -30,8 +30,8 @@ protracer_SOURCES=Bitmap.c \
 	Pigment.h \
 	Plane.c \
 	Plane.h \
-	PPMFile.c \
-	PPMFile.h \
+	ppm_file.cc \
+	ppm_file.h \
 	Ray.c \
 	Ray.h \
 	Scalar.h \

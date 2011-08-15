@@ -25,7 +25,7 @@
 #include "config.h"
 
 #include "Bitmap.h"
-#include "PPMFile.h"
+#include "ppm_file.h"
 #include "Error.h"
 #include "world.h"
 
@@ -163,7 +163,7 @@ int main(int argc, char **argv)
     bool        quiet = FALSE;
 
     Bitmap      result;
-    PPMFile     ppm_out;
+    Protracer::PPMFile     ppm_out;
     std::string out_file;
     FILE        *in_file;
 
@@ -299,11 +299,11 @@ int main(int argc, char **argv)
       std::cerr << "100%- done!" << std::endl;
 
     if (out_file != "")
-      ppm_out = PPMFile_openOut(out_file.c_str(), PPM_BINARY);
+      ppm_out.open_out(out_file, Protracer::PPMFile::PPM_BINARY);
     else
-      ppm_out = PPMFile_openStdOut(PPM_BINARY);
+      ppm_out.open_stdout(Protracer::PPMFile::PPM_BINARY);
 
-    PPMFile_writeBitmap(ppm_out, result);
+    ppm_out.write_bitmap(result);
     
     return 0;
 }

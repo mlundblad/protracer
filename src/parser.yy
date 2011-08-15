@@ -37,7 +37,7 @@
 #include "Finish.h"
 #include "Pigment.h"
 #include "Bitmap.h"
-#include "PPMFile.h"
+#include "ppm_file.h"
 
 #include "parameters.h"
 
@@ -53,7 +53,7 @@ extern int linecount;
 extern int yylex(void);
 
 
-PPMFile    global_image_file;
+Protracer::PPMFile    global_image_file;
 
 
 int yyerror(char *s);
@@ -265,12 +265,11 @@ pigment:
 	;
 
                 
-image:	KEY_IMAGE LBRACE KEY_PPM STRING RBRACE { global_image_file = 
-                                                     PPMFile_openIn( $4 );
-                                                 $$ = PPMFile_readBitmap( 
-                                                     global_image_file );
-                                                 PPMFile_close( 
-                                                     global_image_file ); }
+image:	KEY_IMAGE LBRACE KEY_PPM STRING RBRACE {
+          global_image_file.open_in($4);
+	  $$ = global_image_file.read_bitmap();
+	  global_image_file.close();
+	}
 	;
 
 opt_finish: { $$ = Finish_create( DIFFUSE_DEFAULT, REFLECTION_DEFAULT ); }
