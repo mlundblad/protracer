@@ -26,9 +26,11 @@ namespace Protracer {
   public:
     virtual HitData calculate_hit(const Ray& ray) const = 0;
     const Finish& get_finish() const { return finish; }
+    const Pigment& get_pigment() const { return pigment; }
 
   protected:
     Finish finish;
+    Pigment pigment;
   };
 }
 

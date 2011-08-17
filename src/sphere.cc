@@ -17,14 +17,15 @@
  */
 
 #include "sphere.h"
+#include <math.h>
 
 namespace Protracer {
 
-  Sphere::Sphere(const Vector& centre, float radius, const Vector& pole,
+  Sphere::Sphere(const Vector& center, float radius, const Vector& pole,
 		 const Vector& equator, const Pigment& pigment,
 		 const Finish& finish)
   {
-    this->centre = centre;
+    this->center = center;
     this->radius = radius;
     this->radius_sqr = radius * radius;
     this->pole = Vector_normalize(pole);
@@ -46,56 +47,48 @@ namespace Protracer {
     Vector  rn;*/
     Vector  tempVect;
     
-    /*oc = Vector_subtract( Sphere_centre( s ),
+    /*oc = Vector_subtract( center,
                           Ray_origin( ray ));*/
-    l2oc = Vector_dotProduct( Vector_subtract( Sphere_centre( s ),
-                                               Ray_origin( ray )),
-                              Vector_subtract( Sphere_centre( s ),
-                                               Ray_origin( ray ) )
-                                  );
-    tca = Vector_dotProduct( Vector_subtract( Sphere_centre( s ),
-                                              Ray_origin( ray ) ), 
-                             Ray_direction( ray ) );
+    l2oc = Vector_dotProduct(Vector_subtract(center, Ray_origin(ray)),
+			     Vector_subtract(center, Ray_origin(ray)));
+    tca = Vector_dotProduct(Vector_subtract(center, Ray_origin(ray)), 
+			    Ray_direction(ray));
     
     
-    t2hc = Sphere_radiusSqr( s ) - l2oc + tca * tca;
+    t2hc = radius_sqr - l2oc + tca * tca;
     
  
-    if( !( l2oc < Sphere_radiusSqr( s ) ) )
-    {
-	if( tca + SPHERE_EPS >= 0 && t2hc >= 0 )
-	{
+    if (!(l2oc < radius_sqr)) {
+	if (tca + EPS >= 0 && t2hc >= 0 ) {
 	    distance = tca - sqrt( t2hc );
 	    
 	    tempVect = Vector_add( Ray_origin( ray ),
 				   Vector_multiply( distance,
 						    Ray_direction( ray ) ) );
 	    
-	    tempVect = Vector_multiply( 1.0 / Sphere_radius( s ),
-					Vector_subtract( tempVect,
-							 Sphere_centre( s ) ) );
+	    tempVect = Vector_multiply(1.0 / radius,
+				       Vector_subtract(tempVect, center));
 	    
-	    return HitData_createHit( distance,
-				      tempVect, colorAt( s, tempVect ) );
+	    return HitData_createHit(distance,
+				     tempVect, color_at(tempVect));
 
 	}
 	else
 	    return HitData_createNoHit();
     }
     
-    distance = tca + sqrt( t2hc );
+    distance = tca + sqrt(t2hc);
     
-    tempVect = Vector_add( Ray_origin( ray ),
-			   Vector_multiply( distance,
-					    Ray_direction( ray ) ) );
+    tempVect = Vector_add(Ray_origin(ray),
+			   Vector_multiply(distance,
+					   Ray_direction(ray)));
     
-    tempVect = Vector_multiply( -1.0 / Sphere_radius( s ),
-				Vector_subtract( tempVect,
-						 Sphere_centre( s ) ) );
+    tempVect = Vector_multiply(-1.0 / radius,
+			       Vector_subtract(tempVect, center));
     
     
-    return HitData_createHit( distance,
-			      tempVect, colorAt( s, tempVect ) );
+    return HitData_createHit(distance,
+			     tempVect, color_at(tempVect));
   }
 
   Color
@@ -107,33 +100,25 @@ namespace Protracer {
     Bitmap bitmap;
     /*Color retColor;*/
 
-    if (Pigment_type( Sphere_pigment( s ) ) == PIGMENT_COLOR)
-	return Pigment_color( Sphere_pigment( s ) );
+    if (Pigment_type(pigment) == PIGMENT_COLOR)
+      return Pigment_color(pigment);
     
 
-    phi = acos( -Vector_dotProduct( 
-        normal,
-        Sphere_pole( s ) ) );
+    phi = acos( -Vector_dotProduct(normal, pole));
     v = 1 - phi / M_PI;
-    
-    if( v == 1.0 || v == 0.0 )
-        u = 0.0;
-    
-    else
-    {
-        temp = Vector_dotProduct(
-            normal,
-            Sphere_equator( s ) ) / sin( phi );
+     
+    if ( v == 1.0 || v == 0.0 ) {
+      u = 0.0;
+    } else {
+        temp = Vector_dotProduct(normal, equator) / sin(phi);
         temp = temp > 1.0 ? 1.0 : temp;
 	temp = temp < -1.0 ? -1.0 : temp;
         
-        theta = acos( temp ) / (2*M_PI);
+        theta = acos(temp) / (2*M_PI);
         
-        u = Vector_dotProduct( 
-            Vector_crossProduct( Sphere_equator( s ),
-                                 Sphere_pole( s ) ),
-            normal) > 0 ?
-            theta : 1 - theta;
+        u = Vector_dotProduct(Vector_crossProduct(equator, pole),
+			      normal) > 0 ?
+	  theta : 1 - theta;
         
     }
     
@@ -141,7 +126,7 @@ namespace Protracer {
     
     /* Ok, u and v are the % coordinates into the bitmap.
        Lets return the correct color for the given point. */
-    bitmap = Pigment_bitmap( Sphere_pigment( s ) );
+    bitmap = Pigment_bitmap(pigment);
     
     /*fprintf( stderr, "w: %d h: %d u: %f v: %f\n", Bitmap_width( bitmap ),
       Bitmap_height( bitmap ),

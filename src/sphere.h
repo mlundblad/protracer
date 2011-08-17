@@ -24,10 +24,11 @@
 #include "Pigment.h"
 #include "Ray.h"
 #include "HitData.h"
+#include "object.h"
 
 namespace Protracer {
 
-  class Sphere {
+  class Sphere : public Object {
   public:
 
     static const float POLE_DEFAULT_X = 0.0f;
@@ -37,7 +38,7 @@ namespace Protracer {
     static const float EQUATOR_DEFAULT_Y = 0.0f;
     static const float EQUATOR_DEFAULT_Z = 0.0f;
 
-    Sphere(const Vector& centre, float radius, const Vector& pole,
+    Sphere(const Vector& center, float radius, const Vector& pole,
 	   const Vector& equator, const Pigment& pigment,
 	   const Finish& finish);
 
