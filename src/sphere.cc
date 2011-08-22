@@ -23,15 +23,14 @@ namespace Protracer {
 
   Sphere::Sphere(const Vector& center, float radius, const Vector& pole,
 		 const Vector& equator, const Pigment& pigment,
-		 const Finish& finish)
+		 const Finish& finish) :
+    Object(pigment, finish)
   {
     this->center = center;
     this->radius = radius;
     this->radius_sqr = radius * radius;
     this->pole = Vector_normalize(pole);
     this->equator = Vector_normalize(equator);
-    this->pigment = pigment;
-    this->finish = finish;
   }
 
   HitData

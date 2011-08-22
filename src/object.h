@@ -27,6 +27,9 @@
 namespace Protracer {
   class Object {
   public:
+    Object(const Pigment& pigment, const Finish& finish) :
+      pigment(pigment), finish(finish) {}
+
     virtual HitData calculate_hit(const Ray& ray) const = 0;
     const Finish& get_finish() const { return finish; }
     const Pigment& get_pigment() const { return pigment; }

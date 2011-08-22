@@ -21,12 +21,11 @@
 namespace Protracer {
 
   Plane::Plane(const Vector& normal, const Vector& point,
-	       const Pigment& pigment, const Finish& finish)
+	       const Pigment& pigment, const Finish& finish) :
+    Object(pigment, finish)
   {
     this->normal = normal;
     this->point = point;
-    this->pigment = pigment;
-    this->finish = finish;
     this->d = Vector_dotProduct(point, normal);
   }
 
