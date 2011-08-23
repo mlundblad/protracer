@@ -24,9 +24,9 @@ namespace Protracer {
 	       const Pigment& pigment, const Finish& finish) :
     Object(pigment, finish)
   {
-    this->normal = normal;
+    this->normal = Vector_normalize(normal);
     this->point = point;
-    this->d = Vector_dotProduct(point, normal);
+    this->d = Vector_dotProduct(point, this->normal);
   }
 
   HitData
