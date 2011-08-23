@@ -23,11 +23,11 @@
 #include "util.h"
 #include "constants.h"
 #include "Ray.h"
-#include "Object.h"
+#include "object.h"
 
 namespace Protracer {
   
-  World::World(const std::vector<Object>& objects,
+  World::World(const std::vector<Object*>& objects,
 	       const std::vector<Light>& lights, 
 	       const Camera& cam, const Color& background )
   {
@@ -55,11 +55,11 @@ namespace Protracer {
 
   World::~World()
   {
-    for (std::vector<Object>::iterator it = objects.begin() ;
+    for (std::vector<Object*>::iterator it = objects.begin() ;
 	 it != objects.end() ; it++) {
-      Object o = *it;
+      Object* o = *it;
 
-      free(o);
+      delete o;
     }
   }
 
@@ -85,20 +85,21 @@ namespace Protracer {
     HitData     hd;
     HitData     nearestHit;
 
-    Object hit_object;
+    Object* hit_object;
 
-    for(std::vector<Object>::const_iterator it = objects.begin() ;
+    for(std::vector<Object*>::const_iterator it = objects.begin() ;
 	it != objects.end() ; it++) {
-      Object o = *it;
-      hd = Object_rayHitData(o, ray);
+      Object* o = *it;
 
-        if (HitData_hit(hd)) {
-            if (HitData_distance(hd) < leastDistance) {
-                leastDistance = HitData_distance(hd);
-                nearestHit = hd;
-                hit_object = o;
-            }
-        }
+      hd = o->calculate_hit(ray);
+
+      if (HitData_hit(hd)) {
+	if (HitData_distance(hd) < leastDistance) {
+	  leastDistance = HitData_distance(hd);
+	  nearestHit = hd;
+	  hit_object = o;
+	}
+      }
     }
 
     //std::cerr << "least dist: " << leastDistance << std::endl;
@@ -140,11 +141,11 @@ namespace Protracer {
 
 
 	bool is_lit = true;
-	for (std::vector<Object>::const_iterator it = objects.begin() ;
+	for (std::vector<Object*>::const_iterator it = objects.begin() ;
 	     it != objects.end() && is_lit ; it++) {
-	  Object o = *it;
+	  Object* o = *it;
 	  
-	  hd = Object_rayHitData(o, lightRay);
+	  hd = o->calculate_hit(lightRay);
 	  
 	  if (HitData_hit(hd)) {
 	    if (HitData_distance(hd) < 
@@ -170,7 +171,7 @@ namespace Protracer {
 	   return
 	     Color_shade( HitData_color( nearestHit ),
 			  shade *
-			  Object_diffuse(hit_object));
+			  hit_object->get_finish().get_diffusion());
 	 } else {
 	   /* calculate reflected ray */
 	   /* move EPS in the normal direction, to avoid rounding errors */
@@ -196,12 +197,11 @@ namespace Protracer {
 		 Color_combine( 
 		     Color_shade(
 			 col,
-			 Object_reflection(hit_object)),
-
+			 hit_object->get_finish().get_reflection()),
 		     Color_shade( 
 			 HitData_color( nearestHit ),
 			 shade *
-			 Object_diffuse(hit_object)));
+			 hit_object->get_finish().get_diffusion()));
 	 }
 
      }    

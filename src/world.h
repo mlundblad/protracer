@@ -24,13 +24,13 @@
 #include "camera.h"
 #include "Color.h"
 #include "Vector.h"
-#include "Object.h"
+#include "object.h"
 #include "light.h"
 
 namespace Protracer {
   class World {
   public:
-    World(const std::vector<Object>& objects, 
+    World(const std::vector<Object*>& objects, 
 	  const std::vector<Light>& lights,
 	  const Camera& cam, const Color& background);
 
@@ -41,7 +41,7 @@ namespace Protracer {
     const Vector& get_c_right() const { return c_right; };
     const Vector& get_c_down() const { return c_down; };
     const Camera& get_camera() const { return camera; };
-    const std::vector<Object>& get_objects() const { return objects; };
+    const std::vector<Object*>& get_objects() const { return objects; };
     const Color& get_background() const { return background; };
     const std::vector<Light>& get_lights() const { return lights; }
     
@@ -49,7 +49,7 @@ namespace Protracer {
 				bool no_shadow_no_reflection) const;
 
   private:
-    std::vector<Object> objects;
+    std::vector<Object*> objects;
     std::vector<Light>  lights;
     Camera      camera;
     Color       background;
