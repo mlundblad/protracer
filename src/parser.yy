@@ -20,60 +20,91 @@
  *
  */
 
-#include <stdlib.h>
 #include <vector>
-
 #include "Vector.h"
-#include "Plane.h"
-#include "Sphere.h"
-#include "Triangle.h"
+#include "plane.h"
+#include "sphere.h"
+#include "triangle.h"
 #include "camera.h"
 #include "Color.h"
-#include "Object.h"
+#include "object.h"
 #include "light.h"
 
 #include "SphereOptions.h"
-#include "ObjectMods.h"
-#include "Finish.h"
+#include "finish.h"
 #include "Pigment.h"
 #include "Bitmap.h"
 #include "ppm_file.h"
 
 #include "parameters.h"
 
-Protracer::Parameters global_parameters;
-std::vector<Object> global_object_list;
-std::vector<Protracer::Light> global_light_list;
-Color      global_background;
-Protracer::Camera     global_camera;
+  Protracer::Parameters global_parameters;
+  std::vector<Protracer::Object*> global_object_list;
+  std::vector<Protracer::Light> global_light_list;
+  Color      global_background;
+  Protracer::Camera     global_camera;
+  Protracer::PPMFile    global_image_file;
 
 
 extern char *yytext;
 extern int linecount;
 extern int yylex(void);
 
-
-Protracer::PPMFile    global_image_file;
-
-
 int yyerror(char *s);
 %}
 
+%code requires {
+
+#include <stdlib.h>
+#include <vector>
+
+#include "Vector.h"
+#include "plane.h"
+#include "sphere.h"
+#include "triangle.h"
+#include "camera.h"
+#include "Color.h"
+#include "object.h"
+#include "light.h"
+
+#include "SphereOptions.h"
+#include "finish.h"
+#include "Pigment.h"
+#include "Bitmap.h"
+#include "ppm_file.h"
+
+#include "parameters.h"
+
+  // global variables used by the parser
+  extern Protracer::Parameters global_parameters;
+  extern std::vector<Protracer::Object*> global_object_list;
+  extern std::vector<Protracer::Light> global_light_list;
+  extern Color      global_background;
+  extern Protracer::Camera     global_camera;
+  extern Protracer::PPMFile    global_image_file;
+
+  // internal structs used for parsing
+  struct ObjectMods {
+    Pigment pigment;
+    Protracer::Finish finish;
+  };
+}
+
 %union {
-    double	value;		        /* for numbers */
-    char		*string;	/* for names */
-    Vector	vector;
-    Sphere      sphere;
-    Triangle    triangle;
-    Plane       plane;
-    Object      object;
-    Protracer::Camera*      camera;
-    Color       color;
-    SphereOptions   sphereOptions;
-    ObjectMods  objectMods;
-    Finish      finish;
-    Pigment     pigment;
-    Bitmap      bitmap;
+  double	value;		        /* for numbers */
+  char		*string;	/* for names */
+  Vector	vector;
+  Protracer::Sphere*      sphere;
+  Protracer::Triangle*    triangle;
+  Protracer::Plane*       plane;
+  Protracer::Object*      object;
+  Protracer::Camera*      camera;
+  Color       color;
+  SphereOptions   sphereOptions;
+  ObjectMods*  objectMods;
+  Protracer::Finish*      finish;
+  Pigment     pigment;
+  Bitmap      bitmap;
 };
 
 %start scene
@@ -126,18 +157,9 @@ scene	:
 	;
 
 item:	
-          sphere     { global_object_list.push_back(Object_createSphere($1));
-	  	     /* global_objectList = 
-                           ObjectList_insert( Object_createSphere( $1 ),
-                                              global_objectList);*/ } 
-	| triangle   { global_object_list.push_back(Object_createTriangle($1));
-	  	       /*global_objectList  = 
-                           ObjectList_insert( Object_createTriangle( $1 ),
-                                              global_objectList);*/ }
-        | plane      { global_object_list.push_back(Object_createPlane($1));
-	  	       /*global_objectList = 
-                           ObjectList_insert( Object_createPlane( $1 ),
-                                              global_objectList);*/ } 
+          sphere     { global_object_list.push_back($1); }
+        | triangle   { global_object_list.push_back($1); }
+        | plane      { global_object_list.push_back($1); } 
         | camera     { }
         | background { }
         | light      { } 
@@ -161,50 +183,45 @@ plane:
 	KEY_PLANE LBRACE
 	vector COMMA number
 	object_mods
-	RBRACE { /*printf("Plane with normal=");
-		 Vector_print($3);
-		 printf(", dist=%.2f\n", $5);*/
-                 $$ = Plane_create($3, Vector_createFromCartesian(0, 0, $5), 
-				   ObjectMods_pigment( $6 ),
-                                   Finish_reflection( ObjectMods_finish( $6 )),
-                                   Finish_diffuse( ObjectMods_finish( $6 )) );
-	       }
-;
+	RBRACE {
+	  $$ = new Protracer::Plane($3, Vector_createFromCartesian(0, 0, $5), 
+				    $6->pigment, $6->finish);
+	  delete $6;
+	}
+        ;
 
 /* This is not POVray syntax, but is an easier way to specify a plane. */
 plane:
 	KEY_PLANEPNT LBRACE
 	vector COMMA vector
 	object_mods
-	RBRACE { /*printf("Plane with normal="); Vector_print($3);
-		   printf(" at "); Vector_print($5); printf("\n");*/
-                 $$ = Plane_create($5, $3, ObjectMods_pigment( $6 ),
-                                   Finish_reflection( ObjectMods_finish($6) ),
-                                   Finish_diffuse( ObjectMods_finish($6)) );
-	       }
+	RBRACE {
+	  $$ = new Protracer::Plane($5, $3, $6->pigment, $6->finish);
+	  delete $6;
+	}
 	;
 
 sphere:
 	KEY_SPHERE LBRACE vector COMMA number sphere_opt
 	object_mods
-	RBRACE { /*fprintf(stderr, "Sphere at ");
-		   Vector_print($3);
-		 printf(", radius %.2f\n", $5);*/
-                 $$ = Sphere_create($3, $5, SphereOptions_pole($6), 
-                                    SphereOptions_equator($6), 
-                                    ObjectMods_pigment( $7 ), 
-                                    Finish_reflection(ObjectMods_finish( $7 )),
-                                    Finish_diffuse(ObjectMods_finish( $7 )));
-	       }
+	RBRACE {
+	  $$ = new Protracer::Sphere($3, $5, SphereOptions_pole($6), 
+				     SphereOptions_equator($6), 
+				     $7->pigment, $7->finish);
+	  delete $7;
+	}
 	;
 
-sphere_opt:   { $$ = SphereOptions_create(
-                     Vector_createFromCartesian(POLE_DEFAULT_X, 
-                                                POLE_DEFAULT_Y,
-                                                POLE_DEFAULT_Z), 
-                     Vector_createFromCartesian(EQUATOR_DEFAULT_X,
-                                                EQUATOR_DEFAULT_Y,
-                                                EQUATOR_DEFAULT_Z) ); }
+sphere_opt:   {
+  $$ = SphereOptions_create(
+	Vector_createFromCartesian(
+          Protracer::Sphere::POLE_DEFAULT_X, 
+	  Protracer::Sphere::POLE_DEFAULT_Y,
+	  Protracer::Sphere::POLE_DEFAULT_Z), 
+	Vector_createFromCartesian(
+	  Protracer::Sphere::EQUATOR_DEFAULT_X,
+	  Protracer::Sphere::EQUATOR_DEFAULT_Y,
+	  Protracer::Sphere::EQUATOR_DEFAULT_Z) ); }
 	|            
            KEY_POLE vector KEY_EQUATOR vector { $$ = 
                                                 SphereOptions_create( $2, $4 );}
@@ -216,14 +233,11 @@ triangle:
 	vector COMMA
 	vector
 	object_mods
-	RBRACE { /*printf("Triangle\n"); */
-                 $$ = Triangle_createFromPoints(
-                     $3, $5, $7,
-                     ObjectMods_pigment($8),
-                     Finish_reflection( ObjectMods_finish($8) ),
-                     Finish_diffuse( ObjectMods_finish($8)) );
-               }
-	;
+	RBRACE { 
+	  $$ = new Protracer::Triangle($3, $5, $7, $8->pigment, $8->finish);
+	  delete $8;
+	}
+        ;
 
 /* Again, this is not POVray, but provides an alternative way of
    specifying a triangle. */
@@ -233,21 +247,21 @@ triangle:
 	vector COMMA
 	vector
 	object_mods
-	RBRACE { /*printf("Triangle(p)\n");*/ 
-                 $$ = 
-                     Triangle_createFromPointAndVectors(
-                         $3, $5, $7, 
-                         ObjectMods_pigment($8),
-                         Finish_reflection(
-                             ObjectMods_finish($8)),
-                         Finish_diffuse(
-                             ObjectMods_finish($8)));
-               }
+	RBRACE {
+	  $$ = new Protracer::Triangle($3, $5, $7, $8->pigment, $8->finish,
+				       true);
+	  delete $8;
+	}
 	;
 	
 object_mods:
 	opt_pigment
-        opt_finish { $$ = ObjectMods_create( $1, $2); }
+        opt_finish {
+	  $$ = new ObjectMods;
+	  $$->pigment = $1;
+	  $$->finish = *$2;
+	  delete $2;
+	}
 
 opt_pigment:	/* empty */
                 { $$ = 
@@ -272,7 +286,8 @@ image:	KEY_IMAGE LBRACE KEY_PPM STRING RBRACE {
 	}
 	;
 
-opt_finish: { $$ = Finish_create( DIFFUSE_DEFAULT, REFLECTION_DEFAULT ); }
+opt_finish: { $$ = new Protracer::Finish(Protracer::Finish::DEFAULT_DIFFUSION,
+					 Protracer::Finish::DEFAULT_REFLECTION); }
         /* empty */
         | finish { $$ = $1; } 
 	;
@@ -281,10 +296,11 @@ finish:
 	KEY_FINISH LBRACE 
 	opt_diffuse
 	opt_reflection
-	RBRACE { $$ = Finish_create( $3, $4 ); }
+	RBRACE { $$ = new Protracer::Finish($3, $4); }
 	;
 
-opt_diffuse: 	{ $$ = DIFFUSE_DEFAULT; }		/* empty */
+opt_diffuse: 	{ $$ = Protracer::Finish::DEFAULT_DIFFUSION; }
+          /* empty */
         | diffuse { $$ = $1; }
         ;
 
@@ -292,7 +308,8 @@ diffuse:
         KEY_DIFFUSE number { $$ = $2; }
 	;
 
-opt_reflection:	 { $$ = REFLECTION_DEFAULT; }		/* empty */
+opt_reflection:	 { $$ = Protracer::Finish::DEFAULT_REFLECTION; }
+          /* empty */
         | reflection { $$ = $1; }
 	;
 

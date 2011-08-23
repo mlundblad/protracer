@@ -12,35 +12,32 @@ protracer_SOURCES=Bitmap.c \
 	constants.h \
 	Error.c \
 	Error.h \
-	Finish.c \
-	Finish.h \
+	finish.cc \
+	finish.h \
 	HitData.h \
 	lexer.ll \
 	light.cc \
 	light.h \
 	main.cc \
-	Object.c \
-	Object.h \
-	ObjectMods.c \
-	ObjectMods.h \
+	object.h \
 	parameters.cc \
 	parameters.h \
 	parser.yy \
 	Pigment.c \
 	Pigment.h \
-	Plane.c \
-	Plane.h \
+	plane.cc \
+	plane.h \
 	ppm_file.cc \
 	ppm_file.h \
 	Ray.c \
 	Ray.h \
 	Scalar.h \
-	Sphere.c \
-	Sphere.h \
+	sphere.cc \
+	sphere.h \
 	SphereOptions.c \
 	SphereOptions.h \
-	Triangle.c \
-	Triangle.h \
+	triangle.cc \
+	triangle.h \
 	util.cc \
 	util.h \
 	Vector.c \

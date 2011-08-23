@@ -22,21 +22,6 @@
 
 #include <string.h>
 
-#include "Vector.h"
-#include "Plane.h"
-#include "Sphere.h"
-#include "Triangle.h"
-#include "camera.h"
-
-#include "SphereOptions.h"
-#include "ObjectMods.h"
-#include "Finish.h"
-#include "Pigment.h"
-#include "Bitmap.h"
-
-#include "Object.h"
-
-/* WARNING DO NOT MOVE THIS INCLUDE BEFORE THE PREVIUOS!!! */
 #include "parser.h"
 
 #define YY_NO_UNPUT

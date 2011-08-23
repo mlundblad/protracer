@@ -29,7 +29,12 @@
 #include "Error.h"
 #include "world.h"
 
-#include "ObjectMods.h"
+
+#include "sphere.h"
+#include "plane.h"
+#include "triangle.h"
+
+#include "object.h"
 #include "Finish.h"
 #include "SphereOptions.h"
 
@@ -56,14 +61,14 @@ parse(FILE *input, const Protracer::Parameters& params)
     extern int yyparse();
 
     extern FILE        *yyin;
-    extern Protracer::Parameters  global_parameters;
-    extern std::vector<Object>  global_object_list; 
-    extern std::vector<Protracer::Light>   global_light_list;
-    extern Color       global_background;
-    extern Protracer::Camera      global_camera;
+    //extern Protracer::Parameters  global_parameters;
+    //extern std::vector<Protracer::Object*>  global_object_list; 
+    //extern std::vector<Protracer::Light>   global_light_list;
+    //extern Color       global_background;
+    //extern Protracer::Camera      global_camera;
 
     global_parameters = params;
-    global_object_list = std::vector<Object>();
+    global_object_list = std::vector<Protracer::Object*>();
     global_light_list = std::vector<Protracer::Light>();
 
     global_background = Protracer::DEFAULT_BACKGROUND;
