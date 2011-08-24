@@ -23,23 +23,12 @@
 #include <vector>
 
 #include "config.h"
-
 #include "Bitmap.h"
 #include "ppm_file.h"
 #include "Error.h"
 #include "world.h"
-
-
-#include "sphere.h"
-#include "plane.h"
-#include "triangle.h"
-
 #include "object.h"
-#include "Finish.h"
-#include "SphereOptions.h"
-
 #include "parameters.h"
-
 #include "light.h"
 #include "parser.h"
 #include "constants.h"
