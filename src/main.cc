@@ -47,15 +47,6 @@ static void print_version(void)
 Protracer::World
 parse(FILE *input, const Protracer::Parameters& params)
 {
-    extern int yyparse();
-
-    extern FILE        *yyin;
-    //extern Protracer::Parameters  global_parameters;
-    //extern std::vector<Protracer::Object*>  global_object_list; 
-    //extern std::vector<Protracer::Light>   global_light_list;
-    //extern Color       global_background;
-    //extern Protracer::Camera      global_camera;
-
     global_parameters = params;
     global_object_list = std::vector<Protracer::Object*>();
     global_light_list = std::vector<Protracer::Light>();

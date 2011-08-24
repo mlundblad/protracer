@@ -75,6 +75,9 @@ int yyerror(char *s);
 
 #include "parameters.h"
 
+  int yyparse();
+  extern FILE        *yyin;
+
   // global variables used by the parser
   extern Protracer::Parameters global_parameters;
   extern std::vector<Protracer::Object*> global_object_list;
