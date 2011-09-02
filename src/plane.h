@@ -23,8 +23,6 @@
 #include "HitData.h"
 #include "Vector.h"
 #include "Ray.h"
-#include "Pigment.h"
-#include "Finish.h"
 
 namespace Protracer {
 
