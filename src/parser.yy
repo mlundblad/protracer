@@ -67,7 +67,6 @@ int yyerror(char *s);
 #include "object.h"
 #include "light.h"
 
-#include "SphereOptions.h"
 #include "finish.h"
 #include "Pigment.h"
 #include "Bitmap.h"
@@ -90,6 +89,11 @@ int yyerror(char *s);
   struct ObjectMods {
     Pigment pigment;
     Protracer::Finish finish;
+  };
+
+  struct SphereOptions {
+    Vector pole;
+    Vector equator;
   };
 }
 
@@ -208,26 +212,24 @@ sphere:
 	KEY_SPHERE LBRACE vector COMMA number sphere_opt
 	object_mods
 	RBRACE {
-	  $$ = new Protracer::Sphere($3, $5, SphereOptions_pole($6), 
-				     SphereOptions_equator($6), 
+	  $$ = new Protracer::Sphere($3, $5, $6.pole, $6.equator, 
 				     $7->pigment, $7->finish);
+	  delete $6;
 	  delete $7;
 	}
 	;
 
 sphere_opt:   {
-  $$ = SphereOptions_create(
-	Vector_createFromCartesian(
+  $$ = {Vector_createFromCartesian(
           Protracer::Sphere::POLE_DEFAULT_X, 
 	  Protracer::Sphere::POLE_DEFAULT_Y,
 	  Protracer::Sphere::POLE_DEFAULT_Z), 
 	Vector_createFromCartesian(
 	  Protracer::Sphere::EQUATOR_DEFAULT_X,
 	  Protracer::Sphere::EQUATOR_DEFAULT_Y,
-	  Protracer::Sphere::EQUATOR_DEFAULT_Z) ); }
+	  Protracer::Sphere::EQUATOR_DEFAULT_Z)};}
 	|            
-           KEY_POLE vector KEY_EQUATOR vector { $$ = 
-                                                SphereOptions_create( $2, $4 );}
+	KEY_POLE vector KEY_EQUATOR vector { $$ = {$2, $4};}
 	;
 
 triangle:
