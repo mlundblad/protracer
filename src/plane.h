@@ -24,7 +24,7 @@
 #include "Vector.h"
 #include "Ray.h"
 #include "Pigment.h"
-#include "Finish.h"
+#include "finish.h"
 
 namespace Protracer {
 
