@@ -16,29 +16,19 @@
  *
  */
 
-#ifndef PLANE_H
-#define PLANE_H
+#ifndef PIGMENT_H
+#define PIGMENT_H
 
-#include "object.h"
-#include "HitData.h"
-#include "Vector.h"
-#include "Ray.h"
+#include "Color.h"
 
 namespace Protracer {
-
-  class Plane : public Object {
+  
+  class Pigment {
   public:
-    Plane(const Vector& normal, const Vector& point, const Pigment& pigment,
-	  const Finish& finish);
-
-    virtual HitData calculate_hit(const Ray& ray) const;
-
-  private:
-    Vector normal;
-    Vector point;
-    float d;
+    virtual bool is_uniform() const = 0;
+    virtual const Color& get_color() const = 0;
+    virtual const Color& get_color(float x, float y) const = 0;
   };
-
 }
 
-#endif //PLANE_H
+#endif // PIGMENT_H

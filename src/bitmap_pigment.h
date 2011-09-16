@@ -16,29 +16,27 @@
  *
  */
 
-#ifndef PLANE_H
-#define PLANE_H
+#ifndef BITMAP_PIGMENT_H
+#define BITMAP_PIGMENT_H
 
-#include "object.h"
-#include "HitData.h"
-#include "Vector.h"
-#include "Ray.h"
+#include "pigment.h"
+#include "Bitmap.h"
+#include "Color.h"
+
 
 namespace Protracer {
 
-  class Plane : public Object {
+  class BitmapPigment : public Pigment {
   public:
-    Plane(const Vector& normal, const Vector& point, const Pigment& pigment,
-	  const Finish& finish);
-
-    virtual HitData calculate_hit(const Ray& ray) const;
+    BitmapPigment(const Bitmap& b) : bitmap(b) {}
+    bool is_uniform() const { return false; }
+    Color& get_color() const { return Color(0,0,0); }
+    Color& get_color(float x, float y) const;
 
   private:
-    Vector normal;
-    Vector point;
-    float d;
+    Bitmap bitmap;
   };
 
 }
 
-#endif //PLANE_H
+#endif // BITMAP_PIGMENT_H

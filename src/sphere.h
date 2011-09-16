@@ -20,8 +20,6 @@
 #define SPHERE_H
 
 #include "Vector.h"
-#include "finish.h"
-#include "Pigment.h"
 #include "Ray.h"
 #include "HitData.h"
 #include "object.h"
