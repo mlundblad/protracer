@@ -21,7 +21,6 @@
 
 #include "object.h"
 #include "Vector.h"
-#include "Pigment.h"
 #include "HitData.h"
 #include "plane.h"
 #include "finish.h"
