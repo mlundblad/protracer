@@ -21,7 +21,7 @@
 namespace Protracer {
 
   Plane::Plane(const Vector& normal, const Vector& point,
-	       const Pigment& pigment, const Finish& finish) :
+	       Pigment* pigment, const Finish& finish) :
     Object(pigment, finish)
   {
     this->normal = Vector_normalize(normal);
@@ -41,7 +41,7 @@ namespace Protracer {
       if(t >= 0) {
 	Vector rn = vd < 0 ? normal : Vector_negate(normal);
 
-	return HitData_createHit(t, rn, Pigment_color(pigment));
+	return HitData_createHit(t, rn, pigment->get_color());
       }
     }
 

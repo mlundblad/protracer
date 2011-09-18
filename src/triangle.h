@@ -33,8 +33,9 @@ namespace Protracer {
     // if relative is true, c1 and c2 are taken to be vectors relative c0
     // forming two of the triangle's vertices
     Triangle(const Vector& c0, const Vector& c1, const Vector& c2,
-	     const Pigment& pigment, const Finish& finish,
+	     Pigment* pigment, const Finish& finish,
 	     bool relative = false);
+    ~Triangle();
 
     virtual HitData calculate_hit(const Ray& ray) const;
 

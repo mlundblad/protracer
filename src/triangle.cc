@@ -22,7 +22,7 @@
 namespace Protracer {
 
   Triangle::Triangle(const Vector& c0, const Vector& c1, const Vector& c2,
-	   const Pigment& pigment, const Finish& finish,
+	   Pigment* pigment, const Finish& finish,
 	   bool relative) :
     Object(pigment, finish),
     va(relative ? c1 : Vector_subtract(c1, c0)),
@@ -34,6 +34,12 @@ namespace Protracer {
     aa = Vector_dotProduct(va, va);
     bb = Vector_dotProduct(vb, vb);
     ab = Vector_dotProduct(va, vb);
+  }
+
+  Triangle::~Triangle()
+  {
+    // let the span plane delete the pigment
+    pigment = 0;
   }
 
   HitData
@@ -53,13 +59,8 @@ namespace Protracer {
 	float v = (Vector_dotProduct(q, vb) - u * ab) / bb;
 	
 	if (0 < v && v < 1 && u + v <= 1) {
-	  if (Pigment_type(pigment) == PIGMENT_BITMAP ) {
-	    Bitmap bitmap = Pigment_bitmap(pigment);
-	    HitData_setColor(hd, 
-			     Bitmap_colorAt(bitmap, 
-					    (Bitmap_width(bitmap ) - 1) * u,
-					    (Bitmap_height(bitmap ) -1 ) * v));
-	  }
+	  if (!pigment->is_uniform())
+	    HitData_setColor(hd, pigment->get_color(u, v));
 	  
 	  return hd;
 	}

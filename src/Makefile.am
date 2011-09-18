@@ -2,6 +2,8 @@ bin_PROGRAMS=protracer
 
 protracer_SOURCES=Bitmap.c \
 	Bitmap.h \
+	bitmap_pigment.cc \
+	bitmap_pigment.h \
 	Bool.h \
 	camera.cc \
 	camera.h \
@@ -9,6 +11,7 @@ protracer_SOURCES=Bitmap.c \
 	Color.h \
 	ColorOption.c \
 	ColorOption.h \
+	color_pigment.h \
 	constants.h \
 	Error.c \
 	Error.h \
@@ -23,8 +26,7 @@ protracer_SOURCES=Bitmap.c \
 	parameters.cc \
 	parameters.h \
 	parser.yy \
-	Pigment.c \
-	Pigment.h \
+	pigment.h \
 	plane.cc \
 	plane.h \
 	ppm_file.cc \

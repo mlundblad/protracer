@@ -37,7 +37,7 @@ namespace Protracer {
     static const float EQUATOR_DEFAULT_Z = 0.0f;
 
     Sphere(const Vector& center, float radius, const Vector& pole,
-	   const Vector& equator, const Pigment& pigment,
+	   const Vector& equator, Pigment* pigment,
 	   const Finish& finish);
 
     virtual HitData calculate_hit(const Ray& ray) const;
