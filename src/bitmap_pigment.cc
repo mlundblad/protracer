@@ -21,8 +21,8 @@
 
 namespace Protracer {
 
-  Color&
-  BitmapPigment::get_color(float x, float y) const
+  Color
+  BitmapPigment::get_color(float u, float v) const
   {
     return Bitmap_colorAt(bitmap, (Bitmap_width(bitmap) - 1) * u,
 			  (Bitmap_height(bitmap) - 1) * v);

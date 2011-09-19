@@ -28,7 +28,7 @@ namespace Protracer {
 
   class Plane : public Object {
   public:
-    Plane(const Vector& normal, const Vector& point, const Pigment& pigment,
+    Plane(const Vector& normal, const Vector& point, Pigment* pigment,
 	  const Finish& finish);
 
     virtual HitData calculate_hit(const Ray& ray) const;

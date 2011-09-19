@@ -16,27 +16,38 @@
  *
  */
 
-#ifndef BITMAP_PIGMENT_H
-#define BITMAP_PIGMENT_H
+#ifndef TRIANGLE_H
+#define TRIANGLE_H
 
-#include "pigment.h"
-#include "Bitmap.h"
-#include "Color.h"
-
+#include "object.h"
+#include "Vector.h"
+#include "HitData.h"
+#include "plane.h"
+#include "finish.h"
 
 namespace Protracer {
 
-  class BitmapPigment : public Pigment {
+  class Triangle : public Object {
   public:
-    BitmapPigment(const Bitmap& b) : bitmap(b) {}
-    bool is_uniform() const { return false; }
-    Color get_color() const { return Color_createFromRGB(0,0,0); }
-    Color get_color(float u, float v) const;
+    // if relative is true, c1 and c2 are taken to be vectors relative c0
+    // forming two of the triangle's vertices
+    Triangle(const Vector& c0, const Vector& c1, const Vector& c2,
+	     Pigment* pigment, const Finish& finish,
+	     bool relative = false);
+    ~Triangle();
+
+    virtual HitData calculate_hit(const Ray& ray) const;
 
   private:
-    Bitmap bitmap;
+    Vector t0;
+    Vector va;
+    Vector vb;
+    Plane span_plane;
+    float aa; // va dot va
+    float bb; // vb dot vb
+    float ab; // va dot vb
   };
 
 }
 
-#endif // BITMAP_PIGMENT_H
+#endif //TRIANGLE_H

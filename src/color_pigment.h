@@ -26,10 +26,14 @@ namespace Protracer {
   
   class ColorPigment : public Pigment {
   public:
+    static const unsigned char DEFAULT_RED   = 0; 
+    static const unsigned char DEFAULT_GREEN = 0; 
+    static const unsigned char DEFAULT_BLUE  = 0; 
+
     ColorPigment(const Color& c) : color(c) {}
     bool is_uniform() const { return true; }
-    Color& get_color() const { return color; }
-    Color& get_color(float x, float y) { return color; }
+    Color get_color() const { return color; }
+    Color get_color(float x, float y) const { return color; }
 
   private:
     Color color;

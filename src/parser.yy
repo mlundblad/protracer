@@ -32,7 +32,7 @@
 
 #include "SphereOptions.h"
 #include "finish.h"
-#include "Pigment.h"
+#include "pigment.h"
 #include "Bitmap.h"
 #include "ppm_file.h"
 
@@ -68,7 +68,9 @@ int yyerror(char *s);
 #include "light.h"
 
 #include "finish.h"
-#include "Pigment.h"
+#include "pigment.h"
+#include "bitmap_pigment.h"
+#include "color_pigment.h"
 #include "Bitmap.h"
 #include "ppm_file.h"
 
@@ -87,7 +89,7 @@ int yyerror(char *s);
 
   // internal structs used for parsing
   struct ObjectMods {
-    Pigment pigment;
+    Protracer::Pigment* pigment;
     Protracer::Finish finish;
   };
 
@@ -110,7 +112,7 @@ int yyerror(char *s);
   SphereOptions   sphereOptions;
   ObjectMods*  objectMods;
   Protracer::Finish*      finish;
-  Pigment     pigment;
+  Protracer::Pigment*     pigment;
   Bitmap      bitmap;
 };
 
@@ -269,18 +271,18 @@ object_mods:
 	}
 
 opt_pigment:	/* empty */
-                { $$ = 
-                  Pigment_createColor( Color_createFromRGB( PIGMENT_DEFAULT_RED,
-                                                            PIGMENT_DEFAULT_GREEN, 
-                                                            PIGMENT_DEFAULT_BLUE));
-                }
+{ $$ = new Protracer::ColorPigment(Color_createFromRGB(
+				   Protracer::ColorPigment::DEFAULT_RED,
+				   Protracer::ColorPigment::DEFAULT_GREEN, 
+				   Protracer::ColorPigment::DEFAULT_BLUE));
+}
           
-        | pigment { $$ = $1; }
-	;
+| pigment { $$ = $1; }
+;
 
 pigment:
-	KEY_PIGMENT LBRACE color RBRACE { $$ = Pigment_createColor( $3 );}
-      | KEY_PIGMENT LBRACE image RBRACE { $$ = Pigment_createBitmap( $3 ); }
+KEY_PIGMENT LBRACE color RBRACE { $$ = new Protracer::ColorPigment($3);}
+| KEY_PIGMENT LBRACE image RBRACE { $$ = new Protracer::BitmapPigment($3); }
 	;
 
                 

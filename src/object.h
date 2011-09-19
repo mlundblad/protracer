@@ -20,23 +20,25 @@
 #define OBJECT_H
 
 #include "finish.h"
-#include "Pigment.h"
+#include "pigment.h"
 #include "HitData.h"
 #include "Ray.h"
 
 namespace Protracer {
   class Object {
   public:
-    Object(const Pigment& pigment, const Finish& finish) :
+    Object(Pigment* pigment, const Finish& finish) :
       pigment(pigment), finish(finish) {}
+
+    virtual ~Object() { delete pigment; }
 
     virtual HitData calculate_hit(const Ray& ray) const = 0;
     const Finish& get_finish() const { return finish; }
-    const Pigment& get_pigment() const { return pigment; }
+    const Pigment& get_pigment() const { return *pigment; }
 
   protected:
     Finish finish;
-    Pigment pigment;
+    Pigment* pigment;
   };
 }
 

@@ -22,7 +22,7 @@
 namespace Protracer {
 
   Sphere::Sphere(const Vector& center, float radius, const Vector& pole,
-		 const Vector& equator, const Pigment& pigment,
+		 const Vector& equator, Pigment* pigment,
 		 const Finish& finish) :
     Object(pigment, finish)
   {
@@ -96,11 +96,9 @@ namespace Protracer {
     float phi,temp;
     float theta;
     float u,v; /* Coordinates in % of bitmap. */
-    Bitmap bitmap;
-    /*Color retColor;*/
 
-    if (Pigment_type(pigment) == PIGMENT_COLOR)
-      return Pigment_color(pigment);
+    if (pigment->is_uniform())
+      return pigment->get_color();
     
 
     phi = acos( -Vector_dotProduct(normal, pole));
@@ -120,21 +118,10 @@ namespace Protracer {
 	  theta : 1 - theta;
         
     }
-    
-    
-    
-    /* Ok, u and v are the % coordinates into the bitmap.
-       Lets return the correct color for the given point. */
-    bitmap = Pigment_bitmap(pigment);
-    
-    /*fprintf( stderr, "w: %d h: %d u: %f v: %f\n", Bitmap_width( bitmap ),
-      Bitmap_height( bitmap ),
-      u, v);*/
-    
-    return Bitmap_colorAt( bitmap, 
-                           (Bitmap_width( bitmap ) - 1) * u,
-                           (Bitmap_height( bitmap ) - 1) * v );
 
+    /* Ok, u and v are the % coordinates into the bitmap.
+       Lets return the correct color for the given point. */    
+    return pigment->get_color(u, v);
   }
 
 }
