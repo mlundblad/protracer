@@ -30,7 +30,6 @@
 #include "object.h"
 #include "light.h"
 
-#include "SphereOptions.h"
 #include "finish.h"
 #include "pigment.h"
 #include "Bitmap.h"
@@ -109,7 +108,7 @@ int yyerror(char *s);
   Protracer::Object*      object;
   Protracer::Camera*      camera;
   Color       color;
-  SphereOptions   sphereOptions;
+  SphereOptions*   sphereOptions;
   ObjectMods*  objectMods;
   Protracer::Finish*      finish;
   Protracer::Pigment*     pigment;
@@ -214,7 +213,7 @@ sphere:
 	KEY_SPHERE LBRACE vector COMMA number sphere_opt
 	object_mods
 	RBRACE {
-	  $$ = new Protracer::Sphere($3, $5, $6.pole, $6.equator, 
+	  $$ = new Protracer::Sphere($3, $5, $6->pole, $6->equator, 
 				     $7->pigment, $7->finish);
 	  delete $6;
 	  delete $7;
@@ -222,17 +221,21 @@ sphere:
 	;
 
 sphere_opt:   {
-  $$ = {Vector_createFromCartesian(
-          Protracer::Sphere::POLE_DEFAULT_X, 
-	  Protracer::Sphere::POLE_DEFAULT_Y,
-	  Protracer::Sphere::POLE_DEFAULT_Z), 
-	Vector_createFromCartesian(
-	  Protracer::Sphere::EQUATOR_DEFAULT_X,
-	  Protracer::Sphere::EQUATOR_DEFAULT_Y,
-	  Protracer::Sphere::EQUATOR_DEFAULT_Z)};}
-	|            
-	KEY_POLE vector KEY_EQUATOR vector { $$ = {$2, $4};}
-	;
+  $$ = new SphereOptions;
+  $$->pole = Vector_createFromCartesian(Protracer::Sphere::POLE_DEFAULT_X, 
+					Protracer::Sphere::POLE_DEFAULT_Y,
+					Protracer::Sphere::POLE_DEFAULT_Z);
+  $$->equator =
+    Vector_createFromCartesian(Protracer::Sphere::EQUATOR_DEFAULT_X,
+			       Protracer::Sphere::EQUATOR_DEFAULT_Y,
+			       Protracer::Sphere::EQUATOR_DEFAULT_Z); }
+  |            
+    KEY_POLE vector KEY_EQUATOR vector { 
+      $$ = new SphereOptions;
+      $$->pole = $2;
+      $$->equator = $4;
+    }
+    ;
 
 triangle:
 	KEY_TRIANGLE LBRACE

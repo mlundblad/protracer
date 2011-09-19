@@ -35,8 +35,6 @@ protracer_SOURCES=Bitmap.c \
 	Scalar.h \
 	sphere.cc \
 	sphere.h \
-	SphereOptions.c \
-	SphereOptions.h \
 	triangle.cc \
 	triangle.h \
 	util.cc \
