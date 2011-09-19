@@ -22,7 +22,7 @@
 #include "world.h"
 #include "util.h"
 #include "constants.h"
-#include "Ray.h"
+#include "ray.h"
 #include "object.h"
 
 namespace Protracer {
