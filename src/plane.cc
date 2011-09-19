@@ -35,7 +35,7 @@ namespace Protracer {
     float vd = Vector_dotProduct(normal, ray.get_direction());
     
     if (vd != 0) {
-      float v0 = d - Vector_dotProduct(normal, ray.get_direction());
+      float v0 = d - Vector_dotProduct(normal, ray.get_origin());
       float t = v0 / vd;
 
       if(t >= 0) {
