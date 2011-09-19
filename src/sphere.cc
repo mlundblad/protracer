@@ -48,10 +48,10 @@ namespace Protracer {
     
     /*oc = Vector_subtract( center,
                           Ray_origin( ray ));*/
-    l2oc = Vector_dotProduct(Vector_subtract(center, Ray_origin(ray)),
-			     Vector_subtract(center, Ray_origin(ray)));
-    tca = Vector_dotProduct(Vector_subtract(center, Ray_origin(ray)), 
-			    Ray_direction(ray));
+    l2oc = Vector_dotProduct(Vector_subtract(center, ray.get_origin()),
+			     Vector_subtract(center, ray.get_origin()));
+    tca = Vector_dotProduct(Vector_subtract(center, ray.get_origin()), 
+			    ray.get_direction());
     
     
     t2hc = radius_sqr - l2oc + tca * tca;
@@ -61,9 +61,9 @@ namespace Protracer {
 	if (tca + EPS >= 0 && t2hc >= 0 ) {
 	    distance = tca - sqrt( t2hc );
 	    
-	    tempVect = Vector_add( Ray_origin( ray ),
-				   Vector_multiply( distance,
-						    Ray_direction( ray ) ) );
+	    tempVect = Vector_add(ray.get_origin(),
+				  Vector_multiply(distance, 
+						  ray.get_direction()));
 	    
 	    tempVect = Vector_multiply(1.0 / radius,
 				       Vector_subtract(tempVect, center));
@@ -78,9 +78,9 @@ namespace Protracer {
     
     distance = tca + sqrt(t2hc);
     
-    tempVect = Vector_add(Ray_origin(ray),
-			   Vector_multiply(distance,
-					   Ray_direction(ray)));
+    tempVect = Vector_add(ray.get_origin(),
+			  Vector_multiply(distance,
+					  ray.get_direction()));
     
     tempVect = Vector_multiply(-1.0 / radius,
 			       Vector_subtract(tempVect, center));

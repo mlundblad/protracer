@@ -22,7 +22,7 @@
 #include "object.h"
 #include "HitData.h"
 #include "Vector.h"
-#include "Ray.h"
+#include "ray.h"
 
 namespace Protracer {
 

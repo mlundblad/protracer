@@ -31,8 +31,7 @@ protracer_SOURCES=Bitmap.c \
 	plane.h \
 	ppm_file.cc \
 	ppm_file.h \
-	Ray.c \
-	Ray.h \
+	ray.h \
 	Scalar.h \
 	sphere.cc \
 	sphere.h \

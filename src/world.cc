@@ -109,20 +109,19 @@ namespace Protracer {
   
 
     /* leastDistance is the distance to the nearest object hit */
-    hitPoint = Vector_add( Ray_origin( ray ),
-                           Vector_multiply(
-                               leastDistance,
-                               Ray_direction( ray ) ) );
-   
+    hitPoint = Vector_add(ray.get_origin(),
+			  Vector_multiply(leastDistance,
+					  ray.get_direction()));
+    
 
     if (no_shadow_no_reflection) {
       // Simulate the camera as a light source 
 
        return
 	 Color_shade(  
-		     HitData_color( nearestHit ),
-		     Util::shade_factor( Ray_origin( ray ), hitPoint,
-				  HitData_normal( nearestHit) ) );
+		     HitData_color(nearestHit),
+		     Util::shade_factor(ray.get_origin(), hitPoint,
+					HitData_normal(nearestHit)));
 
      } else {
 
@@ -131,13 +130,13 @@ namespace Protracer {
 	   it != lights.end() ; it++) {
 	const Light& l = *it;
 	
-	lightRay = Ray_create(Vector_add(hitPoint,
-					 Vector_multiply(EPS,
-							 HitData_normal(nearestHit))),
-			      Vector_subtract(l.get_position(),
-					      Vector_add(hitPoint,
-							 Vector_multiply(EPS,
-									 HitData_normal(nearestHit)))));
+	lightRay = Ray(Vector_add(hitPoint,
+				  Vector_multiply(EPS,
+						  HitData_normal(nearestHit))),
+		       Vector_subtract(l.get_position(),
+				       Vector_add(hitPoint,
+						  Vector_multiply(EPS,
+								  HitData_normal(nearestHit)))));
 
 
 	bool is_lit = true;
@@ -175,23 +174,19 @@ namespace Protracer {
 	 } else {
 	   /* calculate reflected ray */
 	   /* move EPS in the normal direction, to avoid rounding errors */
-	     reflRay = Ray_create( Vector_add( hitPoint,
-					       Vector_multiply( 
-						   EPS,
-						   HitData_normal(
-						       nearestHit ) ) ),
-				   Vector_subtract(
-				       Ray_direction( ray ),
-				       Vector_multiply( 
-					   2 *
-					   Vector_dotProduct(
+	   reflRay = Ray(Vector_add(hitPoint,
+				    Vector_multiply(EPS,
+						    HitData_normal(nearestHit))),
+			 Vector_subtract(ray.get_direction(),
+					 Vector_multiply(2 *
+							 Vector_dotProduct(
 					       HitData_normal( nearestHit ),
-					       Ray_direction( ray ) ) ,
-					   HitData_normal( nearestHit ) ) ) );
+					       ray.get_direction()) ,
+							 HitData_normal( nearestHit ) ) ) );
 
-	     refl_depth--;
-	     col = color_at_hit_point(x, y, reflRay, refl_depth,
-				      no_shadow_no_reflection);
+	   refl_depth--;
+	   col = color_at_hit_point(x, y, reflRay, refl_depth,
+				    no_shadow_no_reflection);
 
 	     return
 		 Color_combine( 
@@ -233,8 +228,7 @@ namespace Protracer {
 
 
 
-     ray = Ray_create( camera.get_location(), 
-		       rayDirection );
+     ray = Ray(camera.get_location(), rayDirection);
 
      Color c = color_at_hit_point(x, y, ray, refl_depth, no_shadow_no_reflection);
 

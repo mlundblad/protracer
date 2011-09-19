@@ -32,10 +32,10 @@ namespace Protracer {
   HitData
   Plane::calculate_hit(const Ray& ray) const
   {
-    scalar vd = Vector_dotProduct(normal, Ray_direction(ray));
+    float vd = Vector_dotProduct(normal, ray.get_direction());
     
     if (vd != 0) {
-      float v0 = d - Vector_dotProduct(normal, Ray_origin(ray));
+      float v0 = d - Vector_dotProduct(normal, ray.get_direction());
       float t = v0 / vd;
 
       if(t >= 0) {

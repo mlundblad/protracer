@@ -48,9 +48,9 @@ namespace Protracer {
     HitData hd = span_plane.calculate_hit(ray);
 
     if (HitData_hit(hd)) {
-      Vector ri = Vector_add(Ray_origin(ray),
+      Vector ri = Vector_add(ray.get_origin(),
 			     Vector_multiply(HitData_distance(hd),
-					     Ray_direction(ray)));
+					     ray.get_direction()));
       Vector q = Vector_subtract(ri, t0);
       float u = (bb * Vector_dotProduct(q, va) - 
 		 ab * Vector_dotProduct(q, vb)) / (aa * bb - ab * ab);

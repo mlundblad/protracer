@@ -16,30 +16,26 @@
  *
  */
 
-#ifndef OBJECT_H
-#define OBJECT_H
+#ifndef RAY_H
+#define RAY_H
 
-#include "finish.h"
-#include "pigment.h"
-#include "HitData.h"
-#include "ray.h"
+#include "Vector.h"
 
 namespace Protracer {
-  class Object {
+  
+  class Ray {
   public:
-    Object(Pigment* pigment, const Finish& finish) :
-      pigment(pigment), finish(finish) {}
+    Ray() {}
+    Ray(const Vector& origin, const Vector& direction) :
+      origin(origin), direction(Vector_normalize(direction)) {}
 
-    virtual ~Object() { delete pigment; }
+    const Vector& get_origin() const { return origin; }
+    const Vector& get_direction() const { return direction; }
 
-    virtual HitData calculate_hit(const Ray& ray) const = 0;
-    const Finish& get_finish() const { return finish; }
-    const Pigment& get_pigment() const { return *pigment; }
-
-  protected:
-    Finish finish;
-    Pigment* pigment;
+  private:
+    Vector origin;
+    Vector direction;
   };
 }
 
-#endif //OBJECT_H
+#endif //RAY_H
