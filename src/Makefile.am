@@ -17,7 +17,7 @@ protracer_SOURCES=Bitmap.c \
 	Error.h \
 	finish.cc \
 	finish.h \
-	HitData.h \
+	hit_calculation.h \
 	lexer.ll \
 	light.cc \
 	light.h \
@@ -39,8 +39,8 @@ protracer_SOURCES=Bitmap.c \
 	triangle.h \
 	util.cc \
 	util.h \
-	Vector.c \
-	Vector.h \
+	vector.cc \
+	vector.h \
 	world.cc \
 	world.h
 

@@ -26,9 +26,9 @@ namespace Protracer {
   {
     // default camera located at origo, looking in the positive z-direction
     // oriented with picture-wise up in the positive y-direction
-    this->location = Vector_createFromCartesian(0, 0, 0);
-    this->look_at = Vector_createFromCartesian(0, 0, 1);
-    this->up = Vector_createFromCartesian(0, 1, 0);
+    this->location = Vector(0, 0, 0);
+    this->look_at = Vector(0, 0, 1);
+    this->up = Vector(0, 1, 0);
     this->zoom = DEFAULT_ZOOM;
     this->world_width = DEFAULT_WORLD_WIDTH;
     this->world_height = DEFAULT_WORLD_HEIGHT;

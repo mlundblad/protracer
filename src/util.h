@@ -19,7 +19,7 @@
 #ifndef UTIL_H
 #define UTIL_H
 
-#include "Vector.h"
+#include "vector.h"
 
 namespace Protracer {
   namespace Util {

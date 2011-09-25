@@ -35,6 +35,8 @@ namespace Protracer {
     const Vector& get_normal() const { return normal; }
     const Color& get_color() const { return color; }
 
+    void set_color(const Color& c) { color = c; }
+
   private:
     bool hit;
     float distance;

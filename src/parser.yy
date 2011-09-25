@@ -21,7 +21,7 @@
  */
 
 #include <vector>
-#include "Vector.h"
+#include "vector.h"
 #include "plane.h"
 #include "sphere.h"
 #include "triangle.h"
@@ -57,7 +57,7 @@ int yyerror(char *s);
 #include <stdlib.h>
 #include <vector>
 
-#include "Vector.h"
+#include "vector.h"
 #include "plane.h"
 #include "sphere.h"
 #include "triangle.h"
@@ -93,15 +93,21 @@ int yyerror(char *s);
   };
 
   struct SphereOptions {
-    Vector pole;
-    Vector equator;
+    ~SphereOptions()
+    {
+      delete pole;
+      delete equator;
+    }
+
+    Protracer::Vector* pole;
+    Protracer::Vector* equator;
   };
 }
 
 %union {
   double	value;		        /* for numbers */
   char		*string;	/* for names */
-  Vector	vector;
+  Protracer::Vector*	vector;
   Protracer::Sphere*      sphere;
   Protracer::Triangle*    triangle;
   Protracer::Plane*       plane;
@@ -177,14 +183,15 @@ light:
 	KEY_LIGHT LBRACE
 	vector
 	RBRACE { /*printf("Light at "); Vector_print($3); printf("\n");*/
-	         global_light_list.push_back(Protracer::Light($3));
+	         global_light_list.push_back(Protracer::Light(*$3));
+		 delete $3;
 	       }
 	;
 
 vector:
 	LANGLE number COMMA
 	number COMMA number RANGLE { /*printf("Vector: %f %f %f\n", $2, $4, $6 );*/
-                                     $$ = Vector_createFromCartesian($2, $4, $6); }
+	  $$ = new Protracer::Vector($2, $4, $6); }
 	;
 
 plane:
@@ -192,8 +199,9 @@ plane:
 	vector COMMA number
 	object_mods
 	RBRACE {
-	  $$ = new Protracer::Plane($3, Vector_createFromCartesian(0, 0, $5), 
+	  $$ = new Protracer::Plane(*$3, Protracer::Vector(0, 0, $5), 
 				    $6->pigment, $6->finish);
+	  delete $3;
 	  delete $6;
 	}
         ;
@@ -204,7 +212,9 @@ plane:
 	vector COMMA vector
 	object_mods
 	RBRACE {
-	  $$ = new Protracer::Plane($5, $3, $6->pigment, $6->finish);
+	  $$ = new Protracer::Plane(*$5, *$3, $6->pigment, $6->finish);
+	  delete $3;
+	  delete $5;
 	  delete $6;
 	}
 	;
@@ -213,8 +223,9 @@ sphere:
 	KEY_SPHERE LBRACE vector COMMA number sphere_opt
 	object_mods
 	RBRACE {
-	  $$ = new Protracer::Sphere($3, $5, $6->pole, $6->equator, 
+	  $$ = new Protracer::Sphere(*$3, $5, *($6->pole), *($6->equator), 
 				     $7->pigment, $7->finish);
+	  delete $3;
 	  delete $6;
 	  delete $7;
 	}
@@ -222,13 +233,12 @@ sphere:
 
 sphere_opt:   {
   $$ = new SphereOptions;
-  $$->pole = Vector_createFromCartesian(Protracer::Sphere::POLE_DEFAULT_X, 
-					Protracer::Sphere::POLE_DEFAULT_Y,
-					Protracer::Sphere::POLE_DEFAULT_Z);
-  $$->equator =
-    Vector_createFromCartesian(Protracer::Sphere::EQUATOR_DEFAULT_X,
-			       Protracer::Sphere::EQUATOR_DEFAULT_Y,
-			       Protracer::Sphere::EQUATOR_DEFAULT_Z); }
+  $$->pole = new Protracer::Vector(Protracer::Sphere::POLE_DEFAULT_X, 
+				   Protracer::Sphere::POLE_DEFAULT_Y,
+				   Protracer::Sphere::POLE_DEFAULT_Z);
+  $$->equator = new Protracer::Vector(Protracer::Sphere::EQUATOR_DEFAULT_X,
+				      Protracer::Sphere::EQUATOR_DEFAULT_Y,
+				      Protracer::Sphere::EQUATOR_DEFAULT_Z); }
   |            
     KEY_POLE vector KEY_EQUATOR vector { 
       $$ = new SphereOptions;
@@ -244,7 +254,10 @@ triangle:
 	vector
 	object_mods
 	RBRACE { 
-	  $$ = new Protracer::Triangle($3, $5, $7, $8->pigment, $8->finish);
+	  $$ = new Protracer::Triangle(*$3, *$5, *$7, $8->pigment, $8->finish);
+	  delete $3;
+	  delete $5;
+	  delete $7;
 	  delete $8;
 	}
         ;
@@ -258,8 +271,11 @@ triangle:
 	vector
 	object_mods
 	RBRACE {
-	  $$ = new Protracer::Triangle($3, $5, $7, $8->pigment, $8->finish,
+	  $$ = new Protracer::Triangle(*$3, *$5, *$7, $8->pigment, $8->finish,
 				       true);
+	  delete $3;
+	  delete $5;
+	  delete $7;
 	  delete $8;
 	}
 	;
@@ -335,12 +351,12 @@ color:
                                                     $5 * COLOR_COMPONENT_MAX, 
                                                     $7 * COLOR_COMPONENT_MAX); }
 	|
-	KEY_COLOR KEY_RGB vector { $$ = Color_createFromRGB( Vector_x( $3 ) * 
-                                                             COLOR_COMPONENT_MAX,
-                                                             Vector_y( $3 ) * 
-                                                             COLOR_COMPONENT_MAX,
-                                                             Vector_z( $3 ) * 
-                                                             COLOR_COMPONENT_MAX); }
+	KEY_COLOR KEY_RGB vector {
+	  $$ = Color_createFromRGB($3->get_x() * COLOR_COMPONENT_MAX,
+	                           $3->get_y() * COLOR_COMPONENT_MAX,
+	                           $3->get_z() * COLOR_COMPONENT_MAX);
+          delete $3;
+	}
 	;
 
 camera:
@@ -350,13 +366,16 @@ camera:
 	KEY_LOOK vector
 	RBRACE { /*printf("Camera\n");*/
 	  global_camera =
-	    Protracer::Camera($4, $8, $6,
+	    Protracer::Camera(*$4, *$8, *$6,
 			      global_parameters.get_zoom(),
 			      global_parameters.get_world_width(),
 			      global_parameters.get_world_height(),
 			      global_parameters.get_pixel_width(),
 			      global_parameters.get_pixel_height());
-	  /*printf("camera created\n");*/ }
+	  delete $4;
+	  delete $6;
+	  delete $8;
+	}
 	;
 
 background:

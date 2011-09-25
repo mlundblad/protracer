@@ -29,65 +29,43 @@ namespace Protracer {
     this->center = center;
     this->radius = radius;
     this->radius_sqr = radius * radius;
-    this->pole = Vector_normalize(pole);
-    this->equator = Vector_normalize(equator);
+    this->pole = pole.normal();
+    this->equator = equator.normal();
   }
 
-  HitData
+  HitCalculation
   Sphere::calculate_hit(const Ray& ray) const
   {
-    /* Vector  oc;*/
     scalar  l2oc;
     scalar  tca;
     scalar  t2hc;
     scalar  distance;
     
-    /*Vector  ri;
-    Vector  rn;*/
     Vector  tempVect;
     
-    /*oc = Vector_subtract( center,
-                          Ray_origin( ray ));*/
-    l2oc = Vector_dotProduct(Vector_subtract(center, ray.get_origin()),
-			     Vector_subtract(center, ray.get_origin()));
-    tca = Vector_dotProduct(Vector_subtract(center, ray.get_origin()), 
-			    ray.get_direction());
-    
+    l2oc = (center - ray.get_origin()).dot(center - ray.get_origin());
+    tca = ray.get_direction().dot(center - ray.get_origin());
     
     t2hc = radius_sqr - l2oc + tca * tca;
-    
  
     if (!(l2oc < radius_sqr)) {
 	if (tca + EPS >= 0 && t2hc >= 0 ) {
-	    distance = tca - sqrt( t2hc );
-	    
-	    tempVect = Vector_add(ray.get_origin(),
-				  Vector_multiply(distance, 
-						  ray.get_direction()));
-	    
-	    tempVect = Vector_multiply(1.0 / radius,
-				       Vector_subtract(tempVect, center));
-	    
-	    return HitData_createHit(distance,
-				     tempVect, color_at(tempVect));
+	  distance = tca - sqrt( t2hc );
+	  tempVect = ray.get_origin() + distance * ray.get_direction();
+	  tempVect = 1.0 / radius * (tempVect - center);
 
+	  return HitCalculation(true, distance, tempVect, color_at(tempVect));
+	} else {
+	  return HitCalculation(false);
 	}
-	else
-	    return HitData_createNoHit();
     }
     
     distance = tca + sqrt(t2hc);
     
-    tempVect = Vector_add(ray.get_origin(),
-			  Vector_multiply(distance,
-					  ray.get_direction()));
+    tempVect = ray.get_origin() + distance * ray.get_direction();
+    tempVect = -1.0 / radius * (tempVect - center);
     
-    tempVect = Vector_multiply(-1.0 / radius,
-			       Vector_subtract(tempVect, center));
-    
-    
-    return HitData_createHit(distance,
-			     tempVect, color_at(tempVect));
+    return HitCalculation(true, distance, tempVect, color_at(tempVect));
   }
 
   Color
@@ -101,22 +79,19 @@ namespace Protracer {
       return pigment->get_color();
     
 
-    phi = acos( -Vector_dotProduct(normal, pole));
+    phi = acos(-normal.dot(pole));
     v = 1 - phi / M_PI;
      
     if ( v == 1.0 || v == 0.0 ) {
       u = 0.0;
     } else {
-        temp = Vector_dotProduct(normal, equator) / sin(phi);
+      temp = normal.dot(equator) / sin(phi);
         temp = temp > 1.0 ? 1.0 : temp;
 	temp = temp < -1.0 ? -1.0 : temp;
         
         theta = acos(temp) / (2*M_PI);
         
-        u = Vector_dotProduct(Vector_crossProduct(equator, pole),
-			      normal) > 0 ?
-	  theta : 1 - theta;
-        
+	u = normal.dot(equator * pole) > 0 ? theta : 1 - theta;
     }
 
     /* Ok, u and v are the % coordinates into the bitmap.

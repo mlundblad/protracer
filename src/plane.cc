@@ -24,28 +24,27 @@ namespace Protracer {
 	       Pigment* pigment, const Finish& finish) :
     Object(pigment, finish)
   {
-    this->normal = Vector_normalize(normal);
+    this->normal = normal.normal();
     this->point = point;
-    this->d = Vector_dotProduct(point, this->normal);
+    this->d = point.dot(this->normal);
   }
 
-  HitData
+  HitCalculation
   Plane::calculate_hit(const Ray& ray) const
   {
-    float vd = Vector_dotProduct(normal, ray.get_direction());
+    float vd = normal.dot(ray.get_direction());
     
     if (vd != 0) {
-      float v0 = d - Vector_dotProduct(normal, ray.get_origin());
+      float v0 = d - normal.dot(ray.get_origin());
       float t = v0 / vd;
 
       if(t >= 0) {
-	Vector rn = vd < 0 ? normal : Vector_negate(normal);
+	Vector rn = vd < 0 ? normal : -normal;
 
-	return HitData_createHit(t, rn, pigment->get_color());
+	return HitCalculation(true, t, rn, pigment->get_color());
       }
     }
 
-    return HitData_createNoHit();
+    return HitCalculation(false);
   }
-
 }

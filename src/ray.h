@@ -27,7 +27,7 @@ namespace Protracer {
   public:
     Ray() {}
     Ray(const Vector& origin, const Vector& direction) :
-      origin(origin), direction(Vector_normalize(direction)) {}
+      origin(origin), direction(direction.normal()) {}
 
     const Vector& get_origin() const { return origin; }
     const Vector& get_direction() const { return direction; }

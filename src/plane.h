@@ -20,8 +20,8 @@
 #define PLANE_H
 
 #include "object.h"
-#include "HitData.h"
-#include "Vector.h"
+#include "hit_calculation.h"
+#include "vector.h"
 #include "ray.h"
 
 namespace Protracer {
@@ -31,7 +31,7 @@ namespace Protracer {
     Plane(const Vector& normal, const Vector& point, Pigment* pigment,
 	  const Finish& finish);
 
-    virtual HitData calculate_hit(const Ray& ray) const;
+    virtual HitCalculation calculate_hit(const Ray& ray) const;
 
   private:
     Vector normal;

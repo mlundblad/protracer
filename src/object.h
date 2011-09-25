@@ -21,7 +21,7 @@
 
 #include "finish.h"
 #include "pigment.h"
-#include "HitData.h"
+#include "hit_calculation.h"
 #include "ray.h"
 
 namespace Protracer {
@@ -32,7 +32,7 @@ namespace Protracer {
 
     virtual ~Object() { delete pigment; }
 
-    virtual HitData calculate_hit(const Ray& ray) const = 0;
+    virtual HitCalculation calculate_hit(const Ray& ray) const = 0;
     const Finish& get_finish() const { return finish; }
     const Pigment& get_pigment() const { return *pigment; }
 

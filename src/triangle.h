@@ -20,8 +20,8 @@
 #define TRIANGLE_H
 
 #include "object.h"
-#include "Vector.h"
-#include "HitData.h"
+#include "vector.h"
+#include "hit_calculation.h"
 #include "plane.h"
 #include "finish.h"
 
@@ -36,7 +36,7 @@ namespace Protracer {
 	     bool relative = false);
     ~Triangle();
 
-    virtual HitData calculate_hit(const Ray& ray) const;
+    virtual HitCalculation calculate_hit(const Ray& ray) const;
 
   private:
     Vector t0;

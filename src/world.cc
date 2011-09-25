@@ -18,6 +18,7 @@
 
 #include <iostream>
 #include <vector>
+#include <math.h>
 
 #include "world.h"
 #include "util.h"
@@ -37,20 +38,23 @@ namespace Protracer {
     this->lights =     lights;
     this->objects =    objects;
     this->background = background;
-
-    c = Vector_normalize(Vector_subtract(camera.get_look_at(),
-					 camera.get_location()));
- 
-    this->c_right = Vector_normalize(Vector_crossProduct(camera.get_up(), c));
-    this->c_down = Vector_normalize(Vector_crossProduct(c_right, c));
-
     
+    c = (camera.get_look_at() - camera.get_location()).normal();
+
+    this->c_right = (camera.get_up() * c).normal();
+    this->c_down = (c_right * c).normal();
+
+    this->c_corner = cam.get_location() + 
+      (cam.get_zoom() * c) - (cam.get_world_width() / 2 * c_right +
+			      cam.get_world_height() / 2 * c_down);
+    /*
     this->c_corner = Vector_add(cam.get_location(), 
 				Vector_subtract(Vector_multiply(cam.get_zoom(), 
 								c),
 						Vector_add( 
 							   Vector_multiply(cam.get_world_width() / 2, c_right),
 							   Vector_multiply(cam.get_world_height() / 2, c_down))));
+    */
   }
 
   World::~World()
@@ -64,14 +68,15 @@ namespace Protracer {
   }
 
   Color
+
   World::color_at_hit_point(int x, int y, const Ray& ray, int refl_depth,
 			    bool no_shadow_no_reflection) const
   {
-    Vector      hitPoint;
+    Vector      hit_point;
 
     int         j;
     int         index = 0;
-    float      leastDistance = HUGE_VAL;
+    float      least_distance = HUGE_VAL;
 
     float      shade = 0.0;
     
@@ -82,8 +87,8 @@ namespace Protracer {
 
     Color       col;
 
-    HitData     hd;
-    HitData     nearestHit;
+    HitCalculation     hc;
+    HitCalculation     nearest_hit;
 
     Object* hit_object;
 
@@ -91,150 +96,107 @@ namespace Protracer {
 	it != objects.end() ; it++) {
       Object* o = *it;
 
-      hd = o->calculate_hit(ray);
+      hc = o->calculate_hit(ray);
 
-      if (HitData_hit(hd)) {
-	if (HitData_distance(hd) < leastDistance) {
-	  leastDistance = HitData_distance(hd);
-	  nearestHit = hd;
+      if (hc.is_hit()) {
+	if (hc.get_distance() < least_distance) {
+	  least_distance = hc.get_distance();
+	  nearest_hit = hc;
 	  hit_object = o;
 	}
       }
     }
 
-    //std::cerr << "least dist: " << leastDistance << std::endl;
-
-    if(leastDistance == HUGE_VAL)
+    if (least_distance == HUGE_VAL)
         return background;
-  
 
     /* leastDistance is the distance to the nearest object hit */
-    hitPoint = Vector_add(ray.get_origin(),
-			  Vector_multiply(leastDistance,
-					  ray.get_direction()));
-    
+    hit_point = ray.get_origin() + least_distance * ray.get_direction();
 
     if (no_shadow_no_reflection) {
       // Simulate the camera as a light source 
-
-       return
-	 Color_shade(  
-		     HitData_color(nearestHit),
-		     Util::shade_factor(ray.get_origin(), hitPoint,
-					HitData_normal(nearestHit)));
-
+      
+      return Color_shade(nearest_hit.get_color(),
+			 Util::shade_factor(ray.get_origin(), hit_point,
+					    nearest_hit.get_normal()));
      } else {
-
       /* iterate over light sources */
       for (std::vector<Light>::const_iterator it = lights.begin() ;
 	   it != lights.end() ; it++) {
 	const Light& l = *it;
 	
-	lightRay = Ray(Vector_add(hitPoint,
-				  Vector_multiply(EPS,
-						  HitData_normal(nearestHit))),
-		       Vector_subtract(l.get_position(),
-				       Vector_add(hitPoint,
-						  Vector_multiply(EPS,
-								  HitData_normal(nearestHit)))));
-
-
+	Ray light_ray = Ray(hit_point + EPS * nearest_hit.get_normal(),
+			       l.get_position() -
+			       (hit_point + EPS * nearest_hit.get_normal()));
 	bool is_lit = true;
+
 	for (std::vector<Object*>::const_iterator it = objects.begin() ;
 	     it != objects.end() && is_lit ; it++) {
 	  Object* o = *it;
 	  
-	  hd = o->calculate_hit(lightRay);
+	  hc = o->calculate_hit(light_ray);
 	  
-	  if (HitData_hit(hd)) {
-	    if (HitData_distance(hd) < 
-		Vector_length(Vector_subtract(l.get_position(), hitPoint)))
-		       is_lit = false;
+	  if (hc.is_hit()) {
+	    if (hc.get_distance() < (l.get_position() - hit_point).length())
+	      is_lit = false;
 	  }
 	}
-
-	//std::cerr << "is lit: " << isLit << std::endl;
 
 	if (is_lit) {
 	  shade += 
 	    Util::shade_factor(l.get_position(),
-			       hitPoint, 
-			       HitData_normal(nearestHit));
+			       hit_point, 
+			       nearest_hit.get_normal());
 	}
       }
 
-
-	 /* Base case: don't take reflection into acount, 
-	    but shade the accumulated light from light sources */
-	 if (refl_depth == 0) {
-	   return
-	     Color_shade( HitData_color( nearestHit ),
-			  shade *
-			  hit_object->get_finish().get_diffusion());
-	 } else {
-	   /* calculate reflected ray */
-	   /* move EPS in the normal direction, to avoid rounding errors */
-	   reflRay = Ray(Vector_add(hitPoint,
-				    Vector_multiply(EPS,
-						    HitData_normal(nearestHit))),
-			 Vector_subtract(ray.get_direction(),
-					 Vector_multiply(2 *
-							 Vector_dotProduct(
-					       HitData_normal( nearestHit ),
-					       ray.get_direction()) ,
-							 HitData_normal( nearestHit ) ) ) );
-
-	   refl_depth--;
-	   col = color_at_hit_point(x, y, reflRay, refl_depth,
-				    no_shadow_no_reflection);
-
-	     return
-		 Color_combine( 
-		     Color_shade(
-			 col,
-			 hit_object->get_finish().get_reflection()),
-		     Color_shade( 
-			 HitData_color( nearestHit ),
-			 shade *
-			 hit_object->get_finish().get_diffusion()));
-	 }
-
-     }    
-
+      
+      /* Base case: don't take reflection into acount, 
+	 but shade the accumulated light from light sources */
+      if (refl_depth == 0) {
+	return
+	  Color_shade(nearest_hit.get_color(),
+		      shade *
+		      hit_object->get_finish().get_diffusion());
+      } else {
+	/* calculate reflected ray */
+	/* move EPS in the normal direction, to avoid rounding errors */
+	Ray refl_ray = Ray(hit_point + EPS * nearest_hit.get_normal(),
+			   ray.get_direction() -
+			   2 * nearest_hit.get_normal().dot(ray.get_direction())
+			   * nearest_hit.get_normal());
+	
+	refl_depth--;
+	col = color_at_hit_point(x, y, refl_ray, refl_depth,
+				 no_shadow_no_reflection);
+	
+	return
+	  Color_combine( 
+			Color_shade(col,
+				    hit_object->get_finish().get_reflection()),
+			Color_shade(nearest_hit.get_color(),
+				    shade *
+				    hit_object->get_finish().get_diffusion()));
+      } 
+    }
    }
 
    Color
    World::color_of_pixel(int x, int y, int refl_depth,
 			 bool no_shadow_no_reflection) const
    {
-     Ray ray;
-     Vector rayDirection;
+     float ww = camera.get_world_width();
+     unsigned int pw = camera.get_pixel_width();
+     float wh = camera.get_world_height();
+     unsigned int ph = camera.get_pixel_height();
+     Vector ray_direction =
+       (ww / pw * x * c_right + wh / ph * y * c_down +
+	c_corner - camera.get_location()).normal();
 
-     rayDirection = 
-	 Vector_normalize( 
-	     Vector_subtract( 
-		 Vector_add( 
-		     Vector_add( 
-				Vector_multiply( ( camera.get_world_width() /  
-						   camera.get_pixel_width() ) 
-					  * x, 
-					  c_right),
-				Vector_multiply( ( camera.get_world_height() / 
-						   camera.get_pixel_height() ) * y, 
-					  c_down) ),
-		     c_corner), 
-		 camera.get_location()));
-
-
-
-
-     ray = Ray(camera.get_location(), rayDirection);
+     Ray ray = Ray(camera.get_location(), ray_direction);
 
      Color c = color_at_hit_point(x, y, ray, refl_depth, no_shadow_no_reflection);
 
-     /*std::cerr << "col: r = " << int(Color_red(c)) 
-	      << ", g = " << int(Color_green(c)) 
-	      << ", b = " << int(Color_blue(c)) << std::endl;*/
 
     return c;
   }

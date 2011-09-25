@@ -25,6 +25,10 @@ namespace Protracer {
     Vector() : x(0), y(0), z(0) {}
     Vector(float x, float y, float z) : x(x), y(y), z(z) {}
 
+    float get_x() const { return x; }
+    float get_y() const { return y; }
+    float get_z() const { return z; }    
+
     Vector& operator=(const Vector& u);
 
     float dot(const Vector& u) const;

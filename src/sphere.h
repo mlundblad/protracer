@@ -19,9 +19,8 @@
 #ifndef SPHERE_H
 #define SPHERE_H
 
-#include "Vector.h"
+#include "vector.h"
 #include "ray.h"
-#include "HitData.h"
 #include "object.h"
 
 namespace Protracer {
@@ -40,7 +39,7 @@ namespace Protracer {
 	   const Vector& equator, Pigment* pigment,
 	   const Finish& finish);
 
-    virtual HitData calculate_hit(const Ray& ray) const;
+    virtual HitCalculation calculate_hit(const Ray& ray) const;
 
   private:
     Vector center;

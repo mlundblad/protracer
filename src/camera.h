@@ -19,7 +19,7 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "Vector.h"
+#include "vector.h"
 
 namespace Protracer {
 

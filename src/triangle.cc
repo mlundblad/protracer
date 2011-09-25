@@ -25,15 +25,14 @@ namespace Protracer {
 	   Pigment* pigment, const Finish& finish,
 	   bool relative) :
     Object(pigment, finish),
-    va(relative ? c1 : Vector_subtract(c1, c0)),
-    vb(relative ? c2 : Vector_subtract(c2, c0)),
-    span_plane(Vector_normalize(Vector_crossProduct(va, vb)), c0, pigment,
-	       finish)
+    va(relative ? c1 : c1 - c0),
+    vb(relative ? c2 : c2 - c0),
+    span_plane((va * vb).normal(), c0, pigment, finish)
   {
     t0 = c0;
-    aa = Vector_dotProduct(va, va);
-    bb = Vector_dotProduct(vb, vb);
-    ab = Vector_dotProduct(va, vb);
+    aa = va.dot(va);
+    bb = vb.dot(vb);
+    ab = va.dot(vb);
   }
 
   Triangle::~Triangle()
@@ -42,32 +41,30 @@ namespace Protracer {
     pigment = 0;
   }
 
-  HitData
+  HitCalculation
   Triangle::calculate_hit(const Ray& ray) const
   {
-    HitData hd = span_plane.calculate_hit(ray);
+    HitCalculation hc = span_plane.calculate_hit(ray);
 
-    if (HitData_hit(hd)) {
-      Vector ri = Vector_add(ray.get_origin(),
-			     Vector_multiply(HitData_distance(hd),
-					     ray.get_direction()));
-      Vector q = Vector_subtract(ri, t0);
-      float u = (bb * Vector_dotProduct(q, va) - 
-		 ab * Vector_dotProduct(q, vb)) / (aa * bb - ab * ab);
+    if (hc.is_hit()) {
+      Vector ri = ray.get_origin() + hc.get_distance() * ray.get_direction(); 
+      Vector q = ri - t0;
+
+      float u = (bb * q.dot(va) - ab * q.dot(vb)) / (aa * bb - ab * ab);
       
       if (0 < u && u < 1) {
-	float v = (Vector_dotProduct(q, vb) - u * ab) / bb;
+	float v = (q.dot(vb) - u * ab) / bb;
 	
 	if (0 < v && v < 1 && u + v <= 1) {
 	  if (!pigment->is_uniform())
-	    HitData_setColor(hd, pigment->get_color(u, v));
-	  
-	  return hd;
+	    hc.set_color(pigment->get_color(u, v));
+
+	  return hc;
 	}
       }
     }
 
-    return HitData_createNoHit();
+    return HitCalculation(false);
   }
 
 }
