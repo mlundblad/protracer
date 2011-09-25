@@ -23,7 +23,7 @@
 
 #include "camera.h"
 #include "Color.h"
-#include "Vector.h"
+#include "vector.h"
 #include "object.h"
 #include "light.h"
 

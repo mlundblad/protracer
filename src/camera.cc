@@ -19,7 +19,7 @@
 #include "camera.h"
 
 #include "constants.h"
-#include "Vector.h"
+#include "vector.h"
 
 namespace Protracer {
   Camera::Camera()

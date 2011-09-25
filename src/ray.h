@@ -19,7 +19,7 @@
 #ifndef RAY_H
 #define RAY_H
 
-#include "Vector.h"
+#include "vector.h"
 
 namespace Protracer {
   
