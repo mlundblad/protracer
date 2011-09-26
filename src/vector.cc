@@ -61,12 +61,6 @@ namespace Protracer {
     return Vector(x * s, y * s, z * s);
   }
 
-  float
-  Vector::length() const
-  {
-    return sqrt(x * x + y * y + z * z);
-  }
-
   Vector
   Vector::normal() const
   {

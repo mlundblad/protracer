@@ -19,6 +19,8 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
+#include <math.h>
+
 namespace Protracer {
   class Vector {
   public:
@@ -38,7 +40,7 @@ namespace Protracer {
     Vector operator-(const Vector& u) const;
     Vector operator*(float s) const;
 
-    float length() const;
+    float length() const { return sqrt(x * x + y * y + z * z); }
     Vector normal() const;
     
   private:

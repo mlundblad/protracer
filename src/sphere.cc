@@ -41,20 +41,20 @@ namespace Protracer {
     scalar  t2hc;
     scalar  distance;
     
-    Vector  tempVect;
-    
-    l2oc = (center - ray.get_origin()).dot(center - ray.get_origin());
-    tca = ray.get_direction().dot(center - ray.get_origin());
+    Vector cmo = center - ray.get_origin();
+
+    l2oc = cmo.dot(cmo);
+    tca = cmo.dot(ray.get_direction());
     
     t2hc = radius_sqr - l2oc + tca * tca;
  
     if (!(l2oc < radius_sqr)) {
 	if (tca + EPS >= 0 && t2hc >= 0 ) {
 	  distance = tca - sqrt( t2hc );
-	  tempVect = ray.get_origin() + distance * ray.get_direction();
-	  tempVect = 1.0 / radius * (tempVect - center);
+	  Vector temp = ray.get_origin() + distance * ray.get_direction();
+	  temp = 1.0 / radius * (temp - center);
 
-	  return HitCalculation(true, distance, tempVect, color_at(tempVect));
+	  return HitCalculation(true, distance, temp, color_at(temp));
 	} else {
 	  return HitCalculation(false);
 	}
@@ -62,10 +62,10 @@ namespace Protracer {
     
     distance = tca + sqrt(t2hc);
     
-    tempVect = ray.get_origin() + distance * ray.get_direction();
-    tempVect = -1.0 / radius * (tempVect - center);
+    Vector temp = ray.get_origin() + distance * ray.get_direction();
+    temp = -1.0 / radius * (temp - center);
     
-    return HitCalculation(true, distance, tempVect, color_at(tempVect));
+    return HitCalculation(true, distance, temp, color_at(temp));
   }
 
   Color
@@ -77,21 +77,18 @@ namespace Protracer {
 
     if (pigment->is_uniform())
       return pigment->get_color();
-    
 
-    phi = acos(-normal.dot(pole));
+    phi = acos(-(normal.dot(pole)));
     v = 1 - phi / M_PI;
-     
+
     if ( v == 1.0 || v == 0.0 ) {
       u = 0.0;
     } else {
       temp = normal.dot(equator) / sin(phi);
-        temp = temp > 1.0 ? 1.0 : temp;
-	temp = temp < -1.0 ? -1.0 : temp;
-        
-        theta = acos(temp) / (2*M_PI);
-        
-	u = normal.dot(equator * pole) > 0 ? theta : 1 - theta;
+      temp = temp > 1.0 ? 1.0 : temp;
+      temp = temp < -1.0 ? -1.0 : temp; 
+      theta = acos(temp) / (2*M_PI);
+      u = (equator * pole).dot(normal) > 0 ? theta : 1 - theta;
     }
 
     /* Ok, u and v are the % coordinates into the bitmap.
