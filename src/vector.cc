@@ -31,12 +31,6 @@ namespace Protracer {
     return *this;
   }
 
-  float
-  Vector::dot(const Vector& u) const
-  {
-    return x * u.x + y * u.y + z * u.z;
-  }
-
   Vector
   Vector::operator*(const Vector& u) const
   {
