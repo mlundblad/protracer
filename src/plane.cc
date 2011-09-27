@@ -39,7 +39,7 @@ namespace Protracer {
       float t = v0 / vd;
 
       if(t >= 0) {
-	Vector rn = vd < 0 ? normal : Vector(-normal);
+	Vector rn = (vd < 0 ? 1.0 : -1.0) * normal;
 
 	return HitCalculation(true, t, rn, pigment->get_color());
       }
