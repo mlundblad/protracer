@@ -34,10 +34,9 @@ namespace Protracer {
   Vector
   Vector::normal() const
   {
-    const Vector& v = *this;
-    float len = length();
+    float len_inv = 1.0 / length();
 
-    return v * (1.0 / len);
+    return Vector(len_inv * x, len_inv * y, len_inv * z);
   }
 
 }
