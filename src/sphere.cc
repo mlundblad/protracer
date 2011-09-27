@@ -49,17 +49,17 @@ namespace Protracer {
     t2hc = radius_sqr - l2oc + tca * tca;
  
     if (!(l2oc < radius_sqr)) {
-	if (tca + EPS >= 0 && t2hc >= 0 ) {
-	  distance = tca - sqrt( t2hc );
-	  Vector temp = ray.get_origin() + distance * ray.get_direction();
-	  temp = 1.0 / radius * (temp - center);
-
-	  return HitCalculation(true, distance, temp, color_at(temp));
-	} else {
-	  return HitCalculation(false);
-	}
+      if (tca + EPS >= 0 && t2hc >= 0 ) {
+	distance = tca - sqrt( t2hc );
+	Vector temp = ray.get_origin() + distance * ray.get_direction();
+	temp = 1.0 / radius * (temp - center);
+	
+	return HitCalculation(true, distance, temp, color_at(temp));
+      } else {
+	return HitCalculation(false);
+      }
     }
-    
+
     distance = tca + sqrt(t2hc);
     
     Vector temp = ray.get_origin() + distance * ray.get_direction();
