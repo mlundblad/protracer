@@ -39,10 +39,10 @@ namespace Protracer {
     this->objects =    objects;
     this->background = background;
     
-    c = (camera.get_look_at() - camera.get_location()).normal();
+    c = Vector(camera.get_look_at() - camera.get_location()).normal();
 
-    this->c_right = (camera.get_up() * c).normal();
-    this->c_down = (c_right * c).normal();
+    this->c_right = Vector(camera.get_up() * c).normal();
+    this->c_down = Vector(c_right * c).normal();
 
     this->c_corner = cam.get_location() + 
       (cam.get_zoom() * c) - (cam.get_world_width() / 2 * c_right +
@@ -137,7 +137,8 @@ namespace Protracer {
 	  hc = o->calculate_hit(light_ray);
 	  
 	  if (hc.is_hit()) {
-	    if (hc.get_distance() < (l.get_position() - hit_point).length())
+	    if (hc.get_distance() <
+		Vector(l.get_position() - hit_point).length())
 	      is_lit = false;
 	  }
 	}
@@ -190,7 +191,7 @@ namespace Protracer {
      float wh = camera.get_world_height();
      unsigned int ph = camera.get_pixel_height();
      Vector ray_direction =
-       (ww / pw * x * c_right + wh / ph * y * c_down +
+       Vector(ww / pw * x * c_right + wh / ph * y * c_down +
 	c_corner - camera.get_location()).normal();
 
      Ray ray = Ray(camera.get_location(), ray_direction);

@@ -32,48 +32,12 @@ namespace Protracer {
   }
 
   Vector
-  Vector::operator*(const Vector& u) const
-  {
-    return Vector(y * u.z - z * u.y, z * u.x - x * u.z, x * u.y - y * u.x);
-  }
-
-  Vector
-  Vector::operator-() const
-  {
-    return Vector(-x, -y, -z);
-  }
-
-  Vector
-  Vector::operator+(const Vector& u) const
-  {
-    return Vector(x + u.x, y + u.y, z + u.z);
-  }
-
-  Vector
-  Vector::operator-(const Vector& u) const
-  {
-    return Vector(x - u.x, y - u.y, z - u.z);
-  }
-
-  Vector
-  Vector::operator*(float s) const
-  {
-    return Vector(x * s, y * s, z * s);
-  }
-
-  Vector
   Vector::normal() const
   {
     const Vector& v = *this;
     float len = length();
 
     return v * (1.0 / len);
-  }
-
-  Vector
-  operator*(float s, const Vector& v)
-  {
-    return v * s;
   }
 
 }

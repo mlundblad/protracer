@@ -27,7 +27,7 @@ namespace Protracer {
     Object(pigment, finish),
     va(relative ? c1 : c1 - c0),
     vb(relative ? c2 : c2 - c0),
-    span_plane((va * vb).normal(), c0, pigment, finish)
+    span_plane(Vector(va * vb).normal(), c0, pigment, finish)
   {
     t0 = c0;
     aa = va.dot(va);

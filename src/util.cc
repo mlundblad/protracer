@@ -27,7 +27,7 @@ namespace Protracer {
   Util::shade_factor(const Vector& l0, const Vector& ri, const Vector& rn)
   {
     Vector t1 = ri + EPS * rn; 
-    Vector t2 = (l0 - t1).normal();
+    Vector t2 = Vector(l0 - t1).normal();
 
     return std::fabs(rn.dot(t2));
   }
