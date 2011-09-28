@@ -72,22 +72,14 @@ namespace Protracer {
   World::color_at_hit_point(int x, int y, const Ray& ray, int refl_depth,
 			    bool no_shadow_no_reflection) const
   {
-    Vector      hit_point;
-
     int         j;
     int         index = 0;
     float      least_distance = HUGE_VAL;
-
     float      shade = 0.0;
-    
-    Ray         reflRay;
-    Ray         lightRay;
-
     bool        isLit;
 
     Color       col;
 
-    HitCalculation     hc;
     HitCalculation     nearest_hit;
 
     Object* hit_object;
@@ -96,7 +88,7 @@ namespace Protracer {
 	it != objects.end() ; it++) {
       Object* o = *it;
 
-      hc = o->calculate_hit(ray);
+      HitCalculation hc = o->calculate_hit(ray);
 
       if (hc.is_hit()) {
 	if (hc.get_distance() < least_distance) {
@@ -111,7 +103,7 @@ namespace Protracer {
         return background;
 
     /* leastDistance is the distance to the nearest object hit */
-    hit_point = ray.get_origin() + least_distance * ray.get_direction();
+    Vector hit_point = ray.get_origin() + least_distance * ray.get_direction();
 
     if (no_shadow_no_reflection) {
       // Simulate the camera as a light source 
@@ -134,7 +126,7 @@ namespace Protracer {
 	     it != objects.end() && is_lit ; it++) {
 	  Object* o = *it;
 	  
-	  hc = o->calculate_hit(light_ray);
+	  HitCalculation hc = o->calculate_hit(light_ray);
 	  
 	  if (hc.is_hit()) {
 	    if (hc.get_distance() <
