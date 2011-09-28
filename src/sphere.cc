@@ -36,21 +36,15 @@ namespace Protracer {
   HitCalculation
   Sphere::calculate_hit(const Ray& ray) const
   {
-    scalar  l2oc;
-    scalar  tca;
-    scalar  t2hc;
-    scalar  distance;
-    
     Vector cmo = center - ray.get_origin();
 
-    l2oc = cmo.dot(cmo);
-    tca = cmo.dot(ray.get_direction());
-    
-    t2hc = radius_sqr - l2oc + tca * tca;
+    float l2oc = cmo.dot(cmo);
+    float tca = cmo.dot(ray.get_direction());
+    float t2hc = radius_sqr - l2oc + tca * tca;
  
     if (!(l2oc < radius_sqr)) {
       if (tca + EPS >= 0 && t2hc >= 0 ) {
-	distance = tca - sqrt( t2hc );
+	float distance = tca - sqrt( t2hc );
 	Vector temp = ray.get_origin() + distance * ray.get_direction();
 	temp = 1.0 / radius * (temp - center);
 	
@@ -60,7 +54,7 @@ namespace Protracer {
       }
     }
 
-    distance = tca + sqrt(t2hc);
+    float distance = tca + sqrt(t2hc);
     
     Vector temp = ray.get_origin() + distance * ray.get_direction();
     temp = -1.0 / radius * (temp - center);
