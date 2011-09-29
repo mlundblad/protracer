@@ -16,28 +16,37 @@
  *
  */
 
-#ifndef BITMAP_PIGMENT_H
-#define BITMAP_PIGMENT_H
+#ifndef BITMAP_H
+#define BITMAP_H
 
-#include "pigment.h"
-#include "bitmap.h"
 #include "Color.h"
 
-
 namespace Protracer {
-
-  class BitmapPigment : public Pigment {
+  
+  class Bitmap {
   public:
-    BitmapPigment(Bitmap* b) : bitmap(b) {}
-    ~BitmapPigment();
-    bool is_uniform() const { return false; }
-    Color get_color() const { return Color_createFromRGB(0,0,0); }
-    Color get_color(float u, float v) const;
+    Bitmap(unsigned int width, unsigned int height);
+    ~Bitmap();
+
+    unsigned int get_width() const { return width; }
+    unsigned int get_height() const { return height; }
+
+    const Color& operator() (unsigned int x, unsigned int y) const
+    {
+      return pixels[x + y * width];
+    }
+
+    Color& operator() (unsigned int x, unsigned int y)
+    {
+      return pixels[x + y * width];
+    }
 
   private:
-    Bitmap* bitmap;
+    unsigned int width;
+    unsigned int height;
+    Color* pixels;
   };
 
 }
 
-#endif // BITMAP_PIGMENT_H
+#endif //BITMAP_H

@@ -51,7 +51,7 @@ namespace Protracer {
   {
     int  i = 0;
     int  c;
-    bool doneWS = FALSE;
+    bool doneWS = false;
 
     c = fgetc(file);
 
@@ -72,7 +72,7 @@ namespace Protracer {
 	  }        
 
         if(!isspace(c) && c != (int)'#')
-	  doneWS = TRUE;
+	  doneWS = true;
       }
 
     /* parse data */
@@ -125,13 +125,12 @@ namespace Protracer {
       fclose(file);
   }
 
-  Bitmap
+  Bitmap*
   PPMFile::read_bitmap()
   {
     Mode         mode = PPM_ASCII; /* unnesesary, but "chokes" a warning */
     unsigned int    width, height, depth;
     char            temp[256];  /* some temp. storage */
-    Bitmap          bm;
 
     /* read PPM-header */
 
@@ -159,7 +158,7 @@ namespace Protracer {
     depth = strtol(temp, NULL, 10);
 
     
-    bm = Bitmap_create(width, height);
+    Bitmap* bm = new Bitmap(width, height);
 
     if (mode == PPM_ASCII) {
         for(int y = 0 ; y < height ; y++) {
@@ -178,7 +177,7 @@ namespace Protracer {
                 Color col = Color_createFromRGB(red, green, blue);
                 /*ERROR_PRINT_DEBUG("Color created");*/
                 fprintf(stderr, "x: %d y: %d\n", x, y);
-                Bitmap_setColorAt(bm, col, x, y);
+                (*bm)(x, y) =  col;
                 /*ERROR_PRINT_DEBUG("Pixel set in bitmap");*/
 
             }
@@ -197,7 +196,7 @@ namespace Protracer {
 		throw new Exception("Unable to read from PPM file");
 	      
 	      Color col = Color_createFromRGB(red, green, blue);
-	      Bitmap_setColorAt(bm, col, x, y);
+	      (*bm)(x, y) = col;
             }
         }
     }
@@ -208,8 +207,8 @@ namespace Protracer {
   void
   PPMFile::write_bitmap(const Bitmap& bitmap)
   {
-    int             width =  Bitmap_width(bitmap);
-    int             height = Bitmap_height(bitmap);
+    int width = bitmap.get_width();
+    int height = bitmap.get_height();
     Color_component temp;
     
     if (mode == PPM_ASCII) {
@@ -225,21 +224,21 @@ namespace Protracer {
     
     fprintf(file, "%d %d\n", width, height);
     fprintf(file, "%d\n", MAX_COLOR_VALUE);
-
+    
     if (mode == PPM_ASCII) {
-        for (int y = 0 ; y < height ; y++) {
-            for (int x = 0 ; x < width ; x++) {
-                Color col = Bitmap_colorAt(bitmap, x, y);
-                if (fprintf(file, "%d %d %d\n", Color_red(col),
-                                                    Color_green(col),
-                                                    Color_blue(col)  ) == EOF)
-		  throw new Exception("Unable to write to PPM file");
-            }
-        }
+      for (int y = 0 ; y < height ; y++) {
+	for (int x = 0 ; x < width ; x++) {
+	  Color col = bitmap(x, y);
+	  if (fprintf(file, "%d %d %d\n", Color_red(col),
+		      Color_green(col),
+		      Color_blue(col)  ) == EOF)
+	    throw new Exception("Unable to write to PPM file");
+	}
+      }
     } else /*binary*/ {
       for (int y = 0 ; y < height ; y++) {
 	for(int x = 0 ; x < width ; x++) {
-	  Color col = Bitmap_colorAt(bitmap, x, y);
+	  Color col = bitmap(x, y);
 	  Color_component temp = Color_red(col);
           
 	  if (fwrite(&temp, 1, sizeof(Color_component), file) == 0)

@@ -1,7 +1,7 @@
 bin_PROGRAMS=protracer
 
-protracer_SOURCES=Bitmap.c \
-	Bitmap.h \
+protracer_SOURCES=bitmap.cc \
+	bitmap.h \
 	bitmap_pigment.cc \
 	bitmap_pigment.h \
 	Bool.h \

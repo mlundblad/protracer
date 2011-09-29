@@ -32,7 +32,7 @@
 
 #include "finish.h"
 #include "pigment.h"
-#include "Bitmap.h"
+#include "bitmap.h"
 #include "ppm_file.h"
 
 #include "parameters.h"
@@ -70,7 +70,7 @@ int yyerror(char *s);
 #include "pigment.h"
 #include "bitmap_pigment.h"
 #include "color_pigment.h"
-#include "Bitmap.h"
+#include "bitmap.h"
 #include "ppm_file.h"
 
 #include "parameters.h"
@@ -118,7 +118,7 @@ int yyerror(char *s);
   ObjectMods*  objectMods;
   Protracer::Finish*      finish;
   Protracer::Pigment*     pigment;
-  Bitmap      bitmap;
+  Protracer::Bitmap*      bitmap;
 };
 
 %start scene

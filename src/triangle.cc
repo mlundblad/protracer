@@ -17,7 +17,6 @@
  */
 
 #include "triangle.h"
-#include "Bitmap.h"
 
 namespace Protracer {
 

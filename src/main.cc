@@ -23,7 +23,7 @@
 #include <vector>
 
 #include "config.h"
-#include "Bitmap.h"
+#include "bitmap.h"
 #include "ppm_file.h"
 #include "Error.h"
 #include "world.h"
@@ -65,23 +65,21 @@ parse(FILE *input, const Protracer::Parameters& params)
 }
 
 void
-trace(const Protracer::World& w, Bitmap& bitmap, int xpix, int ypix,
+trace(const Protracer::World& w, Protracer::Bitmap& bitmap, int xpix, int ypix,
       int reflectionDepth, bool no_shadow_no_reflection, bool quiet)
 {
-    int x,y;
-    
-    for (y = 0 ; y < ypix ; y++ ) {
-        for (x = 0 ; x < xpix ; x++ ) {
-            Bitmap_setColorAt(bitmap, w.color_of_pixel(x, y,
-						       reflectionDepth,
-						       no_shadow_no_reflection),
-			      x, y);
-        }
-	if (!quiet)
-	  std::cerr << (int)((float)y/(float)ypix * 100) << "%\r";
+  int x,y;
+  
+  for (y = 0 ; y < ypix ; y++ ) {
+    for (x = 0 ; x < xpix ; x++ ) {
+      bitmap(x, y) = w.color_of_pixel(x, y, reflectionDepth,
+				      no_shadow_no_reflection);
     }
+    if (!quiet)
+      std::cerr << (int)((float)y/(float)ypix * 100) << "%\r";
+  }
 }
-     
+
 static void usage(void)
 {
   std::cerr << "   usage: " << PACKAGE << " [options] [input file]" 
@@ -145,9 +143,8 @@ int main(int argc, char **argv)
     char        numFlagsSet = 0;
     long        errflg = 0;
     long        reflectionDepth = 5;
-    bool        quiet = FALSE;
+    bool        quiet = false;
 
-    Bitmap      result;
     Protracer::PPMFile     ppm_out;
     std::string out_file;
     FILE        *in_file;
@@ -232,7 +229,7 @@ int main(int argc, char **argv)
 		exit(0);
 		break;
 	    case 'q':
-	        quiet = TRUE;
+	        quiet = true;
 		break;
 	}
     }
@@ -276,7 +273,8 @@ int main(int argc, char **argv)
  
     /* Start the tracing */
     
-    result = Bitmap_create(xpix, ypix);
+    Protracer::Bitmap result = Protracer::Bitmap(xpix, ypix);
+
     trace(the_world, result, xpix, ypix, reflectionDepth,
 	  no_shadow_no_reflection, quiet);
 

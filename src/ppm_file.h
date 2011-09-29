@@ -22,7 +22,7 @@
 #include <string>
 #include <stdio.h>
 
-#include "Bitmap.h"
+#include "bitmap.h"
 
 namespace Protracer {
 
@@ -48,7 +48,7 @@ namespace Protracer {
 
     void close();
 
-    Bitmap read_bitmap();
+    Bitmap* read_bitmap();
     void write_bitmap(const Bitmap& bitmap);
     
 

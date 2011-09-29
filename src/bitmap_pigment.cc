@@ -17,15 +17,20 @@
  */
 
 #include "bitmap_pigment.h"
-#include "Bitmap.h"
+#include "bitmap.h"
 
 namespace Protracer {
+
+  BitmapPigment::~BitmapPigment()
+  {
+    delete bitmap;
+  }
 
   Color
   BitmapPigment::get_color(float u, float v) const
   {
-    return Bitmap_colorAt(bitmap, (Bitmap_width(bitmap) - 1) * u,
-			  (Bitmap_height(bitmap) - 1) * v);
+    return (*bitmap)((bitmap->get_width() - 1) * u,
+		   (bitmap->get_height() - 1) * v);
   }
 
 }
