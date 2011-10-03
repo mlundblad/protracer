@@ -26,7 +26,7 @@
 #include "sphere.h"
 #include "triangle.h"
 #include "camera.h"
-#include "Color.h"
+#include "color.h"
 #include "object.h"
 #include "light.h"
 
@@ -40,7 +40,7 @@
   Protracer::Parameters global_parameters;
   std::vector<Protracer::Object*> global_object_list;
   std::vector<Protracer::Light> global_light_list;
-  Color      global_background;
+  Protracer::Color      global_background;
   Protracer::Camera     global_camera;
   Protracer::PPMFile    global_image_file;
 
@@ -62,7 +62,7 @@ int yyerror(char *s);
 #include "sphere.h"
 #include "triangle.h"
 #include "camera.h"
-#include "Color.h"
+#include "color.h"
 #include "object.h"
 #include "light.h"
 
@@ -82,7 +82,7 @@ int yyerror(char *s);
   extern Protracer::Parameters global_parameters;
   extern std::vector<Protracer::Object*> global_object_list;
   extern std::vector<Protracer::Light> global_light_list;
-  extern Color      global_background;
+  extern Protracer::Color      global_background;
   extern Protracer::Camera     global_camera;
   extern Protracer::PPMFile    global_image_file;
 
@@ -113,7 +113,7 @@ int yyerror(char *s);
   Protracer::Plane*       plane;
   Protracer::Object*      object;
   Protracer::Camera*      camera;
-  Color       color;
+  Protracer::Color*       color;
   SphereOptions*   sphereOptions;
   ObjectMods*  objectMods;
   Protracer::Finish*      finish;
@@ -290,9 +290,9 @@ object_mods:
 	}
 
 opt_pigment:	/* empty */
-{ $$ = new Protracer::ColorPigment(Color_createFromRGB(
+{ $$ = new Protracer::ColorPigment(Protracer::Color(
 				   Protracer::ColorPigment::DEFAULT_RED,
-				   Protracer::ColorPigment::DEFAULT_GREEN, 
+				   Protracer::ColorPigment::DEFAULT_GREEN,
 				   Protracer::ColorPigment::DEFAULT_BLUE));
 }
           
@@ -300,7 +300,10 @@ opt_pigment:	/* empty */
 ;
 
 pigment:
-KEY_PIGMENT LBRACE color RBRACE { $$ = new Protracer::ColorPigment($3);}
+KEY_PIGMENT LBRACE color RBRACE {
+  $$ = new Protracer::ColorPigment(*$3);
+  delete $3;
+}
 | KEY_PIGMENT LBRACE image RBRACE { $$ = new Protracer::BitmapPigment($3); }
 	;
 
@@ -347,14 +350,19 @@ color:
 	KEY_COLOR
 	KEY_RED number
 	KEY_GREEN number
-	KEY_BLUE number { $$ = Color_createFromRGB( $3 * COLOR_COMPONENT_MAX, 
-                                                    $5 * COLOR_COMPONENT_MAX, 
-                                                    $7 * COLOR_COMPONENT_MAX); }
+	KEY_BLUE number {
+	  $$ = new Protracer::Color($3 * Protracer::Color::COMPONENT_MAX, 
+				    $5 * Protracer::Color::COMPONENT_MAX, 
+				    $7 * Protracer::Color::COMPONENT_MAX);
+	}
 	|
 	KEY_COLOR KEY_RGB vector {
-	  $$ = Color_createFromRGB($3->get_x() * COLOR_COMPONENT_MAX,
-	                           $3->get_y() * COLOR_COMPONENT_MAX,
-	                           $3->get_z() * COLOR_COMPONENT_MAX);
+	  $$ = new Protracer::Color($3->get_x() *
+				    Protracer::Color::COMPONENT_MAX,
+				    $3->get_y() *
+				    Protracer::Color::COMPONENT_MAX,
+				    $3->get_z() *
+				    Protracer::Color::COMPONENT_MAX);
           delete $3;
 	}
 	;
@@ -381,8 +389,10 @@ camera:
 background:
 	KEY_BACKGROUND LBRACE
 	color
-	RBRACE { /*printf("Background\n"); */
-                 global_background = $3; }
+	RBRACE {
+	  global_background = *$3;
+	  delete $3;
+	}
 	;
 
 number:

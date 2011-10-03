@@ -7,10 +7,7 @@ protracer_SOURCES=bitmap.cc \
 	Bool.h \
 	camera.cc \
 	camera.h \
-	Color.c \
-	Color.h \
-	ColorOption.c \
-	ColorOption.h \
+	color.h \
 	color_pigment.h \
 	constants.h \
 	Error.c \

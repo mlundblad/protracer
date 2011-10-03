@@ -19,7 +19,7 @@
 #ifndef BITMAP_H
 #define BITMAP_H
 
-#include "Color.h"
+#include "color.h"
 
 namespace Protracer {
   

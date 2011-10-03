@@ -20,7 +20,7 @@
 #define COLOR_PIGMENT_H
 
 #include "pigment.h"
-#include "Color.h"
+#include "color.h"
 
 namespace Protracer {
   

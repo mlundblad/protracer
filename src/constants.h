@@ -19,11 +19,11 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
-#include "Color.h"
+#include "color.h"
 
 namespace Protracer {
   const float EPS = 0.001;
-  const Color DEFAULT_BACKGROUND = Color_createFromRGB(0, 0, 0);
+  const Color DEFAULT_BACKGROUND = Color(0, 0, 0);
   const float DEFAULT_ZOOM = 1.0f;
   const float DEFAULT_WORLD_WIDTH = 1.0f;
   const float DEFAULT_WORLD_HEIGHT = 1.0f;

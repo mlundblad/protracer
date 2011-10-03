@@ -165,37 +165,32 @@ namespace Protracer {
             for(int x = 0 ; x < width ; x++) {
                 /*ERROR_PRINT_DEBUG(temp);*/
                 skip_ws_and_read_until_ws(file, temp);
-                Color_component red = strtol(temp, NULL, 10);
+                unsigned char red = strtol(temp, NULL, 10);
                 
                 skip_ws_and_read_until_ws(file, temp);
-                Color_component green = strtol(temp, NULL, 10);
+                unsigned char green = strtol(temp, NULL, 10);
                 
                 skip_ws_and_read_until_ws(file, temp);
-                Color_component blue = strtol(temp, NULL, 10);
+                unsigned char blue = strtol(temp, NULL, 10);
                 
-                /*ERROR_PRINT_DEBUG("One pixel read");*/
-                Color col = Color_createFromRGB(red, green, blue);
-                /*ERROR_PRINT_DEBUG("Color created");*/
-                fprintf(stderr, "x: %d y: %d\n", x, y);
+                Color col = Color(red, green, blue);
                 (*bm)(x, y) =  col;
-                /*ERROR_PRINT_DEBUG("Pixel set in bitmap");*/
-
             }
         }
     } else {
         for (int y = 0 ; y < height ; y++) {
             for(int x = 0 ; x < width ; x++) {
-	      Color_component red, green, blue;
-	      if (fread(&red, 1, sizeof(Color_component), file) == 0)
+	      unsigned char red, green, blue;
+	      if (fread(&red, 1, sizeof(unsigned char), file) == 0)
 		throw new Exception("Unable to read from PPM file");
 	      
-	      if(fread(&green, 1, sizeof(Color_component), file) == 0)
+	      if(fread(&green, 1, sizeof(unsigned char), file) == 0)
 		throw new Exception("Unable to read from PPM file");
 	      
-	      if(fread(&blue, 1, sizeof(Color_component), file) == 0)
+	      if(fread(&blue, 1, sizeof(unsigned char), file) == 0)
 		throw new Exception("Unable to read from PPM file");
 	      
-	      Color col = Color_createFromRGB(red, green, blue);
+	      Color col = Color(red, green, blue);
 	      (*bm)(x, y) = col;
             }
         }
@@ -209,7 +204,7 @@ namespace Protracer {
   {
     int width = bitmap.get_width();
     int height = bitmap.get_height();
-    Color_component temp;
+    unsigned char temp;
     
     if (mode == PPM_ASCII) {
       fprintf(file, "%s\n", MAGIC_ASCII.c_str());
@@ -229,9 +224,10 @@ namespace Protracer {
       for (int y = 0 ; y < height ; y++) {
 	for (int x = 0 ; x < width ; x++) {
 	  Color col = bitmap(x, y);
-	  if (fprintf(file, "%d %d %d\n", Color_red(col),
-		      Color_green(col),
-		      Color_blue(col)  ) == EOF)
+	  if (fprintf(file, "%d %d %d\n",
+		      col.get_red(),
+		      col.get_green(),
+		      col.get_blue()) == EOF)
 	    throw new Exception("Unable to write to PPM file");
 	}
       }
@@ -239,17 +235,17 @@ namespace Protracer {
       for (int y = 0 ; y < height ; y++) {
 	for(int x = 0 ; x < width ; x++) {
 	  Color col = bitmap(x, y);
-	  Color_component temp = Color_red(col);
+	  unsigned char temp = col.get_red();
           
-	  if (fwrite(&temp, 1, sizeof(Color_component), file) == 0)
+	  if (fwrite(&temp, 1, sizeof(unsigned char), file) == 0)
 	    throw new Exception("Unable to write to PPM file");
 	  
-	  temp = Color_green(col);
-	  if (fwrite(&temp, 1, sizeof(Color_component), file) == 0)
+	  temp = col.get_green();
+	  if (fwrite(&temp, 1, sizeof(unsigned char), file) == 0)
 	    throw new Exception("Unable to write to file");
 	  
-	  temp = Color_blue(col);
-	  if (fwrite(&temp, 1, sizeof(Color_component), file) == 0)
+	  temp = col.get_blue();
+	  if (fwrite(&temp, 1, sizeof(unsigned char), file) == 0)
 	    throw new Exception("Unable to write to file");
 	}
       }

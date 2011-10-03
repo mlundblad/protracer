@@ -108,9 +108,10 @@ namespace Protracer {
     if (no_shadow_no_reflection) {
       // Simulate the camera as a light source 
       
-      return Color_shade(nearest_hit.get_color(),
-			 Util::shade_factor(ray.get_origin(), hit_point,
-					    nearest_hit.get_normal()));
+      return nearest_hit.get_color() * 
+	Util::shade_factor(ray.get_origin(),
+			   hit_point,
+			   nearest_hit.get_normal());
      } else {
       /* iterate over light sources */
       for (std::vector<Light>::const_iterator it = lights.begin() ;
@@ -147,10 +148,8 @@ namespace Protracer {
       /* Base case: don't take reflection into acount, 
 	 but shade the accumulated light from light sources */
       if (refl_depth == 0) {
-	return
-	  Color_shade(nearest_hit.get_color(),
-		      shade *
-		      hit_object->get_finish().get_diffusion());
+	return nearest_hit.get_color() *
+	  shade * hit_object->get_finish().get_diffusion();
       } else {
 	/* calculate reflected ray */
 	/* move EPS in the normal direction, to avoid rounding errors */
@@ -163,13 +162,9 @@ namespace Protracer {
 	col = color_at_hit_point(x, y, refl_ray, refl_depth,
 				 no_shadow_no_reflection);
 	
-	return
-	  Color_combine( 
-			Color_shade(col,
-				    hit_object->get_finish().get_reflection()),
-			Color_shade(nearest_hit.get_color(),
-				    shade *
-				    hit_object->get_finish().get_diffusion()));
+	return col * hit_object->get_finish().get_reflection() +
+	  nearest_hit.get_color() * shade *
+	  hit_object->get_finish().get_diffusion();
       } 
     }
    }
@@ -188,10 +183,10 @@ namespace Protracer {
 
      Ray ray = Ray(camera.get_location(), ray_direction);
 
-     Color c = color_at_hit_point(x, y, ray, refl_depth, no_shadow_no_reflection);
+     Color c = color_at_hit_point(x, y, ray, refl_depth,
+				  no_shadow_no_reflection);
 
-
-    return c;
-  }
+     return c;
+   }
 }
 

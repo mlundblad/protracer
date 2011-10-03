@@ -19,7 +19,7 @@
 #ifndef HIT_CALCULATION_H
 #define HIT_CALCULATION_H
 
-#include "Color.h"
+#include "color.h"
 #include "vector.h"
 
 namespace Protracer {

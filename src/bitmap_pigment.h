@@ -21,7 +21,7 @@
 
 #include "pigment.h"
 #include "bitmap.h"
-#include "Color.h"
+#include "color.h"
 
 
 namespace Protracer {
@@ -31,7 +31,7 @@ namespace Protracer {
     BitmapPigment(Bitmap* b) : bitmap(b) {}
     ~BitmapPigment();
     bool is_uniform() const { return false; }
-    Color get_color() const { return Color_createFromRGB(0,0,0); }
+    Color get_color() const { return Color(0,0,0); }
     Color get_color(float u, float v) const;
 
   private:
