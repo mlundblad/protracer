@@ -10,8 +10,6 @@ protracer_SOURCES=bitmap.cc \
 	color.h \
 	color_pigment.h \
 	constants.h \
-	Error.c \
-	Error.h \
 	finish.cc \
 	finish.h \
 	hit_calculation.h \

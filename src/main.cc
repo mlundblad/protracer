@@ -25,7 +25,6 @@
 #include "config.h"
 #include "bitmap.h"
 #include "ppm_file.h"
-#include "Error.h"
 #include "world.h"
 #include "object.h"
 #include "parameters.h"
