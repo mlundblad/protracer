@@ -29,7 +29,6 @@ protracer_SOURCES=bitmap.cc \
 	ppm_file.cc \
 	ppm_file.h \
 	ray.h \
-	Scalar.h \
 	sphere.cc \
 	sphere.h \
 	triangle.cc \
