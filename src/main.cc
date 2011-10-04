@@ -38,7 +38,7 @@
 #define WIDTH_MASK 0x4
 #define HEIGHT_MASK 0x8
 
-static void print_version(void)
+static void print_version()
 {
   std::cerr << PACKAGE << " " << VERSION << std::endl;
 }
@@ -79,7 +79,7 @@ trace(const Protracer::World& w, Protracer::Bitmap& bitmap, int xpix, int ypix,
   }
 }
 
-static void usage(void)
+static void usage()
 {
   std::cerr << "   usage: " << PACKAGE << " [options] [input file]" 
 	    << std::endl
@@ -121,7 +121,7 @@ static void usage(void)
 }
 
 static void
-usage_and_exit(void)
+usage_and_exit()
 {
   usage();
   exit(-1);
