@@ -31,6 +31,7 @@
 #include "light.h"
 #include "parser.h"
 #include "constants.h"
+#include "exception.h"
 
 
 #define XPIX_MASK 0x1
@@ -280,12 +281,17 @@ int main(int argc, char **argv)
     if (!quiet)
       std::cerr << "100%- done!" << std::endl;
 
-    if (out_file != "")
-      ppm_out.open_out(out_file, Protracer::PPMFile::PPM_BINARY);
-    else
-      ppm_out.open_stdout(Protracer::PPMFile::PPM_BINARY);
+    try {
+      if (out_file != "")
+	ppm_out.open_out(out_file, Protracer::PPMFile::PPM_BINARY);
+      else
+	ppm_out.open_stdout(Protracer::PPMFile::PPM_BINARY);
+      
+      ppm_out.write_bitmap(result);
+    } catch (Protracer::Exception* e) {
+      std::cerr << "Error occured: " << e->what() << std::endl;
+      return -1;
+    }
 
-    ppm_out.write_bitmap(result);
-    
     return 0;
 }
