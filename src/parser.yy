@@ -21,6 +21,7 @@
  */
 
 #include <vector>
+#include <iostream>
 #include "vector.h"
 #include "plane.h"
 #include "sphere.h"
@@ -402,12 +403,13 @@ number:
 %%
 
 int
-yyerror(char *s) {
-  fprintf(stderr, "** line %d:%s\n", linecount, s);
+yyerror(char *s)
+{
+  std::cerr << "** line " << linecount << ":" << s << std::endl;
   return 1;
 }
 
 int 
 yywrap() {
-	return 1;
+  return 1;
 }
