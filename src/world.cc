@@ -47,14 +47,6 @@ namespace Protracer {
     this->c_corner = cam.get_location() + 
       (cam.get_zoom() * c) - (cam.get_world_width() / 2 * c_right +
 			      cam.get_world_height() / 2 * c_down);
-    /*
-    this->c_corner = Vector_add(cam.get_location(), 
-				Vector_subtract(Vector_multiply(cam.get_zoom(), 
-								c),
-						Vector_add( 
-							   Vector_multiply(cam.get_world_width() / 2, c_right),
-							   Vector_multiply(cam.get_world_height() / 2, c_down))));
-    */
   }
 
   World::~World()

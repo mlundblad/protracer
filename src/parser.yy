@@ -182,15 +182,15 @@ item:
 light:
 	KEY_LIGHT LBRACE
 	vector
-	RBRACE { /*printf("Light at "); Vector_print($3); printf("\n");*/
-	         global_light_list.push_back(Protracer::Light(*$3));
-		 delete $3;
-	       }
+	RBRACE {
+	  global_light_list.push_back(Protracer::Light(*$3));
+	  delete $3;
+	}
 	;
 
 vector:
 	LANGLE number COMMA
-	number COMMA number RANGLE { /*printf("Vector: %f %f %f\n", $2, $4, $6 );*/
+	number COMMA number RANGLE {
 	  $$ = new Protracer::Vector($2, $4, $6); }
 	;
 
