@@ -139,10 +139,10 @@ int main(int argc, char **argv)
     long        ypix = Protracer::DEFAULT_PIXEL_HEIGHT;
     float       width = Protracer::DEFAULT_WORLD_WIDTH;
     float       height = Protracer::DEFAULT_WORLD_HEIGHT;
-    char        flagsSet = 0;
-    char        numFlagsSet = 0;
+    char        flags_set = 0;
+    char        num_flags_set = 0;
     long        errflg = 0;
-    long        reflectionDepth = 5;
+    long        reflection_depth = 5;
     bool        quiet = false;
 
     Protracer::PPMFile     ppm_out;
@@ -175,47 +175,47 @@ int main(int argc, char **argv)
 	        if (!optarg)
 		  usage_and_exit();
 
-                reflectionDepth = atol( optarg );
+		reflection_depth = atol( optarg );
                 break;
 	    case 'z':
 	        if (!optarg)
 		  usage_and_exit();
 
 		zoom = atof( optarg );
-                break;		
+                break;	
 	    case 'x':
 	        if (!optarg)
 		  usage_and_exit();
 
 		xpix = atol( optarg );
-		flagsSet |= XPIX_MASK;
-		numFlagsSet++;
-                break;		
+		flags_set |= XPIX_MASK;
+		num_flags_set++;
+                break;	
 	    case 'y':
 	        if (!optarg)
 		  usage_and_exit();
 
 		ypix = atol( optarg );
-		flagsSet |= YPIX_MASK;
-		numFlagsSet++;
-                break;		
+		flags_set |= YPIX_MASK;
+		num_flags_set++;
+                break;	
 	    case 'w':
 	        if (!optarg)
 		  usage_and_exit();
 
 		width = atof( optarg );
-		flagsSet |= WIDTH_MASK;
-		numFlagsSet++;
-                break;		
+		flags_set |= WIDTH_MASK;
+		num_flags_set++;
+                break;	
 	    case 'h':
 	        if (!optarg)
 		  usage_and_exit();
 
 		height = atof( optarg );
-		flagsSet |= HEIGHT_MASK;
-		numFlagsSet++;
+		flags_set |= HEIGHT_MASK;
+		num_flags_set++;
                 break;
-	    case 'o':
+            case 'o':
 	        if (!optarg)
 		  usage_and_exit();
 
@@ -234,25 +234,23 @@ int main(int argc, char **argv)
 	}
     }
     
-    if( errflg > 0 ) /* Any errors in commandline? */
-    {
+    if (errflg > 0) {
       usage();
       exit(0);
     }
     
     /* Check if only three args, if so calculate the last one. */
-    if( numFlagsSet == 3 )
-    {
-	if (!(flagsSet & XPIX_MASK)) {
+    if (num_flags_set == 3) {
+	if (!(flags_set & XPIX_MASK)) {
 	    xpix = width / height * ypix;
 	    std::cerr << "Calculated xpix = " << xpix << std::endl;
-	} else if (!(flagsSet & YPIX_MASK)) {
+	} else if (!(flags_set & YPIX_MASK)) {
 	    ypix = height / width * xpix;
 	    std::cerr << "Calculated ypix = " << ypix << std::endl;
-	} else if (!(flagsSet & WIDTH_MASK)) {
+	} else if (!(flags_set & WIDTH_MASK)) {
 	    width = (height * xpix) / ypix;
 	    std::cerr << "Calculated width = " << width << std::endl;
-	} else if (!(flagsSet & HEIGHT_MASK)) {
+	} else if (!(flags_set & HEIGHT_MASK)) {
 	    height = (width * ypix) / xpix;
 	    std::cerr << "Calculated height = " << height << std::endl;
 	}
@@ -275,7 +273,7 @@ int main(int argc, char **argv)
     
     Protracer::Bitmap result = Protracer::Bitmap(xpix, ypix);
 
-    trace(the_world, result, xpix, ypix, reflectionDepth,
+    trace(the_world, result, xpix, ypix, reflection_depth,
 	  no_shadow_no_reflection, quiet);
 
     if (!quiet)
