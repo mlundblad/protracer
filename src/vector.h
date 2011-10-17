@@ -30,12 +30,6 @@ namespace Protracer {
     float get_x() const { static_cast<const E&>(*this).get_x(); }
     float get_y() const { static_cast<const E&>(*this).get_y(); }
     float get_z() const { static_cast<const E&>(*this).get_z(); }
-    
-    template <typename E1>
-    float dot(const VectorExpression<E1>& e) const
-    {
-      return get_x() * e.get_x() + get_y() * e.get_y() + get_z() * e.get_z();
-    }
 
     operator E&() { return static_cast<E&>(*this); }
     operator const E&() const { return static_cast<const E&>(*this); }

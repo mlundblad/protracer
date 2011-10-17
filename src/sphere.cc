@@ -82,7 +82,7 @@ namespace Protracer {
       temp = temp > 1.0 ? 1.0 : temp;
       temp = temp < -1.0 ? -1.0 : temp; 
       theta = acos(temp) / (2*M_PI);
-      u = (equator * pole).dot(normal) > 0 ? theta : 1 - theta;
+      u = Vector(equator * pole).dot(normal) > 0 ? theta : 1 - theta;
     }
 
     /* Ok, u and v are the % coordinates into the bitmap.
