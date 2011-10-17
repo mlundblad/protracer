@@ -21,11 +21,33 @@
 
 namespace Protracer {
   
-  class Color {
+  // CRTP base class for color expressions
+  template <typename E>
+  class ColorExpression {
+  public:
+    unsigned char get_red() const { static_cast<const E&>(*this).get_red(); }
+    unsigned char get_green() const { static_cast<const E&>(*this).get_green();}
+    unsigned char get_blue() const { static_cast<const E&>(*this).get_blue(); }
+
+    operator E&() { return static_cast<E&>(*this); }
+    operator const E&() const { return static_cast<const E&>(*this); }
+  };
+
+
+  class Color : public ColorExpression<Color> {
   public:
     Color() : red(0), green(0), blue(0) {}
     Color(unsigned char red, unsigned char green, unsigned char blue) :
       red(red), green(green), blue(blue) {}
+
+    template <typename E>
+    Color(const ColorExpression<E>& expr) {
+      const E& c = expr;
+
+      red = c.get_red();
+      green = c.get_green();
+      blue = c.get_blue();
+    }
 
     unsigned char get_red() const { return red; }
     unsigned char get_green() const { return green; }
@@ -39,24 +61,61 @@ namespace Protracer {
     unsigned char blue;
   };
 
-  inline Color operator*(const Color& c, float s)
+  template <typename E>
+  class ColorShade : public ColorExpression<ColorShade<E> > {
+    const E& c;
+    float s;
+  public:
+    ColorShade(const ColorExpression<E>& c, float s) : c(c), s(s) {}
+    
+    unsigned char get_red() const { return int(c.get_red()) * s >
+	Color::COMPONENT_MAX ? Color::COMPONENT_MAX : c.get_red() * s; }
+    unsigned char get_green() const { return int(c.get_green()) * s >
+	Color::COMPONENT_MAX ? Color::COMPONENT_MAX : c.get_green() * s; }
+    unsigned char get_blue() const { return int(c.get_blue()) * s >
+	Color::COMPONENT_MAX ? Color::COMPONENT_MAX : c.get_blue() * s; }
+  };
+
+  template <typename E1, typename E2>
+  class ColorCombine : public ColorExpression<ColorCombine<E1, E2> > {
+    const E1& c1;
+    const E2& c2;
+  public:
+    ColorCombine(const ColorExpression<E1>& c1, const ColorExpression<E2>& c2) :
+      c1(c1), c2(c2) {}
+
+    unsigned char get_red() const {
+      return int(c1.get_red()) + int(c2.get_red()) > Color::COMPONENT_MAX ?
+	Color::COMPONENT_MAX : c1.get_red() + c2.get_red(); }
+    
+    unsigned char get_green() const {
+      return int(c1.get_green()) + int(c2.get_green()) > Color::COMPONENT_MAX ?
+	Color::COMPONENT_MAX : c1.get_green() + c2.get_green(); }
+    
+    unsigned char get_blue() const {
+      return int(c1.get_blue()) + int(c2.get_blue()) > Color::COMPONENT_MAX ?
+	Color::COMPONENT_MAX : c1.get_blue() + c2.get_blue(); }
+  };
+    
+  template <typename E>
+  const ColorShade<E>
+  operator*(const ColorExpression<E>& c, float s)
   {
-    return Color(int(c.get_red()) * s > Color::Color::COMPONENT_MAX ?
-		 Color::COMPONENT_MAX : c.get_red() * s,
-		 int(c.get_green()) * s > Color::COMPONENT_MAX ?
-		 Color::COMPONENT_MAX : c.get_green() * s,
-		 int(c.get_blue()) * s > Color::COMPONENT_MAX ?
-		 Color::COMPONENT_MAX : c.get_blue() * s);
+    return ColorShade<E>(c, s);
   }
 
-  inline Color operator+(const Color& c1, const Color& c2)
+  template <typename E>
+  const ColorShade<E>
+  operator*(float s, const ColorExpression<E>& c)
   {
-    return Color(int(c1.get_red()) + int(c2.get_red()) > Color::COMPONENT_MAX ?
-		 Color::COMPONENT_MAX : c1.get_red() + c2.get_red(),
-		 int(c1.get_green()) + int(c2.get_green()) > Color::COMPONENT_MAX ?
-		 Color::COMPONENT_MAX : c1.get_green() + c2.get_green(),
-		 int(c1.get_blue()) + int(c2.get_blue()) > Color::COMPONENT_MAX ?
-		 Color::COMPONENT_MAX : c1.get_blue() + c2.get_blue());
+    return ColorShade<E>(c, s);
+  }
+
+  template <typename E1, typename E2>
+  const ColorCombine<E1, E2>
+  operator+(const ColorExpression<E1>& c1, const ColorExpression<E2>& c2)
+  {
+    return ColorCombine<E1, E2>(c1, c2);
   }
 
 }
