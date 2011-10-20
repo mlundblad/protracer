@@ -65,23 +65,20 @@ namespace Protracer {
   Color
   Sphere::color_at(const Vector& normal) const
   {
-    float phi,temp;
-    float theta;
-    float u,v; /* Coordinates in % of bitmap. */
-
     if (pigment->is_uniform())
       return pigment->get_color();
 
-    phi = acos(-(normal.dot(pole)));
-    v = 1 - phi / M_PI;
+    float phi = acos(-(normal.dot(pole)));
+    float v = 1 - phi / M_PI;
+    float u;
 
     if ( v == 1.0 || v == 0.0 ) {
       u = 0.0;
     } else {
-      temp = normal.dot(equator) / sin(phi);
+      float temp = normal.dot(equator) / sin(phi);
       temp = temp > 1.0 ? 1.0 : temp;
       temp = temp < -1.0 ? -1.0 : temp; 
-      theta = acos(temp) / (2*M_PI);
+      float theta = acos(temp) / (2*M_PI);
       u = Vector(equator * pole).dot(normal) > 0 ? theta : 1 - theta;
     }
 
