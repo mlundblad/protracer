@@ -3,14 +3,14 @@
 
 AC_PREREQ([2.59])
 AC_INIT([protracer], [1.1-devel], [ml@update.uu.se])
-AC_CONFIG_SRCDIR([src/Object.h])
+AC_CONFIG_SRCDIR([src])
 AC_CONFIG_HEADERS([config.h])
 
 AM_INIT_AUTOMAKE([1.10 dist-bzip2 no-dist-gzip])
 
 # Checks for programs.
 AC_PROG_YACC
-AC_PROG_CC
+AC_PROG_CXX
 AC_PROG_LEX
 
 # Checks for libraries.

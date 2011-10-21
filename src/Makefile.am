@@ -1,61 +1,47 @@
 bin_PROGRAMS=protracer
 
-protracer_SOURCES=Baselex.l \
-	Baseparse.y \
-	Bitmap.c \
-	Bitmap.h \
-	Bool.h \
-	Camera.c \
-	Camera.h \
-	Color.c \
-	Color.h \
-	ColorOption.c \
-	ColorOption.h \
-	Error.c \
-	Error.h \
-	Finish.c \
-	Finish.h \
-	HitData.h \
-	LightArray.c \
-	LightArray.h \
-	Light.c \
-	Light.h \
-	LightList.c \
-	LightList.h \
-	ObjectArray.c \
-	ObjectArray.h \
-	Object.c \
-	Object.h \
-	ObjectList.c \
-	ObjectList.h \
-	ObjectMods.c \
-	ObjectMods.h \
-	Parameters.c \
-	Parameters.h \
-	Pigment.c \
-	Pigment.h \
-	Plane.c \
-	Plane.h \
-	PPMFile.c \
-	PPMFile.h \
-	Ray.c \
-	Ray.h \
-	Scalar.h \
-	Sphere.c \
-	Sphere.h \
-	SphereOptions.c \
-	SphereOptions.h \
-	Tracer.c \
-	Triangle.c \
-	Triangle.h \
-	Vector.c \
-	Vector.h \
-	World.c \
-	World.h
+protracer_SOURCES=bitmap.cc \
+	bitmap.h \
+	bitmap_pigment.cc \
+	bitmap_pigment.h \
+	camera.cc \
+	camera.h \
+	color.h \
+	color_pigment.h \
+	constants.h \
+	exception.h \
+	finish.cc \
+	finish.h \
+	hit_calculation.h \
+	lexer.ll \
+	light.cc \
+	light.h \
+	main.cc \
+	object.h \
+	parameters.cc \
+	parameters.h \
+	parser.yy \
+	pigment.h \
+	plane.cc \
+	plane.h \
+	ppm_file.cc \
+	ppm_file.h \
+	ray.h \
+	sphere.cc \
+	sphere.h \
+	triangle.cc \
+	triangle.h \
+	util.cc \
+	util.h \
+	vector.cc \
+	vector.h \
+	world.cc \
+	world.h
 
-BUILT_SOURCES=Baseparse.h
 
-CLEANFILES=Baseparse.c Baseparse.h Baselex.c
-DISTCLEANFILES=Baseparse.c Baseparse.h Baselex.c
+BUILT_SOURCES=parser.h
+
+CLEANFILES=parser.cc parser.h Baselex.c
+DISTCLEANFILES=parser.cc parser.h Baselex.c
 
 AM_YFLAGS=-d
