@@ -1,3 +1,4 @@
+/* -*- mode: C++; indent-tabs-mode: nil; c-basic-offset: 2  -*- */
 /*
  * This file is part of Protracer
  *
