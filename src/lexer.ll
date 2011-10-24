@@ -1,5 +1,7 @@
 /* Hi, Emacs!  Please pretend this file is written in -*-C-*- */
 
+%option noyywrap
+
 %{
 
 /*

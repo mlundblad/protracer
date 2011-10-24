@@ -407,8 +407,3 @@ yyerror(char *s)
   return 1;
 }
 
-int 
-yywrap() {
-  return 1;
-}
-
