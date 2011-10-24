@@ -291,11 +291,7 @@ object_mods:
 	}
 
 opt_pigment:	/* empty */
-{ $$ = new Protracer::ColorPigment(Protracer::Color(
-				   Protracer::ColorPigment::DEFAULT_RED,
-				   Protracer::ColorPigment::DEFAULT_GREEN,
-				   Protracer::ColorPigment::DEFAULT_BLUE));
-}
+{ $$ = new Protracer::ColorPigment(); }
           
 | pigment { $$ = $1; }
 ;
@@ -413,3 +409,4 @@ int
 yywrap() {
   return 1;
 }
+

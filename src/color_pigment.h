@@ -31,7 +31,13 @@ namespace Protracer {
     static const unsigned char DEFAULT_GREEN = 0; 
     static const unsigned char DEFAULT_BLUE  = 0; 
 
+    static Color default_color() { return Color(DEFAULT_RED,
+                                                DEFAULT_GREEN,
+                                                DEFAULT_BLUE); }
+
+    ColorPigment() : color(default_color()) {}
     ColorPigment(const Color& c) : color(c) {}
+
     bool is_uniform() const { return true; }
     Color get_color() const { return color; }
     Color get_color(float x, float y) const { return color; }
