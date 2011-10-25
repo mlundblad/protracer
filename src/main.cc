@@ -264,23 +264,21 @@ int main(int argc, char **argv)
       in_file = stdin;
     }
 
-    Protracer::Parameters params =
-      Protracer::Parameters(zoom, width, height, xpix, ypix);
-
-    Protracer::World the_world =
-      parse(in_file, params);
- 
-    /* Start the tracing */
-    
-    Protracer::Bitmap result = Protracer::Bitmap(xpix, ypix);
-
-    trace(the_world, result, xpix, ypix, reflection_depth,
-	  no_shadow_no_reflection, quiet);
-
-    if (!quiet)
-      std::cerr << "100%- done!" << std::endl;
-
     try {
+      Protracer::Parameters params =
+        Protracer::Parameters(zoom, width, height, xpix, ypix);
+      Protracer::World the_world =
+        parse(in_file, params);
+
+      /* Start the tracing */      
+      Protracer::Bitmap result = Protracer::Bitmap(xpix, ypix);
+      
+      trace(the_world, result, xpix, ypix, reflection_depth,
+            no_shadow_no_reflection, quiet);
+
+      if (!quiet)
+        std::cerr << "100%- done!" << std::endl;
+      
       if (out_file != "")
 	ppm_out.open_out(out_file, Protracer::PPMFile::PPM_BINARY);
       else
