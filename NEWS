@@ -1,5 +1,5 @@
-version 2.0 (2011-xx-xx)
-	* Re-written in C++
+version 2.0 (2011-10-26)
+	* Re-written in C++.
 
 version 1.0 (2011-07-01)
 	* Switch to using automake for building.
