@@ -26,7 +26,7 @@
 #include "config.h"
 #include "bitmap.h"
 #include "ppm_file.h"
-#include "world.h"
+#include "scene.h"
 #include "object.h"
 #include "parameters.h"
 #include "light.h"
@@ -45,7 +45,7 @@ static void print_version()
   std::cerr << PACKAGE << " " << VERSION << std::endl;
 }
 
-Protracer::World
+Protracer::Scene
 parse(FILE *input, const Protracer::Parameters& params)
 {
     global_parameters = params;
@@ -57,24 +57,24 @@ parse(FILE *input, const Protracer::Parameters& params)
     yyin = input;
     yyparse();
     
-    Protracer::World the_world = Protracer::World(global_object_list,
-				 global_light_list,
-				 global_camera,
-				 global_background);
-    
-    return the_world;
+    Protracer::Scene scene = Protracer::Scene(global_object_list,
+                                              global_light_list,
+                                              global_camera,
+                                              global_background);
+
+    return scene;
 }
 
 void
-trace(const Protracer::World& w, Protracer::Bitmap& bitmap, int xpix, int ypix,
+trace(const Protracer::Scene& scene, Protracer::Bitmap& bitmap, int xpix, int ypix,
       int reflectionDepth, bool no_shadow_no_reflection, bool quiet)
 {
   int x,y;
   
   for (y = 0 ; y < ypix ; y++ ) {
     for (x = 0 ; x < xpix ; x++ ) {
-      bitmap(x, y) = w.color_of_pixel(x, y, reflectionDepth,
-				      no_shadow_no_reflection);
+      bitmap(x, y) = scene.color_of_pixel(x, y, reflectionDepth,
+                                          no_shadow_no_reflection);
     }
     if (!quiet)
       std::cerr << (int)((float)y/(float)ypix * 100) << "%\r";
@@ -267,13 +267,12 @@ int main(int argc, char **argv)
     try {
       Protracer::Parameters params =
         Protracer::Parameters(zoom, width, height, xpix, ypix);
-      Protracer::World the_world =
-        parse(in_file, params);
+      Protracer::Scene scene = parse(in_file, params);
 
       /* Start the tracing */      
       Protracer::Bitmap result = Protracer::Bitmap(xpix, ypix);
       
-      trace(the_world, result, xpix, ypix, reflection_depth,
+      trace(scene, result, xpix, ypix, reflection_depth,
             no_shadow_no_reflection, quiet);
 
       if (!quiet)

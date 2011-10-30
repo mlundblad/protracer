@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef WORLD_H
-#define WORLD_H
+#ifndef SCENE_H
+#define SCENE_H
 
 #include <vector>
 
@@ -29,13 +29,13 @@
 #include "light.h"
 
 namespace Protracer {
-  class World {
+  class Scene {
   public:
-    World(const std::vector<Object*>& objects, 
+    Scene(const std::vector<Object*>& objects, 
 	  const std::vector<Light>& lights,
 	  const Camera& cam, const Color& background);
 
-    virtual ~World();
+    virtual ~Scene();
 
     // getters
     const Vector& get_c_corner() const { return c_corner; };
@@ -66,4 +66,4 @@ namespace Protracer {
 }
     
 
-#endif //WORLD_H
+#endif //SCENE_H

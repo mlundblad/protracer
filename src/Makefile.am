@@ -27,6 +27,8 @@ protracer_SOURCES=bitmap.cc \
 	ppm_file.cc \
 	ppm_file.h \
 	ray.h \
+	scene.h \
+	scene.cc \
 	sphere.cc \
 	sphere.h \
 	triangle.cc \
@@ -34,10 +36,7 @@ protracer_SOURCES=bitmap.cc \
 	util.cc \
 	util.h \
 	vector.cc \
-	vector.h \
-	world.cc \
-	world.h
-
+	vector.h
 
 BUILT_SOURCES=parser.h
 

@@ -21,7 +21,7 @@
 #include <vector>
 #include <math.h>
 
-#include "world.h"
+#include "scene.h"
 #include "util.h"
 #include "constants.h"
 #include "ray.h"
@@ -29,7 +29,7 @@
 
 namespace Protracer {
   
-  World::World(const std::vector<Object*>& objects,
+  Scene::Scene(const std::vector<Object*>& objects,
 	       const std::vector<Light>& lights, 
 	       const Camera& cam, const Color& background )
   {
@@ -50,7 +50,7 @@ namespace Protracer {
 			      cam.get_world_height() / 2 * c_down);
   }
 
-  World::~World()
+  Scene::~Scene()
   {
     for (std::vector<Object*>::iterator it = objects.begin() ;
 	 it != objects.end() ; it++) {
@@ -61,8 +61,7 @@ namespace Protracer {
   }
 
   Color
-
-  World::color_at_hit_point(int x, int y, const Ray& ray, int refl_depth,
+  Scene::color_at_hit_point(int x, int y, const Ray& ray, int refl_depth,
 			    bool no_shadow_no_reflection) const
   {
     int         j;
@@ -163,7 +162,7 @@ namespace Protracer {
    }
 
    Color
-   World::color_of_pixel(int x, int y, int refl_depth,
+   Scene::color_of_pixel(int x, int y, int refl_depth,
 			 bool no_shadow_no_reflection) const
    {
      float ww = camera.get_world_width();
