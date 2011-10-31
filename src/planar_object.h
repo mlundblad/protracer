@@ -17,36 +17,33 @@
  *
  */
 
-#ifndef TRIANGLE_H
-#define TRIANGLE_H
+#ifndef PLANAR_OBJECT_H
+#define PLANAR_OBJECT_H
 
-#include "planar_object.h"
-#include "vector.h"
-#include "hit_calculation.h"
+#include "object.h"
 #include "plane.h"
-#include "finish.h"
+
+#include <iostream>
 
 namespace Protracer {
 
-  class Triangle : public PlanarObject {
-  public:
-    // if relative is true, c1 and c2 are taken to be vectors relative c0
-    // forming two of the triangle's vertices
-    Triangle(const Vector& c0, const Vector& c1, const Vector& c2,
-	     Pigment* pigment, const Finish& finish,
-	     bool relative = false);
+  class PlanarObject : public Object {
+  protected:
+    PlanarObject(const Vector& normal, const Vector& point,
+		 Pigment* pigment, const Finish& finish) :
+      Object(pigment, finish), span_plane(normal, point, pigment, finish) {
 
-    virtual HitCalculation calculate_hit(const Ray& ray) const;
+      std::cerr << "normal: (" << normal.get_x() << "," << normal.get_y() <<
+	"," << normal.get_z() << ")" << std::endl;
+      std::cerr << "point: (" << point.get_x() << "," << point.get_y() <<
+	"," << point.get_z() << ")" << std::endl;
 
-  private:
-    Vector t0;
-    Vector va;
-    Vector vb;
-    float aa; // va dot va
-    float bb; // vb dot vb
-    float ab; // va dot vb
+    }
+    ~PlanarObject() { pigment = 0; }
+
+    Plane span_plane;
   };
 
 }
 
-#endif //TRIANGLE_H
+#endif //PLANAR_OBJECT_H

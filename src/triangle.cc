@@ -24,21 +24,15 @@ namespace Protracer {
   Triangle::Triangle(const Vector& c0, const Vector& c1, const Vector& c2,
 	   Pigment* pigment, const Finish& finish,
 	   bool relative) :
-    Object(pigment, finish),
     va(relative ? c1 : c1 - c0),
     vb(relative ? c2 : c2 - c0),
-    span_plane(Vector(va * vb).normal(), c0, pigment, finish)
+    PlanarObject(Vector((relative ? c1 : c1 - c0) * (relative ? c2 : c2 - c0)).normal(),
+                 c0, pigment, finish)
   {
     t0 = c0;
     aa = va.dot(va);
     bb = vb.dot(vb);
     ab = va.dot(vb);
-  }
-
-  Triangle::~Triangle()
-  {
-    // let the span plane delete the pigment
-    pigment = 0;
   }
 
   HitCalculation
