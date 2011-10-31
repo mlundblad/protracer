@@ -64,6 +64,7 @@ int yyerror(char *s);
 #include "plane.h"
 #include "sphere.h"
 #include "triangle.h"
+#include "disc.h"
 #include "camera.h"
 #include "color.h"
 #include "object.h"
@@ -114,6 +115,7 @@ int yyerror(char *s);
   Protracer::Sphere*      sphere;
   Protracer::Triangle*    triangle;
   Protracer::Plane*       plane;
+  Protracer::Disc*        disc;
   Protracer::Object*      object;
   Protracer::Camera*      camera;
   Protracer::Color*       color;
@@ -140,14 +142,14 @@ int yyerror(char *s);
 %token KEY_LOCATION KEY_LOOK KEY_BACKGROUND
 %token KEY_CAMERA KEY_RGB KEY_SKY KEY_LIGHT
 %token KEY_PLANE KEY_PLANEPNT KEY_IMAGE KEY_PPM
-%token KEY_POLE KEY_EQUATOR
-
+%token KEY_POLE KEY_EQUATOR KEY_DISC
 
 %type <objectList> scene
 %type <object> item
 %type <plane> plane
 %type <triangle> triangle
 %type <sphere> sphere
+%type <disc> disc
 %type <vector> vector
 %type <value> number
 %type <camera> camera
@@ -165,6 +167,7 @@ int yyerror(char *s);
 %type <value> opt_reflection
 %type <light> light
 %type <color> background
+%type <value> opt_hole
 
 %%
 
@@ -283,6 +286,29 @@ triangle:
 	}
 	;
 	
+disc:
+    KEY_DISC LBRACE 
+    vector COMMA 
+    vector COMMA 
+    number
+    opt_hole
+    object_mods
+    RBRACE {
+      $$ = new Protracer::Disc(*$3, *$5, $7, $8, $9->pigment, $9->finish);
+      delete $3;
+      delete $5;
+      delete $9;
+    };
+
+
+opt_hole: {
+  // empty
+  $$ = 0.0f;
+}
+| COMMA number {
+  $$ = $2;
+}
+
 object_mods:
 	opt_pigment
         opt_finish {

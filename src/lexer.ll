@@ -44,6 +44,7 @@ camera		return KEY_CAMERA;
 color		return KEY_COLOR;
 colour		return KEY_COLOR;
 diffuse		return KEY_DIFFUSE;
+disc            return KEY_DISC;
 equator		return KEY_EQUATOR;
 finish		return KEY_FINISH;
 green		return KEY_GREEN;
