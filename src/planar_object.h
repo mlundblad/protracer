@@ -31,14 +31,7 @@ namespace Protracer {
   protected:
     PlanarObject(const Vector& normal, const Vector& point,
 		 Pigment* pigment, const Finish& finish) :
-      Object(pigment, finish), span_plane(normal, point, pigment, finish) {
-
-      std::cerr << "normal: (" << normal.get_x() << "," << normal.get_y() <<
-	"," << normal.get_z() << ")" << std::endl;
-      std::cerr << "point: (" << point.get_x() << "," << point.get_y() <<
-	"," << point.get_z() << ")" << std::endl;
-
-    }
+      Object(pigment, finish), span_plane(normal, point, pigment, finish) {}
     ~PlanarObject() { pigment = 0; }
 
     Plane span_plane;
