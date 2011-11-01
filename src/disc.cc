@@ -38,7 +38,7 @@ namespace Protracer {
       float distance = Vector(hit_point - center).length();
 
       if (distance <= radius && distance >= hole_radius)
-	return hc;
+        return hc;
     }
 
     return HitCalculation(false);
