@@ -179,7 +179,8 @@ scene	:
 item:	
           sphere     { global_object_list.push_back($1); }
         | triangle   { global_object_list.push_back($1); }
-        | plane      { global_object_list.push_back($1); } 
+        | plane      { global_object_list.push_back($1); }
+        | disc       { global_object_list.push_back($1); }
         | camera     { }
         | background { }
         | light      { } 
