@@ -37,7 +37,7 @@ namespace Protracer {
       Vector hit_point = ray.get_origin() + ray.get_direction() * hc.get_distance();
       float distance = Vector(hit_point - center).length();
 
-      if (distance <= radius && distance > hole_radius)
+      if (distance <= radius && distance >= hole_radius)
 	return hc;
     }
 
