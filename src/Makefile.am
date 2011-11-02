@@ -40,9 +40,9 @@ protracer_SOURCES=bitmap.cc \
 	vector.cc \
 	vector.h
 
-BUILT_SOURCES=parser.h
+BUILT_SOURCES=parser.h parser.cc lexer.h lexer.cc
 
-CLEANFILES=parser.cc parser.h Baselex.c
-DISTCLEANFILES=parser.cc parser.h Baselex.c
+CLEANFILES=parser.cc parser.h lexer.cc lexer.h
+DISTCLEANFILES=parser.cc parser.h lexer.cc lexer.h
 
 AM_YFLAGS=-d
