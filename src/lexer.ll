@@ -69,6 +69,8 @@ triangle_point	return KEY_TRIANGLEPNT;
 "}"		return RBRACE;
 "<"		return LANGLE;
 ">"		return RANGLE;
+"("             return LPAREN;
+")"             return RPAREN;
 ","		return COMMA;
 "+"             return PLUS;
 "-"             return MINUS;

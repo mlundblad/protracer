@@ -128,7 +128,7 @@ int yyerror(char *s);
 
 %start scene
 
-%token LBRACE RBRACE LANGLE RANGLE COMMA
+%token LBRACE RBRACE LANGLE RANGLE LPAREN RPAREN COMMA
 
 %token <value> NUMBER
 %token <string> STRING
@@ -216,7 +216,10 @@ vector:
 	  delete $1;
 	  delete $3;
 	}
-         
+        | LPAREN vector RPAREN {
+	  $$ = $2;
+	}
+ 
 	;
 
 plane:
