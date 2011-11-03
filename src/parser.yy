@@ -143,7 +143,9 @@ int yyerror(char *s);
 %token KEY_CAMERA KEY_RGB KEY_SKY KEY_LIGHT
 %token KEY_PLANE KEY_PLANEPNT KEY_IMAGE KEY_PPM
 %token KEY_POLE KEY_EQUATOR KEY_DISC
-%token MINUS PLUS MULTIPLY
+%left PLUS MINUS
+%left MULTIPLY
+%left NEG  // negation, unary -
 
 %type <objectList> scene
 %type <object> item
@@ -200,9 +202,19 @@ vector:
 	LANGLE number COMMA
 	number COMMA number RANGLE {
 	  $$ = new Protracer::Vector($2, $4, $6); }
-        | MINUS vector {
+        | MINUS vector %prec NEG {
 	  $$ = new Protracer::Vector(-(*$2));
 	  delete $2;
+	}
+        | vector PLUS vector {
+	  $$ = new Protracer::Vector((*$1) + (*$3));
+	  delete $1;
+	  delete $3;
+	}
+        | vector MINUS vector {
+	  $$ = new Protracer::Vector((*$1) + (*$3));
+	  delete $1;
+	  delete $3;
 	}
          
 	;
