@@ -70,6 +70,9 @@ triangle_point	return KEY_TRIANGLEPNT;
 "<"		return LANGLE;
 ">"		return RANGLE;
 ","		return COMMA;
+"+"             return PLUS;
+"-"             return MINUS;
+"*"             return MULTIPLY;
 
 {number}	{ yylval.value = atof(yytext); return NUMBER; }
 \"[^\"]*\"	{ yylval.string = strdup(yytext+1);
