@@ -216,6 +216,14 @@ vector:
 	  delete $1;
 	  delete $3;
 	}
+        | number MULTIPLY vector {
+	  $$ = new Protracer::Vector($1 * (*$3));
+	  delete $3;
+	}
+        | vector MULTIPLY number {
+	  $$ = new Protracer::Vector((*$1) * $3);
+	  delete $1;
+	}
         | LPAREN vector RPAREN {
 	  $$ = $2;
 	}
