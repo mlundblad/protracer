@@ -219,7 +219,9 @@ vector:
         | LPAREN vector RPAREN {
 	  $$ = $2;
 	}
- 
+        | number {
+	  $$ = new Protracer::Vector($1);
+	}
 	;
 
 plane:

@@ -40,6 +40,7 @@ namespace Protracer {
   public:
     Vector() : x(0), y(0), z(0) {}
     Vector(float x, float y, float z) : x(x), y(y), z(z) {}
+    Vector(float v) : x(v), y(v), z(v) {}
 
     template <typename E>
     Vector(const VectorExpression<E>& expr) {
