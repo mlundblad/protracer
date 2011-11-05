@@ -42,6 +42,10 @@ namespace Protracer {
     Vector(float x, float y, float z) : x(x), y(y), z(z) {}
     Vector(float v) : x(v), y(v), z(v) {}
 
+    static Vector unit_x() { return Vector(1, 0, 0); }
+    static Vector unit_y() { return Vector(0, 1, 0); }
+    static Vector unit_z() { return Vector(0, 0, 1); }
+
     template <typename E>
     Vector(const VectorExpression<E>& expr) {
       const E& v = expr;
