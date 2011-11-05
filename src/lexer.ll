@@ -64,6 +64,9 @@ sky		return KEY_SKY;
 sphere		return KEY_SPHERE;
 triangle	return KEY_TRIANGLE;
 triangle_point	return KEY_TRIANGLEPNT;
+x               return KEY_X;
+y               return KEY_Y;
+z               return KEY_Z;
 
 "{"		return LBRACE;
 "}"		return RBRACE;

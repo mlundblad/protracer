@@ -143,6 +143,7 @@ int yyerror(char *s);
 %token KEY_CAMERA KEY_RGB KEY_SKY KEY_LIGHT
 %token KEY_PLANE KEY_PLANEPNT KEY_IMAGE KEY_PPM
 %token KEY_POLE KEY_EQUATOR KEY_DISC
+%token KEY_X KEY_Y KEY_Z
 %left PLUS MINUS
 %left MULTIPLY
 %left NEG  // negation, unary -
@@ -226,6 +227,15 @@ vector:
 	}
         | LPAREN vector RPAREN {
 	  $$ = $2;
+	}
+        | KEY_X {
+	  $$ = new Protracer::Vector(Protracer::Vector::unit_x());
+	}
+        | KEY_Y {
+	  $$ = new Protracer::Vector(Protracer::Vector::unit_y());
+	}
+        | KEY_Z {
+	  $$ = new Protracer::Vector(Protracer::Vector::unit_z());
 	}
         | number {
 	  $$ = new Protracer::Vector($1);
