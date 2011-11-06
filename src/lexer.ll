@@ -77,7 +77,8 @@ z               return KEY_Z;
 ","		return COMMA;
 "+"             return PLUS;
 "-"             return MINUS;
-"*"             return MULTIPLY;
+"*"             return TIMES;
+"/"             return DIVIDED;
 
 {number}	{ yylval.value = atof(yytext); return NUMBER; }
 \"[^\"]*\"	{ yylval.string = strdup(yytext+1);

@@ -145,7 +145,7 @@ int yyerror(char *s);
 %token KEY_POLE KEY_EQUATOR KEY_DISC
 %token KEY_X KEY_Y KEY_Z
 %left PLUS MINUS
-%left MULTIPLY
+%left TIMES DIVIDED
 %left NEG  // negation, unary -
 
 %type <objectList> scene
@@ -217,11 +217,11 @@ vector:
 	  delete $1;
 	  delete $3;
 	}
-        | number MULTIPLY vector {
+        | number TIMES vector {
 	  $$ = new Protracer::Vector($1 * (*$3));
 	  delete $3;
 	}
-        | vector MULTIPLY number {
+        | vector TIMES number {
 	  $$ = new Protracer::Vector((*$1) * $3);
 	  delete $1;
 	}
@@ -463,8 +463,15 @@ background:
 	;
 
 number:
-	NUMBER { $$ = $1; }
+NUMBER { $$ = $1; }
+| number PLUS number { $$ = $1 + $3; }
+| number MINUS number { $$ = $1 - $3; }
+| number TIMES number { $$ = $1 * $3; }
+| number DIVIDED number { $$ = $1 / $3; }
+| MINUS number %prec NEG { $$ = -$2; }
+| RPAREN number LPAREN { $$ = $2; }
 ;
+
 
 %%
 
