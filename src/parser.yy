@@ -213,7 +213,7 @@ vector:
 	  delete $3;
 	}
         | vector MINUS vector {
-	  $$ = new Protracer::Vector((*$1) + (*$3));
+	  $$ = new Protracer::Vector((*$1) - (*$3));
 	  delete $1;
 	  delete $3;
 	}
