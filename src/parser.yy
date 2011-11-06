@@ -146,7 +146,7 @@ int yyerror(char *s);
 %token KEY_X KEY_Y KEY_Z
 %left PLUS MINUS
 %left TIMES DIVIDED
-%left NEG  // negation, unary -
+%left POS NEG  // negation, unary -
 
 %type <objectList> scene
 %type <object> item
@@ -207,6 +207,9 @@ vector:
         | MINUS vector %prec NEG {
 	  $$ = new Protracer::Vector(-(*$2));
 	  delete $2;
+	}
+        | PLUS vector %prec POS {
+	  $$ = $2;
 	}
         | vector PLUS vector {
 	  $$ = new Protracer::Vector((*$1) + (*$3));
