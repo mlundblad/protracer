@@ -478,6 +478,7 @@ NUMBER { $$ = $1; }
 | number TIMES number { $$ = $1 * $3; }
 | number DIVIDED number { $$ = $1 / $3; }
 | MINUS number %prec NEG { $$ = -$2; }
+| PLUS number %prec POS { $$ = $2; }
 | RPAREN number LPAREN { $$ = $2; }
 ;
 
