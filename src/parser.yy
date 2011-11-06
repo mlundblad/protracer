@@ -155,6 +155,7 @@ int yyerror(char *s);
 %type <sphere> sphere
 %type <disc> disc
 %type <vector> vector
+%type <vector> vector_builtin;
 %type <value> number
 %type <camera> camera
 %type <color> color
@@ -228,19 +229,24 @@ vector:
         | LPAREN vector RPAREN {
 	  $$ = $2;
 	}
-        | KEY_X {
-	  $$ = new Protracer::Vector(Protracer::Vector::unit_x());
-	}
-        | KEY_Y {
-	  $$ = new Protracer::Vector(Protracer::Vector::unit_y());
-	}
-        | KEY_Z {
-	  $$ = new Protracer::Vector(Protracer::Vector::unit_z());
-	}
+        | vector_builtin {
+	  $$ = $1;
+	  }
         | number {
 	  $$ = new Protracer::Vector($1);
 	}
 	;
+
+vector_builtin:
+KEY_X {
+  $$ = new Protracer::Vector(Protracer::Vector::unit_x());
+}
+| KEY_Y {
+  $$ = new Protracer::Vector(Protracer::Vector::unit_y());
+  }
+| KEY_Z {
+  $$ = new Protracer::Vector(Protracer::Vector::unit_z());
+  };
 
 plane:
 	KEY_PLANE LBRACE
