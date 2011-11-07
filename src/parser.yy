@@ -145,7 +145,7 @@ int yyerror(char *s);
 %token KEY_PLANE KEY_PLANEPNT KEY_IMAGE KEY_PPM
 %token KEY_POLE KEY_EQUATOR KEY_DISC
 %token KEY_X KEY_Y KEY_Z
-%token KEY_ABS
+%token KEY_ABS KEY_ACOS
 %left PLUS MINUS
 %left TIMES DIVIDED
 %left POS NEG  // negation, unary -
@@ -507,6 +507,7 @@ NUMBER { $$ = $1; }
   delete $1;
 }
 | KEY_ABS LPAREN number RPAREN { $$ = std::fabs($3); }
+| KEY_ACOS LPAREN number RPAREN { $$ = std::acosf($3); }
 ;
 
 

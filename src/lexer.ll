@@ -39,6 +39,7 @@ name	[_a-zA-Z]+
 "//"[^\n]*\n 	{ linecount++; } /* ignore comments, but count line */
 
 abs             return KEY_ABS;
+acos            return KEY_ACOS;
 background	return KEY_BACKGROUND;
 blue		return KEY_BLUE;
 camera		return KEY_CAMERA;
