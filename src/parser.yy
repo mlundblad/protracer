@@ -128,7 +128,7 @@ int yyerror(char *s);
 
 %start scene
 
-%token LBRACE RBRACE LANGLE RANGLE LPAREN RPAREN COMMA
+%token LBRACE RBRACE LANGLE RANGLE LPAREN RPAREN COMMA DOT
 
 %token <value> NUMBER
 %token <string> STRING
@@ -480,6 +480,19 @@ NUMBER { $$ = $1; }
 | MINUS number %prec NEG { $$ = -$2; }
 | PLUS number %prec POS { $$ = $2; }
 | RPAREN number LPAREN { $$ = $2; }
+| vector DOT KEY_X {
+  $$ = $1->get_x();
+  delete $1;
+}
+| vector DOT KEY_Y {
+  $$ = $1->get_y();
+  delete $1;
+}
+| vector DOT KEY_Z {
+  $$ = $1->get_z();
+  delete $1;
+}
+
 ;
 
 
