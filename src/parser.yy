@@ -24,6 +24,7 @@
 
 #include <vector>
 #include <iostream>
+#include <cmath>
 #include "vector.h"
 #include "plane.h"
 #include "sphere.h"
@@ -144,6 +145,7 @@ int yyerror(char *s);
 %token KEY_PLANE KEY_PLANEPNT KEY_IMAGE KEY_PPM
 %token KEY_POLE KEY_EQUATOR KEY_DISC
 %token KEY_X KEY_Y KEY_Z
+%token KEY_ABS
 %left PLUS MINUS
 %left TIMES DIVIDED
 %left POS NEG  // negation, unary -
@@ -479,7 +481,7 @@ NUMBER { $$ = $1; }
 | number DIVIDED number { $$ = $1 / $3; }
 | MINUS number %prec NEG { $$ = -$2; }
 | PLUS number %prec POS { $$ = $2; }
-| RPAREN number LPAREN { $$ = $2; }
+| LPAREN number RPAREN { $$ = $2; }
 | vector DOT KEY_X {
   $$ = $1->get_x();
   delete $1;
@@ -504,6 +506,7 @@ NUMBER { $$ = $1; }
   $$ = $1->get_blue();
   delete $1;
 }
+| KEY_ABS LPAREN number RPAREN { $$ = std::fabs($3); }
 ;
 
 
