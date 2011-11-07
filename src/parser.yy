@@ -25,6 +25,7 @@
 #include <vector>
 #include <iostream>
 #include <cmath>
+#include <math.h>
 #include "vector.h"
 #include "plane.h"
 #include "sphere.h"
@@ -145,7 +146,7 @@ int yyerror(char *s);
 %token KEY_PLANE KEY_PLANEPNT KEY_IMAGE KEY_PPM
 %token KEY_POLE KEY_EQUATOR KEY_DISC
 %token KEY_X KEY_Y KEY_Z
-%token KEY_ABS KEY_ACOS
+%token KEY_ABS KEY_ACOS KEY_ACOSH
 %left PLUS MINUS
 %left TIMES DIVIDED
 %left POS NEG  // negation, unary -
@@ -508,6 +509,7 @@ NUMBER { $$ = $1; }
 }
 | KEY_ABS LPAREN number RPAREN { $$ = std::fabs($3); }
 | KEY_ACOS LPAREN number RPAREN { $$ = std::acos($3); }
+| KEY_ACOSH LPAREN number RPAREN { $$ = acoshf($3); }
 ;
 
 
