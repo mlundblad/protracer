@@ -492,7 +492,18 @@ NUMBER { $$ = $1; }
   $$ = $1->get_z();
   delete $1;
 }
-
+| color DOT KEY_RED {
+  $$ = $1->get_red();
+  delete $1;
+}
+| color DOT KEY_GREEN {
+  $$ = $1->get_green();
+  delete $1;
+}
+| color DOT KEY_BLUE {
+  $$ = $1->get_blue();
+  delete $1;
+}
 ;
 
 
