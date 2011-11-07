@@ -507,7 +507,7 @@ NUMBER { $$ = $1; }
   delete $1;
 }
 | KEY_ABS LPAREN number RPAREN { $$ = std::fabs($3); }
-| KEY_ACOS LPAREN number RPAREN { $$ = std::acosf($3); }
+| KEY_ACOS LPAREN number RPAREN { $$ = std::acos($3); }
 ;
 
 
