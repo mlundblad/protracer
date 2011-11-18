@@ -42,6 +42,7 @@ abs             return KEY_ABS;
 acos            return KEY_ACOS;
 acosh           return KEY_ACOSH;
 asin            return KEY_ASIN;
+asinh           return KEY_ASINH;
 background	return KEY_BACKGROUND;
 blue		return KEY_BLUE;
 camera		return KEY_CAMERA;
