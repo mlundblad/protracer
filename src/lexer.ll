@@ -45,6 +45,7 @@ asin            return KEY_ASIN;
 asinh           return KEY_ASINH;
 atan            return KEY_ATAN;
 atanh           return KEY_ATANH;
+atan2           return KEY_ATAN2;
 background	return KEY_BACKGROUND;
 blue		return KEY_BLUE;
 camera		return KEY_CAMERA;

@@ -147,6 +147,7 @@ int yyerror(char *s);
 %token KEY_POLE KEY_EQUATOR KEY_DISC
 %token KEY_X KEY_Y KEY_Z
 %token KEY_ABS KEY_ACOS KEY_ACOSH KEY_ASIN KEY_ASINH KEY_ATAN KEY_ATANH
+%token KEY_ATAN2
 %left PLUS MINUS
 %left TIMES DIVIDED
 %left POS NEG  // negation, unary -
@@ -514,6 +515,7 @@ NUMBER { $$ = $1; }
 | KEY_ASINH LPAREN number RPAREN { $$ = asinhf($3); }
 | KEY_ATAN LPAREN number RPAREN { $$ = std::atan($3); }
 | KEY_ATANH LPAREN number RPAREN { $$ = atanhf($3); }
+| KEY_ATAN2 LPAREN number COMMA number RPAREN { $$ = atan2f($3, $5); }
 ;
 
 
