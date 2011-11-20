@@ -61,6 +61,7 @@ div             return KEY_DIV;
 equator		return KEY_EQUATOR;
 exp             return KEY_EXP;
 finish		return KEY_FINISH;
+floor           return KEY_FLOOR;
 green		return KEY_GREEN;
 image_map	return KEY_IMAGE;
 light_source	return KEY_LIGHT;
