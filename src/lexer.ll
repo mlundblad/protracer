@@ -64,6 +64,7 @@ finish		return KEY_FINISH;
 floor           return KEY_FLOOR;
 green		return KEY_GREEN;
 image_map	return KEY_IMAGE;
+int             return KEY_INT;
 light_source	return KEY_LIGHT;
 location	return KEY_LOCATION;
 look_at		return KEY_LOOK;
