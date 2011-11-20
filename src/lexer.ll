@@ -66,6 +66,7 @@ green		return KEY_GREEN;
 image_map	return KEY_IMAGE;
 int             return KEY_INT;
 light_source	return KEY_LIGHT;
+ln              return KEY_LN;
 log             return KEY_LOG;
 location	return KEY_LOCATION;
 look_at		return KEY_LOOK;
