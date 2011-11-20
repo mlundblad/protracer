@@ -148,7 +148,7 @@ int yyerror(char *s);
 %token KEY_X KEY_Y KEY_Z
 %token KEY_ABS KEY_ACOS KEY_ACOSH KEY_ASIN KEY_ASINH KEY_ATAN KEY_ATANH
 %token KEY_ATAN2 KEY_CEIL KEY_COS KEY_COSH KEY_DEGREES KEY_DIV KEY_EXP
-%token KEY_FLOOR KEY_INT
+%token KEY_FLOOR KEY_INT KEY_LOG
 %left PLUS MINUS
 %left TIMES DIVIDED
 %left POS NEG  // negation, unary -
@@ -525,6 +525,7 @@ NUMBER { $$ = $1; }
 | KEY_EXP LPAREN number RPAREN { $$ = std::exp($3); }
 | KEY_FLOOR LPAREN number RPAREN { $$ = std::floor($3); }
 | KEY_INT LPAREN number RPAREN { $$ = truncf($3); }
+| KEY_LOG LPAREN number RPAREN { $$ = std::log10($3); }
 ;
 
 
