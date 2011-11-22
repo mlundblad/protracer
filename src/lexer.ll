@@ -70,6 +70,7 @@ ln              return KEY_LN;
 log             return KEY_LOG;
 location	return KEY_LOCATION;
 look_at		return KEY_LOOK;
+max             return KEY_MAX;
 pigment		return KEY_PIGMENT;
 plane		return KEY_PLANE;
 plane_point	return KEY_PLANEPNT;
