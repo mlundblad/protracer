@@ -77,6 +77,7 @@ pigment		return KEY_PIGMENT;
 plane		return KEY_PLANE;
 plane_point	return KEY_PLANEPNT;
 pole		return KEY_POLE;
+pow             return KEY_POW;
 ppm		return KEY_PPM;
 red		return KEY_RED;
 reflection	return KEY_REFLECTION;
