@@ -151,7 +151,7 @@ int yyerror(char *s);
 %token KEY_X KEY_Y KEY_Z
 %token KEY_ABS KEY_ACOS KEY_ACOSH KEY_ASIN KEY_ASINH KEY_ATAN KEY_ATANH
 %token KEY_ATAN2 KEY_CEIL KEY_COS KEY_COSH KEY_DEGREES KEY_DIV KEY_EXP
-%token KEY_FLOOR KEY_INT KEY_LOG KEY_LN KEY_MAX
+%token KEY_FLOOR KEY_INT KEY_LOG KEY_LN KEY_MAX KEY_MIN
 %left PLUS MINUS
 %left TIMES DIVIDED
 %left POS NEG  // negation, unary -
@@ -534,6 +534,11 @@ NUMBER { $$ = $1; }
 | KEY_MAX LPAREN number COMMA numbers {
   $5->push_front($3);
   $$ = *std::max_element($5->begin(), $5->end());
+  delete $5;
+}
+| KEY_MIN LPAREN number COMMA numbers {
+  $5->push_front($3);
+  $$ = *std::min_element($5->begin(), $5->end());
   delete $5;
 }
 ;
