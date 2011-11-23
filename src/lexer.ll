@@ -79,6 +79,7 @@ plane_point	return KEY_PLANEPNT;
 pole		return KEY_POLE;
 pow             return KEY_POW;
 ppm		return KEY_PPM;
+radians         return KEY_RADIANS;
 red		return KEY_RED;
 reflection	return KEY_REFLECTION;
 rgb		return KEY_RGB;
