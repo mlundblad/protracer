@@ -544,7 +544,7 @@ NUMBER { $$ = $1; }
 }
 | KEY_MOD LPAREN number COMMA number RPAREN { $$ = std::fmod($3, $5); }
 | KEY_POW LPAREN number COMMA number RPAREN { $$ = std::pow($3, $5); }
-| KEY_RADIANS LPAREN number RPAREN { $$ = $3 / M_PI * 180.0; }
+| KEY_RADIANS LPAREN number RPAREN { $$ = $3 * M_PI / 180.0; }
 ;
 
 numbers: number { $$ = new std::list<float>($1); }
