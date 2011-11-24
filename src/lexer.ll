@@ -92,6 +92,7 @@ tan             return KEY_TAN;
 tanh            return KEY_TANH;
 triangle	return KEY_TRIANGLE;
 triangle_point	return KEY_TRIANGLEPNT;
+vdot            return KEY_VDOT;
 x               return KEY_X;
 y               return KEY_Y;
 z               return KEY_Z;
