@@ -532,12 +532,12 @@ NUMBER { $$ = $1; }
 | KEY_INT LPAREN number RPAREN { $$ = truncf($3); }
 | KEY_LOG LPAREN number RPAREN { $$ = std::log10($3); }
 | KEY_LN LPAREN number RPAREN { $$ = std::log($3); }
-| KEY_MAX LPAREN number COMMA numbers {
+| KEY_MAX LPAREN number COMMA numbers RPAREN {
   $5->push_front($3);
   $$ = *std::max_element($5->begin(), $5->end());
   delete $5;
 }
-| KEY_MIN LPAREN number COMMA numbers {
+| KEY_MIN LPAREN number COMMA numbers RPAREN {
   $5->push_front($3);
   $$ = *std::min_element($5->begin(), $5->end());
   delete $5;
