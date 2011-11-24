@@ -83,6 +83,8 @@ radians         return KEY_RADIANS;
 red		return KEY_RED;
 reflection	return KEY_REFLECTION;
 rgb		return KEY_RGB;
+select          return KEY_SELECT;
+sin             return KEY_SIN;
 sky		return KEY_SKY;
 sphere		return KEY_SPHERE;
 triangle	return KEY_TRIANGLE;
