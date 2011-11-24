@@ -88,6 +88,7 @@ sin             return KEY_SIN;
 sinh            return KEY_SINH;
 sky		return KEY_SKY;
 sphere		return KEY_SPHERE;
+tan             return KEY_TAN;
 triangle	return KEY_TRIANGLE;
 triangle_point	return KEY_TRIANGLEPNT;
 x               return KEY_X;
