@@ -85,6 +85,7 @@ reflection	return KEY_REFLECTION;
 rgb		return KEY_RGB;
 select          return KEY_SELECT;
 sin             return KEY_SIN;
+sinh            return KEY_SINH;
 sky		return KEY_SKY;
 sphere		return KEY_SPHERE;
 triangle	return KEY_TRIANGLE;

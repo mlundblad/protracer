@@ -152,7 +152,7 @@ int yyerror(char *s);
 %token KEY_ABS KEY_ACOS KEY_ACOSH KEY_ASIN KEY_ASINH KEY_ATAN KEY_ATANH
 %token KEY_ATAN2 KEY_CEIL KEY_COS KEY_COSH KEY_DEGREES KEY_DIV KEY_EXP
 %token KEY_FLOOR KEY_INT KEY_LOG KEY_LN KEY_MAX KEY_MIN KEY_MOD KEY_POW
-%token KEY_RADIANS KEY_SELECT KEY_SIN
+%token KEY_RADIANS KEY_SELECT KEY_SIN KEY_SINH
 %left PLUS MINUS
 %left TIMES DIVIDED
 %left POS NEG  // negation, unary -
@@ -550,6 +550,7 @@ NUMBER { $$ = $1; }
 | KEY_SELECT LPAREN number COMMA number COMMA number COMMA number RPAREN {
   $$ = $3 < 0 ? $5 : $3 == 0 ? $5 : $7; }
 | KEY_SIN LPAREN number RPAREN { $$ = std::sin($3); }
+| KEY_SINH LPAREN number RPAREN { $$ = std::sinh($3); }
 ;
 
 numbers: number { $$ = new std::list<float>($1); }
