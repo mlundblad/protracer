@@ -152,7 +152,8 @@ int yyerror(char *s);
 %token KEY_ABS KEY_ACOS KEY_ACOSH KEY_ASIN KEY_ASINH KEY_ATAN KEY_ATANH
 %token KEY_ATAN2 KEY_CEIL KEY_COS KEY_COSH KEY_DEGREES KEY_DIV KEY_EXP
 %token KEY_FLOOR KEY_INT KEY_LOG KEY_LN KEY_MAX KEY_MIN KEY_MOD KEY_POW
-%token KEY_RADIANS KEY_SELECT KEY_SIN KEY_SINH KEY_TAN KEY_TANH KEY_VDOT
+%token KEY_RADIANS KEY_SELECT KEY_SIN KEY_SINH KEY_TAN KEY_TANH KEY_VDOT KEY_VLENGTH
+%token KEY_FALSE KEY_NO KEY_ON KEY_OFF KEY_PI KEY_TRUE KEY_YES
 %left PLUS MINUS
 %left TIMES DIVIDED
 %left POS NEG  // negation, unary -
@@ -558,6 +559,17 @@ NUMBER { $$ = $1; }
   delete $3;
   delete $5;
 }
+| KEY_VLENGTH LPAREN vector RPAREN {
+  $$ = $3->length();
+  delete $3;
+}
+| KEY_FALSE { $$ = 0.0; }
+| KEY_NO { $$ = 0.0; }
+| KEY_OFF { $$ = 0.0; }
+| KEY_ON { $$ = 1.0; }
+| KEY_PI { $$ = M_PI; }
+| KEY_TRUE { $$ = 1.0; }
+| KEY_YES { $$ = 1.0; }
 ;
 
 numbers: number { $$ = new std::list<float>($1); }
