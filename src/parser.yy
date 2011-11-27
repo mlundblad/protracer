@@ -510,15 +510,15 @@ NUMBER { $$ = $1; }
   delete $1;
 }
 | color DOT KEY_RED {
-  $$ = $1->get_red();
+  $$ = float($1->get_red()) / Protracer::Color::COMPONENT_MAX;
   delete $1;
 }
 | color DOT KEY_GREEN {
-  $$ = $1->get_green();
+  $$ = float($1->get_green()) / Protracer::Color::COMPONENT_MAX;
   delete $1;
 }
 | color DOT KEY_BLUE {
-  $$ = $1->get_blue();
+  $$ = float($1->get_blue()) / Protracer::Color::COMPONENT_MAX;
   delete $1;
 }
 | KEY_ABS LPAREN number RPAREN { $$ = std::fabs($3); }
