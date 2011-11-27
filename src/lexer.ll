@@ -98,6 +98,7 @@ tanh            return KEY_TANH;
 triangle	return KEY_TRIANGLE;
 triangle_point	return KEY_TRIANGLEPNT;
 true            return KEY_TRUE;
+vcross          return KEY_VCROSS;
 vdot            return KEY_VDOT;
 vlength         return KEY_VLENGTH;
 x               return KEY_X;

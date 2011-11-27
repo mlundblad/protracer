@@ -154,6 +154,7 @@ int yyerror(char *s);
 %token KEY_FLOOR KEY_INT KEY_LOG KEY_LN KEY_MAX KEY_MIN KEY_MOD KEY_POW
 %token KEY_RADIANS KEY_SELECT KEY_SIN KEY_SINH KEY_TAN KEY_TANH KEY_VDOT KEY_VLENGTH
 %token KEY_FALSE KEY_NO KEY_ON KEY_OFF KEY_PI KEY_TRUE KEY_YES
+%token KEY_VCROSS
 %left PLUS MINUS
 %left TIMES DIVIDED
 %left POS NEG  // negation, unary -
@@ -249,7 +250,12 @@ vector:
         | number {
 	  $$ = new Protracer::Vector($1);
 	}
-	;
+| KEY_VCROSS LPAREN vector COMMA vector RPAREN {
+  $$ = new Protracer::Vector(*$3 * *$5);
+  delete $3;
+  delete $5;
+}
+;
 
 vector_builtin:
 KEY_X {
