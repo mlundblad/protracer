@@ -213,43 +213,43 @@ light:
 	;
 
 vector:
-	LANGLE number COMMA
-	number COMMA number RANGLE {
-	  $$ = new Protracer::Vector($2, $4, $6); }
-        | MINUS vector %prec NEG {
-	  $$ = new Protracer::Vector(-(*$2));
-	  delete $2;
-	}
-        | PLUS vector %prec POS {
-	  $$ = $2;
-	}
-        | vector PLUS vector {
-	  $$ = new Protracer::Vector((*$1) + (*$3));
-	  delete $1;
-	  delete $3;
-	}
-        | vector MINUS vector {
-	  $$ = new Protracer::Vector((*$1) - (*$3));
-	  delete $1;
-	  delete $3;
-	}
-        | number TIMES vector {
-	  $$ = new Protracer::Vector($1 * (*$3));
-	  delete $3;
-	}
-        | vector TIMES number {
-	  $$ = new Protracer::Vector((*$1) * $3);
-	  delete $1;
-	}
-        | LPAREN vector RPAREN {
-	  $$ = $2;
-	}
-        | vector_builtin {
-	  $$ = $1;
-	  }
-        | number {
-	  $$ = new Protracer::Vector($1);
-	}
+LANGLE number COMMA
+number COMMA number RANGLE {
+  $$ = new Protracer::Vector($2, $4, $6); }
+| MINUS vector %prec NEG {
+  $$ = new Protracer::Vector(-(*$2));
+  delete $2;
+}
+| PLUS vector %prec POS {
+  $$ = $2;
+}
+| vector PLUS vector {
+  $$ = new Protracer::Vector((*$1) + (*$3));
+  delete $1;
+  delete $3;
+}
+| vector MINUS vector {
+  $$ = new Protracer::Vector((*$1) - (*$3));
+  delete $1;
+  delete $3;
+}
+| number TIMES vector {
+  $$ = new Protracer::Vector($1 * (*$3));
+  delete $3;
+}
+| vector TIMES number {
+  $$ = new Protracer::Vector((*$1) * $3);
+  delete $1;
+}
+| LPAREN vector RPAREN {
+  $$ = $2;
+}
+| vector_builtin {
+  $$ = $1;
+  }
+| number {
+  $$ = new Protracer::Vector($1);
+  }
 | KEY_VCROSS LPAREN vector COMMA vector RPAREN {
   $$ = new Protracer::Vector(*$3 * *$5);
   delete $3;
