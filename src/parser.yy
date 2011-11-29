@@ -116,6 +116,7 @@ int yyerror(char *s);
   double	value;		        /* for numbers */
   char		*string;	/* for names */
   std::list<float>* number_list; // for scalar argument lists
+  bool          logical;
   Protracer::Vector*	vector;
   Protracer::Sphere*      sphere;
   Protracer::Triangle*    triangle;
@@ -155,6 +156,8 @@ int yyerror(char *s);
 %token KEY_RADIANS KEY_SELECT KEY_SIN KEY_SINH KEY_TAN KEY_TANH KEY_VDOT KEY_VLENGTH
 %token KEY_FALSE KEY_NO KEY_ON KEY_OFF KEY_PI KEY_TRUE KEY_YES
 %token KEY_VCROSS KEY_VNORMALIZE
+%left QUESTION COLON
+%left EQ
 %left PLUS MINUS
 %left TIMES DIVIDED
 %left POS NEG  // negation, unary -
@@ -185,6 +188,7 @@ int yyerror(char *s);
 %type <color> background
 %type <value> opt_hole
 %type <number_list> numbers
+%type <logical> logical;
 
 %%
 
@@ -236,20 +240,29 @@ number COMMA number RANGLE {
 | number TIMES vector {
   $$ = new Protracer::Vector($1 * (*$3));
   delete $3;
-}
+  }
 | vector TIMES number {
   $$ = new Protracer::Vector((*$1) * $3);
   delete $1;
+  }
+| logical QUESTION vector COLON vector {
+  if ($1) {
+    $$ = $3;
+    delete $5;
+  } else {
+    $$ = $5;
+    delete $3;
+  }
 }
 | LPAREN vector RPAREN {
   $$ = $2;
 }
 | vector_builtin {
   $$ = $1;
-  }
-| number {
+}
+/*| number {
   $$ = new Protracer::Vector($1);
-  }
+  }*/
 | KEY_VCROSS LPAREN vector COMMA vector RPAREN {
   $$ = new Protracer::Vector(*$3 * *$5);
   delete $3;
@@ -492,6 +505,7 @@ background:
 	}
 	;
 
+
 number:
 NUMBER { $$ = $1; }
 | number PLUS number { $$ = $1 + $3; }
@@ -580,10 +594,17 @@ NUMBER { $$ = $1; }
 | KEY_PI { $$ = M_PI; }
 | KEY_TRUE { $$ = 1.0; }
 | KEY_YES { $$ = 1.0; }
+| logical QUESTION number COLON number { $$ = $1 ? $3 : $5; }
 ;
 
 numbers: number { $$ = new std::list<float>($1); }
 | number COMMA numbers { $3->push_front($1); $$ = $3; }
+;
+
+logical: number EQ number { 
+  $$ = $1 == $3; }
+| number { $$ = $1 != 0.0; }
+;
 
 %%
 
