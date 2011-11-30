@@ -505,7 +505,7 @@ NUMBER { $$ = $1; }
 | KEY_SELECT LPAREN number COMMA number COMMA number RPAREN {
   $$ = $3 < 0 ? $5 : $7; }
 | KEY_SELECT LPAREN number COMMA number COMMA number COMMA number RPAREN {
-  $$ = $3 < 0 ? $5 : $3 == 0 ? $5 : $7; }
+  $$ = $3 < 0 ? $5 : $3 == 0 ? $7 : $9; }
 | KEY_SIN LPAREN number RPAREN { $$ = std::sin($3); }
 | KEY_SINH LPAREN number RPAREN { $$ = std::sinh($3); }
 | KEY_TAN LPAREN number RPAREN { $$ = std::tan($3); }
