@@ -385,7 +385,7 @@ opt_reflection:	 { $$ = Protracer::Finish::DEFAULT_REFLECTION; }
 	;
 
 reflection:
-        KEY_REFLECTION number { $$ = $2; }
+KEY_REFLECTION number { $$ = $2; }
 	;
 
 color:
@@ -533,7 +533,6 @@ numbers: number { $$ = new std::list<float>($1); }
 | number COMMA numbers { $3->push_front($1); $$ = $3; }
 ;
 
-
 vector:
 LANGLE number COMMA
 number COMMA number RANGLE {
@@ -603,9 +602,9 @@ KEY_X {
   $$ = new Protracer::Vector(Protracer::Vector::unit_z());
   };
 
-
-logical: number EQ number { 
-  $$ = $1 == $3; }
+logical: number EQ number { $$ = $1 == $3; }
+| number LANGLE number { $$ = $1 < $3; }
+| number RANGLE number { $$ = $1 > $3; }
 | number { $$ = $1 != 0.0; }
 ;
 
