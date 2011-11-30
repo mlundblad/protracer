@@ -578,9 +578,9 @@ number COMMA number RANGLE {
 | vector_builtin {
   $$ = $1;
 }
-/*| number {
+| number {
   $$ = new Protracer::Vector($1);
-  }*/
+}
 | KEY_VCROSS LPAREN vector COMMA vector RPAREN {
   $$ = new Protracer::Vector(*$3 * *$5);
   delete $3;
