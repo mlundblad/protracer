@@ -216,74 +216,6 @@ light:
 	}
 	;
 
-vector:
-LANGLE number COMMA
-number COMMA number RANGLE {
-  $$ = new Protracer::Vector($2, $4, $6); }
-| MINUS vector %prec NEG {
-  $$ = new Protracer::Vector(-(*$2));
-  delete $2;
-}
-| PLUS vector %prec POS {
-  $$ = $2;
-}
-| vector PLUS vector {
-  $$ = new Protracer::Vector((*$1) + (*$3));
-  delete $1;
-  delete $3;
-}
-| vector MINUS vector {
-  $$ = new Protracer::Vector((*$1) - (*$3));
-  delete $1;
-  delete $3;
-}
-| number TIMES vector {
-  $$ = new Protracer::Vector($1 * (*$3));
-  delete $3;
-  }
-| vector TIMES number {
-  $$ = new Protracer::Vector((*$1) * $3);
-  delete $1;
-  }
-| logical QUESTION vector COLON vector {
-  if ($1) {
-    $$ = $3;
-    delete $5;
-  } else {
-    $$ = $5;
-    delete $3;
-  }
-}
-| LPAREN vector RPAREN {
-  $$ = $2;
-}
-| vector_builtin {
-  $$ = $1;
-}
-/*| number {
-  $$ = new Protracer::Vector($1);
-  }*/
-| KEY_VCROSS LPAREN vector COMMA vector RPAREN {
-  $$ = new Protracer::Vector(*$3 * *$5);
-  delete $3;
-  delete $5;
-}
-| KEY_VNORMALIZE LPAREN vector RPAREN {
-  $$ = new Protracer::Vector($3->normal());
-  delete $3;
-}
-;
-
-vector_builtin:
-KEY_X {
-  $$ = new Protracer::Vector(Protracer::Vector::unit_x());
-}
-| KEY_Y {
-  $$ = new Protracer::Vector(Protracer::Vector::unit_y());
-  }
-| KEY_Z {
-  $$ = new Protracer::Vector(Protracer::Vector::unit_z());
-  };
 
 plane:
 	KEY_PLANE LBRACE
@@ -600,6 +532,77 @@ NUMBER { $$ = $1; }
 numbers: number { $$ = new std::list<float>($1); }
 | number COMMA numbers { $3->push_front($1); $$ = $3; }
 ;
+
+
+vector:
+LANGLE number COMMA
+number COMMA number RANGLE {
+  $$ = new Protracer::Vector($2, $4, $6); }
+| MINUS vector %prec NEG {
+  $$ = new Protracer::Vector(-(*$2));
+  delete $2;
+}
+| PLUS vector %prec POS {
+  $$ = $2;
+}
+| vector PLUS vector {
+  $$ = new Protracer::Vector((*$1) + (*$3));
+  delete $1;
+  delete $3;
+}
+| vector MINUS vector {
+  $$ = new Protracer::Vector((*$1) - (*$3));
+  delete $1;
+  delete $3;
+}
+| number TIMES vector {
+  $$ = new Protracer::Vector($1 * (*$3));
+  delete $3;
+  }
+| vector TIMES number {
+  $$ = new Protracer::Vector((*$1) * $3);
+  delete $1;
+  }
+| logical QUESTION vector COLON vector {
+  if ($1) {
+    $$ = $3;
+    delete $5;
+  } else {
+    $$ = $5;
+    delete $3;
+  }
+}
+| LPAREN vector RPAREN {
+  $$ = $2;
+}
+| vector_builtin {
+  $$ = $1;
+}
+/*| number {
+  $$ = new Protracer::Vector($1);
+  }*/
+| KEY_VCROSS LPAREN vector COMMA vector RPAREN {
+  $$ = new Protracer::Vector(*$3 * *$5);
+  delete $3;
+  delete $5;
+}
+| KEY_VNORMALIZE LPAREN vector RPAREN {
+  $$ = new Protracer::Vector($3->normal());
+  delete $3;
+}
+;
+
+vector_builtin:
+KEY_X {
+  $$ = new Protracer::Vector(Protracer::Vector::unit_x());
+}
+| KEY_Y {
+  $$ = new Protracer::Vector(Protracer::Vector::unit_y());
+  }
+| KEY_Z {
+  $$ = new Protracer::Vector(Protracer::Vector::unit_z());
+  };
+
 
 logical: number EQ number { 
   $$ = $1 == $3; }
