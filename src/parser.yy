@@ -528,6 +528,11 @@ NUMBER { $$ = $1; }
 | KEY_TRUE { $$ = 1.0; }
 | KEY_YES { $$ = 1.0; }
 | logical QUESTION number COLON number { $$ = $1 ? $3 : $5; }
+// need to allow define the following rules here as well as as for logical
+// to allow treating float values as logical values
+| number AND number { $$ = ($1 != 0.0) && ($3 != 0.0); }
+| number OR number { $$ = ($1 != 0.0) || ($3 != 0.0); }
+| NOT number { $$ = $2 == 0.0; }
 ;
 
 numbers: number { $$ = new std::list<float>($1); }
@@ -614,6 +619,7 @@ logical: number EQ number { $$ = $1 == $3; }
 | logical AND logical { $$ = $1 && $3; }
 | logical OR logical { $$ = $1 || $3; }
 | NOT logical { $$ = !$2; }
+| LPAREN logical RPAREN { $$ = $2; }
 | number { $$ = $1 != 0.0; }
 ;
 
