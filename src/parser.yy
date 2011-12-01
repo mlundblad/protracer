@@ -533,6 +533,8 @@ numbers: number { $$ = new std::list<float>($1); }
 | number COMMA numbers { $3->push_front($1); $$ = $3; }
 ;
 
+// the rules for vector expression needs to come after the ones for scalar
+// expressions above to avoid misparsing of scalar expressions
 vector:
 LANGLE number COMMA
 number COMMA number RANGLE {
