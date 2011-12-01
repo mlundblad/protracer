@@ -157,7 +157,7 @@ int yyerror(char *s);
 %token KEY_FALSE KEY_NO KEY_ON KEY_OFF KEY_PI KEY_TRUE KEY_YES
 %token KEY_VCROSS KEY_VNORMALIZE
 %left QUESTION COLON
-%left EQ
+%left EQ NOT_EQ LANGLE RANGLE LT_EQ GT_EQ
 %left PLUS MINUS
 %left TIMES DIVIDED
 %left POS NEG  // negation, unary -
@@ -603,8 +603,11 @@ KEY_X {
   };
 
 logical: number EQ number { $$ = $1 == $3; }
+| number NOT_EQ number { $$ = $1 != $3; }
 | number LANGLE number { $$ = $1 < $3; }
 | number RANGLE number { $$ = $1 > $3; }
+| number LT_EQ number { $$ = $1 <= $3; }
+| number GT_EQ number { $$ = $1 >= $3; }
 | number { $$ = $1 != 0.0; }
 ;
 

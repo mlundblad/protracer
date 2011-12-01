@@ -109,6 +109,9 @@ z               return KEY_Z;
 
 "{"		return LBRACE;
 "}"		return RBRACE;
+"<="            return LT_EQ;
+">="            return GT_EQ;
+"!="            return NOT_EQ;
 "<"		return LANGLE;
 ">"		return RANGLE;
 "("             return LPAREN;
