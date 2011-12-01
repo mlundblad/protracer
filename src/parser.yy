@@ -535,8 +535,11 @@ NUMBER { $$ = $1; }
 | NOT number { $$ = $2 == 0.0; }
 ;
 
-numbers: number { $$ = new std::list<float>($1); }
-| number COMMA numbers { $3->push_front($1); $$ = $3; }
+numbers: number {
+  $$ = new std::list<float>;
+  $$->push_back($1);
+}
+| number COMMA numbers { $3->push_front($1); $$ = $3;}
 ;
 
 // the rules for vector expression needs to come after the ones for scalar
