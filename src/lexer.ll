@@ -125,6 +125,9 @@ z               return KEY_Z;
 "="             return EQ;
 "?"             return QUESTION;
 ":"             return COLON;
+"&"             return AND;
+"|"             return OR;
+"!"             return NOT;
 
 {number}	{ yylval.value = atof(yytext); return NUMBER; }
 \"[^\"]*\"	{ yylval.string = strdup(yytext+1);
