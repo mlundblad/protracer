@@ -32,7 +32,7 @@ int linecount = 1;
 %}
 
 digit	[0-9]
-number	"-"?{digit}+("."{digit}+)?
+number	"-"?{digit}*("."{digit}+)?
 name	[_a-zA-Z]+
 
 %%
