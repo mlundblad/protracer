@@ -138,8 +138,9 @@ int yyerror(char *s);
 
 %token <value> NUMBER
 %token <string> STRING
+%token <string> NAME
 
-%token NAME UNCAUGHT
+%token UNCAUGHT
 
 %token KEY_SPHERE KEY_PIGMENT KEY_COLOR
 %token KEY_FINISH KEY_TRIANGLE KEY_TRIANGLEPNT
@@ -162,6 +163,10 @@ int yyerror(char *s);
 %left PLUS MINUS
 %left TIMES DIVIDED
 %left POS NEG NOT // negation, unary -, logical not
+
+%token SEMICOLON
+
+%token DIRECTIVE_DECLARE
 
 %type <objectList> scene
 %type <object> item
@@ -190,13 +195,19 @@ int yyerror(char *s);
 %type <value> opt_hole
 %type <number_list> numbers
 %type <logical> logical;
+%type <string> declaration;
 
 %%
 
 scene	:	
-          item { }
-        | scene item { }
+          item_or_declaration { }
+        | scene item_or_declaration { }
 	;
+
+item_or_declaration:
+item {}
+| declaration {}
+;
 
 item:	
           sphere     { global_object_list.push_back($1); }
@@ -625,6 +636,15 @@ logical: number EQ number { $$ = $1 == $3; }
 | LPAREN logical RPAREN { $$ = $2; }
 | number { $$ = $1 != 0.0; }
 ;
+
+// variable declarations
+declaration:
+DIRECTIVE_DECLARE NAME EQ number SEMICOLON {
+  std::cerr << "Declaring " << $2 << " = " << $4 << std::endl;
+  free($2);
+}
+;
+
 
 %%
 

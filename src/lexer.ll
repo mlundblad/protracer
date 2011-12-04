@@ -34,7 +34,9 @@ int linecount = 1;
 digit	[0-9]
 exponent [eE]
 number	"-"?{digit}*("."{digit}+)?({exponent}("-"|"+")?{digit}+)?
-name	[_a-zA-Z]+
+alpha    [_a-zA-Z]
+alphanum ({alpha}|{digit})
+name	{alpha}{alphanum}*
 
 %%
 "//"[^\n]*\n 	{ linecount++; } /* ignore comments, but count line */
@@ -129,6 +131,9 @@ z               return KEY_Z;
 "&"             return AND;
 "|"             return OR;
 "!"             return NOT;
+";"             return SEMICOLON;
+
+"#declare"      return DIRECTIVE_DECLARE;
 
 {number}	{ yylval.value = atof(yytext); return NUMBER; }
 \"[^\"]*\"	{ yylval.string = strdup(yytext+1);
@@ -136,7 +141,11 @@ z               return KEY_Z;
 	          return STRING;
 		}
 
-{name}		return NAME;
+{name}		{
+  yylval.string = strdup(yytext);
+  return NAME;
+}
+
 \n 		{ linecount++; }
 [ \t\r]		;
 
