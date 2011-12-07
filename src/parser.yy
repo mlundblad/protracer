@@ -41,6 +41,7 @@
 #include "ppm_file.h"
 
 #include "parameters.h"
+#include "declaration.h"
 
   Protracer::Parameters global_parameters;
   std::vector<Protracer::Object*> global_object_list;
@@ -544,6 +545,21 @@ NUMBER { $$ = $1; }
 | number AND number { $$ = ($1 != 0.0) && ($3 != 0.0); }
 | number OR number { $$ = ($1 != 0.0) || ($3 != 0.0); }
 | NOT number { $$ = $2 == 0.0; }
+| NAME {
+  if (Protracer::Declaration::is_defined($1)) {
+    Protracer::Declaration d = Protracer::Declaration::get_declaration($1);
+
+    if (d.get_type() == Protracer::Declaration::SCALAR) {
+      $$ = d.get_scalar();
+    } else {
+      std::cerr << "Variable " << $1 << " is not a scalar value." << std::endl;
+      // TODO: trigger a parser error...
+    }
+  } else {
+    std::cerr << "Variable " << $1 << " is undefined." << std::endl;
+    // TODO: trigger a parser error...
+  }
+}
 ;
 
 numbers: number {
@@ -641,6 +657,7 @@ logical: number EQ number { $$ = $1 == $3; }
 declaration:
 DIRECTIVE_DECLARE NAME EQ number SEMICOLON {
   std::cerr << "Declaring " << $2 << " = " << $4 << std::endl;
+  Protracer::Declaration::add_declaration(Protracer::Declaration($2, $4));
   free($2);
 }
 ;
