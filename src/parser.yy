@@ -657,7 +657,7 @@ logical: number EQ number { $$ = $1 == $3; }
 declaration:
 DIRECTIVE_DECLARE NAME EQ number SEMICOLON {
   std::cerr << "Declaring " << $2 << " = " << $4 << std::endl;
-  Protracer::Declaration::add_declaration(Protracer::Declaration($2, $4));
+  Protracer::Declaration::add_global_declaration(Protracer::Declaration($2, $4));
   free($2);
 }
 ;

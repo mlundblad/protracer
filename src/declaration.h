@@ -51,10 +51,10 @@ namespace Protracer {
     
     static bool is_defined(const std::string& name);
     static Declaration get_declaration(const std::string& name);
-    static void add_declaration(Declaration decl);
-    static void remove_declaration(const std::string& name);
+    static void add_global_declaration(Declaration decl);
+    static void remove_global_declaration(const std::string& name);
 
-    static std::map<std::string, Declaration> declarations;
+    static std::map<std::string, Declaration> global_declarations;
 
   private:
     

@@ -22,7 +22,7 @@
 
 namespace Protracer {
 
-  std::map<std::string, Declaration> Declaration::declarations =
+  std::map<std::string, Declaration> Declaration::global_declarations =
     std::map<std::string, Declaration>();
 
   Declaration::Declaration(const std::string& name, float scalar)
@@ -42,17 +42,17 @@ namespace Protracer {
   bool
   Declaration::is_defined(const std::string& name)
   {
-    return declarations.find(name) != declarations.end();
+    return global_declarations.find(name) != global_declarations.end();
   }
   
   Declaration
   Declaration::get_declaration(const std::string& name)
   {
-    return (declarations.find(name))->second;
+    return (global_declarations.find(name))->second;
   }
 
   void
-  Declaration::add_declaration(Declaration decl)
+  Declaration::add_global_declaration(Declaration decl)
   {
     if (is_defined(decl.get_name())) {
       Declaration d = get_declaration(decl.get_name());
@@ -62,18 +62,19 @@ namespace Protracer {
 	delete d.get_object();
     }
 
-    declarations.insert(std::pair<std::string, Declaration>(decl.get_name(), decl));
+    global_declarations.insert(std::pair<std::string, Declaration>(decl.get_name(),
+								   decl));
   }
 
   void
-  Declaration::remove_declaration(const std::string& name)
+  Declaration::remove_global_declaration(const std::string& name)
   {
     Declaration d = get_declaration(name);
 
     if (d.get_type() == OBJECT)
       delete d.get_object();
 
-    declarations.erase(name);
+    global_declarations.erase(name);
   }
 
 }
