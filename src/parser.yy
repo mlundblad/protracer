@@ -25,6 +25,7 @@
 #include <vector>
 #include <iostream>
 #include <cmath>
+#include <cstdio>
 #include <math.h>
 #include "vector.h"
 #include "plane.h"
@@ -168,6 +169,7 @@ int yyerror(char *s);
 %token SEMICOLON
 
 %token DIRECTIVE_DECLARE
+%token DIRECTIVE_UNDEF
 
 %type <objectList> scene
 %type <object> item
@@ -197,6 +199,7 @@ int yyerror(char *s);
 %type <number_list> numbers
 %type <logical> logical;
 %type <string> declaration;
+//%type <string> undefine;
 
 %%
 
@@ -208,6 +211,7 @@ scene	:
 item_or_declaration:
 item {}
 | declaration {}
+| undefine {}
 ;
 
 item:	
@@ -662,6 +666,18 @@ DIRECTIVE_DECLARE NAME EQ number SEMICOLON {
 }
 ;
 
+undefine:
+DIRECTIVE_UNDEF NAME {
+  if (Protracer::Declaration::is_defined($2)) {
+    Protracer::Declaration::remove_global_declaration($2);
+  } else {
+    char error_c[128];
+    std::snprintf(error_c, 128, "variable %s is not defined.", $2);
+    yyerror(error_c);
+    YYERROR;
+  }
+}
+;
 
 %%
 

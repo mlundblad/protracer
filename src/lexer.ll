@@ -134,6 +134,7 @@ z               return KEY_Z;
 ";"             return SEMICOLON;
 
 "#declare"      return DIRECTIVE_DECLARE;
+"#undef"        return DIRECTIVE_UNDEF;
 
 {number}	{ yylval.value = atof(yytext); return NUMBER; }
 \"[^\"]*\"	{ yylval.string = strdup(yytext+1);
