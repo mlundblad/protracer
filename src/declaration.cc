@@ -32,6 +32,21 @@ namespace Protracer {
     value.scalar = scalar;
   }
 
+  Declaration::Declaration(const std::string& name, const Vector& vector)
+  {
+    type = VECTOR;
+    this->name = name;
+    value.vector = new Vector(vector);
+  }
+
+  Declaration::Declaration(const std::string& name, const Color& color)
+  {
+    type = COLOR;
+    this->name = name;
+    value.color = new Color(color);
+  }
+
+
   Declaration::Declaration(const std::string& name, Object* object)
   {
     type = OBJECT;
@@ -60,6 +75,10 @@ namespace Protracer {
       // if it's a heap-allocated object, delete it
       if (d.get_type() == OBJECT)
 	delete d.get_object();
+      else if (d.get_type() == VECTOR)
+	delete d.value.vector;
+      else if (d.get_type() == COLOR)
+	delete d.value.color;
     }
 
     global_declarations.insert(std::pair<std::string, Declaration>(decl.get_name(),
@@ -73,6 +92,10 @@ namespace Protracer {
 
     if (d.get_type() == OBJECT)
       delete d.get_object();
+    else if (d.get_type() == VECTOR)
+      delete d.value.vector;
+    else if (d.get_type() == COLOR)
+      delete d.value.color;
 
     global_declarations.erase(name);
   }

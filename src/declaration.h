@@ -33,19 +33,27 @@ namespace Protracer {
 
     enum Type {
       SCALAR,
+      VECTOR,
+      COLOR,
       OBJECT
     } type;
 
     union Value {
       float scalar;
+      Vector* vector;
+      Color* color;
       Object* object;
     } value;
 
     Declaration(const std::string& name, float scalar);
+    Declaration(const std::string& name, const Vector& vector);
+    Declaration(const std::string& name, const Color& color); 
     Declaration(const std::string& name, Object* object);
 
     const std::string get_name() const { return name; }
     const float get_scalar() const { return value.scalar; }
+    const Vector& get_vector() const { return *(value.vector); }
+    const Color& get_color() const { return *(value.color); }
     const Object* get_object() const { return type == OBJECT ? value.object : 0; }
     Type get_type() const { return type; }
     

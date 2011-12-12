@@ -63,6 +63,17 @@ namespace Protracer {
 
     float dot(const Vector& u) const { return x * u.x + y * u.y + z * u.z; }
 
+    Vector multiply_elements(const Vector& u) const
+    {
+      return Vector(x * u.x, y * u.y, z * u.z);
+    }
+
+    Vector divide_elements(const Vector& u) const
+    {
+      return Vector(x / u.x, y / u.y, z / u.z);
+    }
+
+
     float length() const { return sqrt(x * x + y * y + z * z); }
     Vector normal() const;
 

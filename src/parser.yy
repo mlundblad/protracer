@@ -180,6 +180,10 @@ int yyerror(char *s);
 %type <vector> vector
 %type <vector> vector_builtin;
 %type <value> number
+%type <value> number_constant
+%type <value> number_function
+%type <value> number_dot
+%type <value> number_promotable_to_vector
 %type <camera> camera
 %type <color> color
 %type <sphereOptions> sphere_opt
@@ -199,7 +203,6 @@ int yyerror(char *s);
 %type <number_list> numbers
 %type <logical> logical;
 %type <string> declaration;
-//%type <string> undefine;
 
 %%
 
@@ -406,25 +409,40 @@ KEY_REFLECTION number { $$ = $2; }
 	;
 
 color:
-	KEY_COLOR
-	KEY_RED number
-	KEY_GREEN number
-	KEY_BLUE number {
-	  $$ = new Protracer::Color($3 * Protracer::Color::COMPONENT_MAX, 
-				    $5 * Protracer::Color::COMPONENT_MAX, 
-				    $7 * Protracer::Color::COMPONENT_MAX);
-	}
-	|
-	KEY_COLOR KEY_RGB vector {
-	  $$ = new Protracer::Color($3->get_x() *
-				    Protracer::Color::COMPONENT_MAX,
-				    $3->get_y() *
-				    Protracer::Color::COMPONENT_MAX,
-				    $3->get_z() *
-				    Protracer::Color::COMPONENT_MAX);
-          delete $3;
-	}
-	;
+KEY_COLOR
+KEY_RED number
+KEY_GREEN number
+KEY_BLUE number {
+  $$ = new Protracer::Color($3 * Protracer::Color::COMPONENT_MAX, 
+			    $5 * Protracer::Color::COMPONENT_MAX, 
+			    $7 * Protracer::Color::COMPONENT_MAX);
+}
+|
+KEY_COLOR KEY_RGB vector {
+  $$ = new Protracer::Color($3->get_x() *
+			    Protracer::Color::COMPONENT_MAX,
+			    $3->get_y() *
+			    Protracer::Color::COMPONENT_MAX,
+			    $3->get_z() *
+			    Protracer::Color::COMPONENT_MAX);
+  delete $3;
+}
+| NAME {
+  if (Protracer::Declaration::is_defined($1)) {
+    Protracer::Declaration d = Protracer::Declaration::get_declaration($1);
+    
+    if (d.get_type() == Protracer::Declaration::COLOR) {
+      $$ = new Protracer::Color(d.get_color());
+    } else {
+      std::cerr << "Variable " << $1 << " is not a color value." << std::endl;
+      // TODO: trigger a parser error...
+    }
+  } else {
+    std::cerr << "Variable " << $1 << " is undefined." << std::endl;
+    // TODO: trigger a parser error...
+  }
+}
+;
 
 camera:
 	KEY_CAMERA LBRACE
@@ -464,7 +482,42 @@ NUMBER { $$ = $1; }
 | MINUS number %prec NEG { $$ = -$2; }
 | PLUS number %prec POS { $$ = $2; }
 | LPAREN number RPAREN { $$ = $2; }
-| vector DOT KEY_X {
+| number_dot { $$ = $1; }
+| number_function { $$ = $1; }
+| number_constant { $$ = $1; }
+| logical QUESTION number COLON number { $$ = $1 ? $3 : $5; }
+// need to allow define the following rules here as well as as for logical
+// to allow treating float values as logical values
+| number AND number { $$ = ($1 != 0.0) && ($3 != 0.0); }
+| number OR number { $$ = ($1 != 0.0) || ($3 != 0.0); }
+| NOT number { $$ = $2 == 0.0; }
+| NAME {
+  if (Protracer::Declaration::is_defined($1)) {
+    Protracer::Declaration d = Protracer::Declaration::get_declaration($1);
+
+    if (d.get_type() == Protracer::Declaration::SCALAR) {
+      $$ = d.get_scalar();
+    } else {
+      std::cerr << "Variable " << $1 << " is not a scalar value." << std::endl;
+      // TODO: trigger a parser error...
+    }
+  } else {
+    std::cerr << "Variable " << $1 << " is undefined." << std::endl;
+    // TODO: trigger a parser error...
+  }
+}
+;
+
+number_promotable_to_vector:
+NUMBER { $$ = $1; }
+| number_dot { $$ = $1; }
+| number_function { $$ = $1; }
+| number_constant { $$ = $1; }
+;
+
+
+number_dot:
+vector DOT KEY_X {
   $$ = $1->get_x();
   delete $1;
 }
@@ -488,7 +541,10 @@ NUMBER { $$ = $1; }
   $$ = float($1->get_blue()) / Protracer::Color::COMPONENT_MAX;
   delete $1;
 }
-| KEY_ABS LPAREN number RPAREN { $$ = std::fabs($3); }
+;
+
+number_function:
+KEY_ABS LPAREN number RPAREN { $$ = std::fabs($3); }
 | KEY_ACOS LPAREN number RPAREN { $$ = std::acos($3); }
 | KEY_ACOSH LPAREN number RPAREN { $$ = acoshf($3); }
 | KEY_ASIN LPAREN number RPAREN { $$ = std::asin($3); }
@@ -536,34 +592,16 @@ NUMBER { $$ = $1; }
   $$ = $3->length();
   delete $3;
 }
-| KEY_FALSE { $$ = 0.0; }
+;
+
+number_constant:
+KEY_FALSE { $$ = 0.0; }
 | KEY_NO { $$ = 0.0; }
 | KEY_OFF { $$ = 0.0; }
 | KEY_ON { $$ = 1.0; }
 | KEY_PI { $$ = M_PI; }
 | KEY_TRUE { $$ = 1.0; }
 | KEY_YES { $$ = 1.0; }
-| logical QUESTION number COLON number { $$ = $1 ? $3 : $5; }
-// need to allow define the following rules here as well as as for logical
-// to allow treating float values as logical values
-| number AND number { $$ = ($1 != 0.0) && ($3 != 0.0); }
-| number OR number { $$ = ($1 != 0.0) || ($3 != 0.0); }
-| NOT number { $$ = $2 == 0.0; }
-| NAME {
-  if (Protracer::Declaration::is_defined($1)) {
-    Protracer::Declaration d = Protracer::Declaration::get_declaration($1);
-
-    if (d.get_type() == Protracer::Declaration::SCALAR) {
-      $$ = d.get_scalar();
-    } else {
-      std::cerr << "Variable " << $1 << " is not a scalar value." << std::endl;
-      // TODO: trigger a parser error...
-    }
-  } else {
-    std::cerr << "Variable " << $1 << " is undefined." << std::endl;
-    // TODO: trigger a parser error...
-  }
-}
 ;
 
 numbers: number {
@@ -596,15 +634,18 @@ number COMMA number RANGLE {
   delete $1;
   delete $3;
 }
-| number TIMES vector {
-  $$ = new Protracer::Vector($1 * (*$3));
-  delete $3;
-  }
-| vector TIMES number {
-  $$ = new Protracer::Vector((*$1) * $3);
+| vector TIMES vector {
+  $$ = new Protracer::Vector($1->multiply_elements(*$3));
   delete $1;
-  }
-| logical QUESTION vector COLON vector {
+  delete $3;
+}
+| vector DIVIDED vector {
+  $$ = new Protracer::Vector($1->divide_elements(*$3));
+  delete $1;
+  delete $3;
+}
+
+/*| logical QUESTION vector COLON vector {
   if ($1) {
     $$ = $3;
     delete $5;
@@ -612,14 +653,31 @@ number COMMA number RANGLE {
     $$ = $5;
     delete $3;
   }
-}
+  }*/
 | LPAREN vector RPAREN {
   $$ = $2;
 }
 | vector_builtin {
   $$ = $1;
 }
-| number {
+| NAME {
+  if (Protracer::Declaration::is_defined($1)) {
+    Protracer::Declaration d = Protracer::Declaration::get_declaration($1);
+
+    if (d.get_type() == Protracer::Declaration::VECTOR) {
+      $$ = new Protracer::Vector(d.get_vector());
+    } else if (d.get_type() == Protracer::Declaration::SCALAR) {
+      $$ = new Protracer::Vector(d.get_scalar());
+    } else {
+      std::cerr << "Variable " << $1 << " is not a vector value." << std::endl;
+      // TODO: trigger a parser error...
+    }
+  } else {
+    std::cerr << "Variable " << $1 << " is undefined." << std::endl;
+    // TODO: trigger a parser error...
+  }
+} 
+| number_promotable_to_vector {
   $$ = new Protracer::Vector($1);
 }
 | KEY_VCROSS LPAREN vector COMMA vector RPAREN {
@@ -663,6 +721,16 @@ DIRECTIVE_DECLARE NAME EQ number SEMICOLON {
   std::cerr << "Declaring " << $2 << " = " << $4 << std::endl;
   Protracer::Declaration::add_global_declaration(Protracer::Declaration($2, $4));
   free($2);
+}
+| DIRECTIVE_DECLARE NAME EQ vector SEMICOLON {
+  Protracer::Declaration::add_global_declaration(Protracer::Declaration($2, *$4));
+  free($2);
+  delete $4;
+}
+| DIRECTIVE_DECLARE NAME EQ color SEMICOLON {
+  Protracer::Declaration::add_global_declaration(Protracer::Declaration($2, *$4));
+  free($2);
+  delete $4;
 }
 ;
 
