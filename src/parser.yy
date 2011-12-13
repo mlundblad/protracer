@@ -700,6 +700,10 @@ number COMMA number RANGLE {
   delete $1;
   delete $3;
 }
+| NOT vector {
+  $$ = new Protracer::Vector(!$2->get_x(), !$2->get_y(), !$2->get_z());
+  delete $2;
+}
 
 
 /*| logical QUESTION vector COLON vector {
