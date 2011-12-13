@@ -658,6 +658,21 @@ number COMMA number RANGLE {
   delete $1;
   delete $3;
 }
+| vector LANGLE vector {
+  $$ = new Protracer::Vector($1->get_x() < $3->get_x(),
+			     $1->get_y() < $3->get_y(),
+			     $1->get_z() < $3->get_z());
+  delete $1;
+  delete $3;
+}
+| vector RANGLE vector {
+  $$ = new Protracer::Vector($1->get_x() > $3->get_x(),
+			     $1->get_y() > $3->get_y(),
+			     $1->get_z() > $3->get_z());
+  delete $1;
+  delete $3;
+}
+
 
 /*| logical QUESTION vector COLON vector {
   if ($1) {
