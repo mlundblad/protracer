@@ -704,17 +704,15 @@ number COMMA number RANGLE {
   $$ = new Protracer::Vector(!$2->get_x(), !$2->get_y(), !$2->get_z());
   delete $2;
 }
-
-
-/*| logical QUESTION vector COLON vector {
-  if ($1) {
-    $$ = $3;
-    delete $5;
-  } else {
+| vector QUESTION vector COLON vector {
+  if ($1->get_x() == 0.0 && $1->get_y() == 0.0 && $1->get_z() == 0.0) {
     $$ = $5;
     delete $3;
+  } else {
+    $$ = $3;
+    delete $5;
   }
-  }*/
+}
 | LPAREN vector RPAREN {
   $$ = $2;
 }
