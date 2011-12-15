@@ -116,6 +116,7 @@ int yyerror(char *s);
 
 %union {
   double	value;		        /* for numbers */
+  double*       value_opt;      /* for optional numeric values */
   char		*string;	/* for names */
   std::list<float>* number_list; // for scalar argument lists
   bool          logical;
@@ -195,8 +196,8 @@ int yyerror(char *s);
 %type <bitmap> image
 %type <value> reflection
 %type <value> diffuse
-%type <value> opt_diffuse
-%type <value> opt_reflection
+%type <value_opt> opt_diffuse
+%type <value_opt> opt_reflection
 %type <light> light
 %type <color> background
 %type <value> opt_hole
@@ -383,26 +384,50 @@ opt_finish: { $$ = new Protracer::Finish(Protracer::Finish::DEFAULT_DIFFUSION,
         | finish { $$ = $1; } 
 	;
 
-finish:
-	KEY_FINISH LBRACE 
-	opt_diffuse
-	opt_reflection
-	RBRACE { $$ = new Protracer::Finish($3, $4); }
-	;
+finish: KEY_FINISH LBRACE opt_diffuse opt_reflection RBRACE {
+  $$ = new Protracer::Finish($3 ? *$3 : Protracer::Finish::DEFAULT_DIFFUSION,
+			     $4 ? *$4 : Protracer::Finish::DEFAULT_REFLECTION);
+  delete $3;
+  delete $4;
+}
+| KEY_FINISH LBRACE NAME opt_diffuse opt_reflection RBRACE {
+  if (Protracer::Declaration::is_defined($3)) {
+    Protracer::Declaration d = Protracer::Declaration::get_declaration($3);
 
-opt_diffuse: 	{ $$ = Protracer::Finish::DEFAULT_DIFFUSION; }
-          /* empty */
-        | diffuse { $$ = $1; }
-        ;
+    if (d.get_type() == Protracer::Declaration::FINISH) {
+      $$ = new Protracer::Finish(d.get_finish());
+      
+      if ($4 != 0)
+	$$->set_diffusion(*$4);
+      if ($5 != 0)
+	$$->set_reflection(*$5);
+    } else {
+      std::cerr << "Variable " << $3 << " is not a finish." << std::endl;
+      // TODO: trigger a parser error
+    }
+  } else {
+    std::cerr << "Variable " << $3 << " is not defined." << std::endl;
+    // TODO: trigger a parser error
+  }
+  free($3);
+  delete $4;
+  delete $5;
+}
+;
+
+opt_diffuse:
+/* empty */ { $$ = 0; }
+| diffuse { $$ = new double($1); }
+;
 
 diffuse:
         KEY_DIFFUSE number { $$ = $2; }
 	;
 
-opt_reflection:	 { $$ = Protracer::Finish::DEFAULT_REFLECTION; }
-          /* empty */
-        | reflection { $$ = $1; }
-	;
+opt_reflection:
+/* empty */ { $$ = 0; }
+| reflection { $$ = new double($1); }
+;
 
 reflection:
 KEY_REFLECTION number { $$ = $2; }
@@ -505,6 +530,7 @@ NUMBER { $$ = $1; }
     std::cerr << "Variable " << $1 << " is undefined." << std::endl;
     // TODO: trigger a parser error...
   }
+  free($1);
 }
 ;
 
@@ -735,6 +761,7 @@ number COMMA number RANGLE {
     std::cerr << "Variable " << $1 << " is undefined." << std::endl;
     // TODO: trigger a parser error...
   }
+  free($1);
 } 
 | number_promotable_to_vector {
   $$ = new Protracer::Vector($1);
@@ -791,7 +818,16 @@ DIRECTIVE_DECLARE NAME EQ number SEMICOLON {
   free($2);
   delete $4;
 }
+| DIRECTIVE_DECLARE NAME EQ finish opt_semicolon {
+  Protracer::Declaration::add_global_declaration(Protracer::Declaration($2, *$4));
+  free($2);
+  delete $4;
+}
 ;
+
+opt_semicolon:
+// empty
+| SEMICOLON;
 
 undefine:
 DIRECTIVE_UNDEF NAME {

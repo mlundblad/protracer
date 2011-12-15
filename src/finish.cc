@@ -27,4 +27,16 @@ namespace Protracer {
     this->reflection = reflection;
   }
 
+  void
+  Finish::set_diffusion(float diffusion)
+  {
+    this->diffusion = diffusion;
+  }
+
+  void
+  Finish::set_reflection(float reflection)
+  {
+    this->reflection = reflection;
+  }
+
 }

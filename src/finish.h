@@ -32,6 +32,9 @@ namespace Protracer {
     
     float get_diffusion() const { return diffusion; }
     float get_reflection() const { return reflection; }
+    
+    void set_diffusion(float diffusion);
+    void set_reflection(float reflection);
 
   private:
     float diffusion;
