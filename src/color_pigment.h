@@ -42,6 +42,8 @@ namespace Protracer {
     Color get_color() const { return color; }
     Color get_color(float x, float y) const { return color; }
 
+    ColorPigment* copy() const { return new ColorPigment(color); }
+
   private:
     Color color;
   };

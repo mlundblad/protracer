@@ -27,9 +27,12 @@ namespace Protracer {
   class Pigment {
   public:
     virtual ~Pigment() {};
+
     virtual bool is_uniform() const = 0;
     virtual Color get_color() const = 0;
     virtual Color get_color(float x, float y) const = 0;
+
+    virtual Pigment* copy() const = 0;
   };
 }
 

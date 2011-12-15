@@ -31,9 +31,12 @@ namespace Protracer {
   public:
     BitmapPigment(Bitmap* b) : bitmap(b) {}
     ~BitmapPigment();
+
     bool is_uniform() const { return false; }
     Color get_color() const { return Color(0,0,0); }
     Color get_color(float u, float v) const;
+
+    BitmapPigment* copy() const;
 
   private:
     Bitmap* bitmap;
