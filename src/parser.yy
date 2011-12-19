@@ -24,6 +24,7 @@
 
 #include <vector>
 #include <iostream>
+#include <sstream>
 #include <cmath>
 #include <cstdio>
 #include <math.h>
@@ -52,11 +53,15 @@
   Protracer::PPMFile    global_image_file;
 
 
+
+
 extern char *yytext;
 extern int linecount;
 extern int yylex(void);
 
+static void error(const std::string& error);
 int yyerror(char *s);
+
 %}
 
 %code requires {
@@ -75,6 +80,7 @@ int yyerror(char *s);
 #include "color.h"
 #include "object.h"
 #include "light.h"
+#include "exception.h"
 
 #include "finish.h"
 #include "pigment.h"
@@ -112,6 +118,7 @@ int yyerror(char *s);
     Protracer::Vector* pole;
     Protracer::Vector* equator;
   };
+
 }
 
 %union {
@@ -367,8 +374,25 @@ KEY_PIGMENT LBRACE color RBRACE {
   $$ = new Protracer::ColorPigment(*$3);
   delete $3;
 }
-| KEY_PIGMENT LBRACE image RBRACE { $$ = new Protracer::BitmapPigment($3); }
-	;
+| KEY_PIGMENT LBRACE image RBRACE {
+  $$ = new Protracer::BitmapPigment($3);
+}
+| KEY_PIGMENT LBRACE NAME RBRACE {
+  if (Protracer::Declaration::is_defined($3)) {
+    Protracer::Declaration d = Protracer::Declaration::get_declaration($3);
+
+    if (d.get_type() == Protracer::Declaration::PIGMENT) {
+      $$ = d.get_pigment()->copy();
+    } else {
+      error(std::string("Variable ") + $3 + " is not a pigment value.");
+    }
+  } else {
+    error(std::string("Variable ") + $3 + " is not defined.");
+  }
+
+  free($3);
+}
+;
 
                 
 image:	KEY_IMAGE LBRACE KEY_PPM STRING RBRACE {
@@ -402,12 +426,10 @@ finish: KEY_FINISH LBRACE opt_diffuse opt_reflection RBRACE {
       if ($5 != 0)
 	$$->set_reflection(*$5);
     } else {
-      std::cerr << "Variable " << $3 << " is not a finish." << std::endl;
-      // TODO: trigger a parser error
+      error(std::string("Variable ") + $3 + " is not a finish.");
     }
   } else {
-    std::cerr << "Variable " << $3 << " is not defined." << std::endl;
-    // TODO: trigger a parser error
+    error(std::string("Variable ") + $3 + " is not defined.");
   }
   free($3);
   delete $4;
@@ -459,12 +481,10 @@ KEY_COLOR KEY_RGB vector {
     if (d.get_type() == Protracer::Declaration::COLOR) {
       $$ = new Protracer::Color(d.get_color());
     } else {
-      std::cerr << "Variable " << $1 << " is not a color value." << std::endl;
-      // TODO: trigger a parser error...
+      error(std::string("Variable ") + $1 + " is not a color value.");
     }
   } else {
-    std::cerr << "Variable " << $1 << " is undefined." << std::endl;
-    // TODO: trigger a parser error...
+    error(std::string("Variable ") + $1 + " is undefined.");
   }
 }
 ;
@@ -523,12 +543,10 @@ NUMBER { $$ = $1; }
     if (d.get_type() == Protracer::Declaration::SCALAR) {
       $$ = d.get_scalar();
     } else {
-      std::cerr << "Variable " << $1 << " is not a scalar value." << std::endl;
-      // TODO: trigger a parser error...
+      error(std::string("Variable ") + $1 +" is not a scalar value.");
     }
   } else {
-    std::cerr << "Variable " << $1 << " is undefined." << std::endl;
-    // TODO: trigger a parser error...
+    error(std::string("Variable ") + $1 + " is undefined.");
   }
   free($1);
 }
@@ -754,12 +772,10 @@ number COMMA number RANGLE {
     } else if (d.get_type() == Protracer::Declaration::SCALAR) {
       $$ = new Protracer::Vector(d.get_scalar());
     } else {
-      std::cerr << "Variable " << $1 << " is not a vector value." << std::endl;
-      // TODO: trigger a parser error...
+      error(std::string("Variable ") + $1 + " is not a vector value.");
     }
   } else {
-    std::cerr << "Variable " << $1 << " is undefined." << std::endl;
-    // TODO: trigger a parser error...
+    error(std::string("Variable ") + $1 + " is undefined.");
   }
   free($1);
 } 
@@ -823,6 +839,10 @@ DIRECTIVE_DECLARE NAME EQ number SEMICOLON {
   free($2);
   delete $4;
 }
+| DIRECTIVE_DECLARE NAME EQ pigment opt_semicolon {
+  Protracer::Declaration::add_global_declaration(Protracer::Declaration($2, $4));
+  free($2);
+}
 ;
 
 opt_semicolon:
@@ -834,20 +854,26 @@ DIRECTIVE_UNDEF NAME {
   if (Protracer::Declaration::is_defined($2)) {
     Protracer::Declaration::remove_global_declaration($2);
   } else {
-    char error_c[128];
-    std::snprintf(error_c, 128, "variable %s is not defined.", $2);
-    yyerror(error_c);
-    YYERROR;
+    error("variable " + std::string($2) + " is not defined.");
   }
 }
 ;
 
 %%
 
+static void error(const std::string& error)
+{
+  yyerror((char*)error.c_str());
+}
+
 int
 yyerror(char *s)
 {
-  std::cerr << "** line " << linecount << ":" << s << std::endl;
+  std::stringstream ss;
+
+  ss << linecount;
+  throw new Protracer::Exception("Syntax error at line " + ss.str() + ": " +
+			     std::string(s));
   return 1;
 }
 

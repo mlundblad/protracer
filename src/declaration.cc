@@ -53,6 +53,13 @@ namespace Protracer {
     value.finish = new Finish(finish);
   }
 
+  Declaration::Declaration(const std::string& name, Pigment* pigment)
+  {
+    type = PIGMENT;
+    this->name = name;
+    value.pigment = pigment;
+  }
+
 
   Declaration::Declaration(const std::string& name, Object* object)
   {
@@ -88,6 +95,8 @@ namespace Protracer {
 	delete d.value.color;
       else if (d.get_type() == FINISH)
 	delete d.value.finish;
+      else if (d.get_type() == PIGMENT)
+	delete d.value.pigment;
     }
 
     global_declarations.insert(std::pair<std::string, Declaration>(decl.get_name(),
@@ -107,6 +116,8 @@ namespace Protracer {
       delete d.value.color;
     else if (d.get_type() == FINISH)
       delete d.value.finish;
+    else if (d.get_type() == PIGMENT)
+      delete d.value.pigment;
 
     global_declarations.erase(name);
   }

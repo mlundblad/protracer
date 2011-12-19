@@ -39,6 +39,7 @@ namespace Protracer {
       VECTOR,
       COLOR,
       FINISH,
+      PIGMENT,
       OBJECT
     } type;
 
@@ -47,6 +48,7 @@ namespace Protracer {
       Vector* vector;
       Color* color;
       Finish* finish;
+      Pigment* pigment;
       Object* object;
     } value;
 
@@ -54,6 +56,7 @@ namespace Protracer {
     Declaration(const std::string& name, const Vector& vector);
     Declaration(const std::string& name, const Color& color); 
     Declaration(const std::string& name, const Finish& finish);
+    Declaration(const std::string& name, Pigment* pigment);
     Declaration(const std::string& name, Object* object);
 
     const std::string get_name() const { return name; }
@@ -61,6 +64,8 @@ namespace Protracer {
     const Vector& get_vector() const { return *(value.vector); }
     const Color& get_color() const { return *(value.color); }
     const Finish& get_finish() const { return *(value.finish); }
+    const Pigment* get_pigment() const { return type == PIGMENT ?
+	value.pigment : 0; }
     const Object* get_object() const { return type == OBJECT ? value.object : 0; }
     Type get_type() const { return type; }
     
