@@ -34,6 +34,12 @@ namespace Protracer {
     this->equator = equator.normal();
   }
 
+  Sphere*
+  Sphere::copy() const
+  {
+    return new Sphere(center, radius, pole, equator, pigment->copy(), finish);
+  }
+
   HitCalculation
   Sphere::calculate_hit(const Ray& ray) const
   {

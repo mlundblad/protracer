@@ -28,6 +28,12 @@ namespace Protracer {
   {
   }
 
+  Disc*
+  Disc::copy() const
+  {
+    return new Disc(center, normal, radius, hole_radius, pigment->copy(), finish);
+  }
+
   HitCalculation
   Disc::calculate_hit(const Ray& ray) const
   {

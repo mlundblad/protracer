@@ -30,6 +30,12 @@ namespace Protracer {
     this->d = point.dot(this->normal);
   }
 
+  Plane*
+  Plane::copy() const
+  {
+    return new Plane(normal, point, pigment->copy(), finish);
+  }
+
   HitCalculation
   Plane::calculate_hit(const Ray& ray) const
   {

@@ -32,6 +32,8 @@ namespace Protracer {
     Plane(const Vector& normal, const Vector& point, Pigment* pigment,
 	  const Finish& finish);
 
+    Plane* copy() const;
+
     virtual HitCalculation calculate_hit(const Ray& ray) const;
 
   private:

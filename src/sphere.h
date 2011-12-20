@@ -40,6 +40,8 @@ namespace Protracer {
 	   const Vector& equator, Pigment* pigment,
 	   const Finish& finish);
 
+    Sphere* copy() const;
+
     virtual HitCalculation calculate_hit(const Ray& ray) const;
 
   private:

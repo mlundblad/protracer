@@ -33,6 +33,8 @@ namespace Protracer {
 
     virtual ~Object() { delete pigment; }
 
+    virtual Object* copy() const = 0;
+
     virtual HitCalculation calculate_hit(const Ray& ray) const = 0;
     const Finish& get_finish() const { return finish; }
     const Pigment& get_pigment() const { return *pigment; }

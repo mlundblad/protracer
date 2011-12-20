@@ -35,6 +35,8 @@ namespace Protracer {
     Triangle(const Vector& c0, const Vector& c1, const Vector& c2,
 	     Pigment* pigment, const Finish& finish,
 	     bool relative = false);
+    
+    Triangle* copy() const;
 
     virtual HitCalculation calculate_hit(const Ray& ray) const;
 

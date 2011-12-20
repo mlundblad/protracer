@@ -28,6 +28,8 @@ namespace Protracer {
   public:
     Disc(const Vector& center, const Vector& normal, float radius,
 	 float hole_radius, Pigment* pigment, const Finish& finish);
+
+    Disc* copy() const;
     
     HitCalculation calculate_hit(const Ray& ray) const;
 

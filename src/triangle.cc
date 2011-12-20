@@ -35,6 +35,13 @@ namespace Protracer {
     ab = va.dot(vb);
   }
 
+
+  Triangle*
+  Triangle::copy() const
+  {
+    return new Triangle(t0, va, vb, pigment->copy(), finish, true);
+  }
+
   HitCalculation
   Triangle::calculate_hit(const Ray& ray) const
   {
