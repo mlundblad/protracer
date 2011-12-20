@@ -17,29 +17,22 @@
  *
  */
 
-#ifndef PLANAR_OBJECT_H
-#define PLANAR_OBJECT_H
-
 #include "object.h"
-#include "plane.h"
-
-#include <iostream>
 
 namespace Protracer {
 
-  class PlanarObject : public Object {
-  protected:
-    PlanarObject(const Vector& normal, const Vector& point,
-		 Pigment* pigment, const Finish& finish) :
-      Object(pigment, finish), span_plane(normal, point, pigment, finish) {}
-    ~PlanarObject() { pigment = 0; }
-
-    // override to allow syncing pigment with the spanning plane
-    void set_pigment(Pigment* pigment);
-
-    Plane span_plane;
-  };
-
+  void
+  Object::set_finish(const Finish& finish)
+  {
+    this->finish = finish;
+  }
+  
+  void
+  Object::set_pigment(Pigment* pigment)
+  {
+    if (pigment != this->pigment) {
+      delete this->pigment;
+      this->pigment = pigment;
+    }
+  }
 }
-
-#endif //PLANAR_OBJECT_H

@@ -21,6 +21,7 @@ protracer_SOURCES=bitmap.cc \
 	light.cc \
 	light.h \
 	main.cc \
+	object.cc \
 	object.h \
 	parameters.cc \
 	parameters.h \
@@ -28,6 +29,7 @@ protracer_SOURCES=bitmap.cc \
 	pigment.h \
 	plane.cc \
 	plane.h \
+	planar_object.cc \
 	planar_object.h \
 	ppm_file.cc \
 	ppm_file.h \
