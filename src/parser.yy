@@ -181,6 +181,7 @@ int yyerror(char *s);
 
 %type <objectList> scene
 %type <object> item
+%type <object> object
 %type <plane> plane
 %type <triangle> triangle
 %type <sphere> sphere
@@ -225,15 +226,11 @@ item {}
 | undefine {}
 ;
 
-item:	
-          sphere     { global_object_list.push_back($1); }
-        | triangle   { global_object_list.push_back($1); }
-        | plane      { global_object_list.push_back($1); }
-        | disc       { global_object_list.push_back($1); }
-        | camera     { }
-        | background { }
-        | light      { } 
-	;
+item: object { global_object_list.push_back($1); }
+| camera     { }
+| background { }
+| light      { } 
+;
 
 light:
 	KEY_LIGHT LBRACE
@@ -244,6 +241,11 @@ light:
 	}
 	;
 
+object: sphere { $$ = $1; }
+| triangle { $$ = $1; }
+| plane { $$ = $1; }
+| disc { $$ = $1; }
+;
 
 plane:
 	KEY_PLANE LBRACE
