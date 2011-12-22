@@ -78,6 +78,7 @@ max             return KEY_MAX;
 min             return KEY_MIN;
 mod             return KEY_MOD;
 no              return KEY_NO;
+object          return KEY_OBJECT;
 off             return KEY_OFF;
 on              return KEY_ON;
 pi              return KEY_PI;

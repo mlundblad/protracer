@@ -106,6 +106,7 @@ int yyerror(char *s);
   struct ObjectMods {
     Protracer::Pigment* pigment;
     Protracer::Finish finish;
+    bool is_finish_set;
   };
 
   struct SphereOptions {
@@ -159,6 +160,7 @@ int yyerror(char *s);
 %token KEY_LOCATION KEY_LOOK KEY_BACKGROUND
 %token KEY_CAMERA KEY_RGB KEY_SKY KEY_LIGHT
 %token KEY_PLANE KEY_PLANEPNT KEY_IMAGE KEY_PPM
+%token KEY_OBJECT
 %token KEY_POLE KEY_EQUATOR KEY_DISC
 %token KEY_X KEY_Y KEY_Z
 %token KEY_ABS KEY_ACOS KEY_ACOSH KEY_ASIN KEY_ASINH KEY_ATAN KEY_ATANH
@@ -197,9 +199,7 @@ int yyerror(char *s);
 %type <color> color
 %type <sphereOptions> sphere_opt
 %type <objectMods> object_mods  /* opt_pigment, opt_finish*/
-%type <pigment> opt_pigment
 %type <pigment> pigment
-%type <finish> opt_finish       /* opt_diffuse, opt_reflection */
 %type <finish> finish
 %type <bitmap> image
 %type <value> reflection
@@ -245,6 +245,28 @@ object: sphere { $$ = $1; }
 | triangle { $$ = $1; }
 | plane { $$ = $1; }
 | disc { $$ = $1; }
+| KEY_OBJECT LBRACE NAME object_mods RBRACE {
+  if (Protracer::Declaration::is_defined($3)) {
+    Protracer::Declaration d = Protracer::Declaration::get_declaration($3);
+
+    if (d.get_type() == Protracer::Declaration::OBJECT) {
+      $$ = d.get_object()->copy();
+      if ($4->pigment) {
+	$$->set_pigment($4->pigment);
+      }
+      if ($4->is_finish_set) {
+	$$->set_finish($4->finish);
+      }
+      delete $4;
+    } else {
+      delete $4;
+      error(std::string("Variable ") + $3 + std::string(" is not an object."));
+    }
+  } else {
+    delete $4;
+    error(std::string("Variable ") + $3 + std::string(" is not defined."));
+  }
+}
 ;
 
 plane:
@@ -253,7 +275,10 @@ plane:
 	object_mods
 	RBRACE {
 	  $$ = new Protracer::Plane(*$3, Protracer::Vector(0, 0, $5), 
-				    $6->pigment, $6->finish);
+				    $6->pigment ?
+				    $6->pigment : new Protracer::ColorPigment(),
+				    $6->is_finish_set ?
+				    $6->finish : Protracer::Finish());
 	  delete $3;
 	  delete $6;
 	}
@@ -265,7 +290,11 @@ plane:
 	vector COMMA vector
 	object_mods
 	RBRACE {
-	  $$ = new Protracer::Plane(*$5, *$3, $6->pigment, $6->finish);
+	  $$ = new Protracer::Plane(*$5, *$3,
+				    $6->pigment ?
+				    $6->pigment : new Protracer::ColorPigment(),
+				    $6->is_finish_set ?
+				    $6->finish : Protracer::Finish());
 	  delete $3;
 	  delete $5;
 	  delete $6;
@@ -277,7 +306,10 @@ sphere:
 	object_mods
 	RBRACE {
 	  $$ = new Protracer::Sphere(*$3, $5, *($6->pole), *($6->equator), 
-				     $7->pigment, $7->finish);
+				     $7->pigment ?
+				     $7->pigment : new Protracer::ColorPigment, 
+				     $7->is_finish_set ?
+				     $7->finish : Protracer::Finish());
 	  delete $3;
 	  delete $6;
 	  delete $7;
@@ -307,7 +339,11 @@ triangle:
 	vector
 	object_mods
 	RBRACE { 
-	  $$ = new Protracer::Triangle(*$3, *$5, *$7, $8->pigment, $8->finish);
+	  $$ = new Protracer::Triangle(*$3, *$5, *$7,
+				       $8->pigment ?
+				       $8->pigment : new Protracer::ColorPigment(),
+				       $8->is_finish_set ?
+				       $8->finish : Protracer::Finish());
 	  delete $3;
 	  delete $5;
 	  delete $7;
@@ -324,7 +360,11 @@ triangle:
 	vector
 	object_mods
 	RBRACE {
-	  $$ = new Protracer::Triangle(*$3, *$5, *$7, $8->pigment, $8->finish,
+	  $$ = new Protracer::Triangle(*$3, *$5, *$7,
+				       $8->pigment ?
+				       $8->pigment : new Protracer::ColorPigment(),
+				       $8->is_finish_set ?
+				       $8->finish : Protracer::Finish(),
 				       true);
 	  delete $3;
 	  delete $5;
@@ -341,7 +381,11 @@ disc:
     opt_hole
     object_mods
     RBRACE {
-      $$ = new Protracer::Disc(*$3, *$5, $7, $8, $9->pigment, $9->finish);
+      $$ = new Protracer::Disc(*$3, *$5, $7, $8,
+			       $9->pigment ?
+			       $9->pigment : new Protracer::ColorPigment(),
+			       $9->is_finish_set ?
+			       $9->finish :Protracer::Finish());
       delete $3;
       delete $5;
       delete $9;
@@ -356,20 +400,37 @@ opt_hole: {
   $$ = $2;
 }
 
-object_mods:
-	opt_pigment
-        opt_finish {
-	  $$ = new ObjectMods;
-	  $$->pigment = $1;
-	  $$->finish = *$2;
-	  delete $2;
-	}
-
-opt_pigment:	/* empty */
-{ $$ = new Protracer::ColorPigment(); }
-          
-| pigment { $$ = $1; }
-;
+object_mods: pigment finish {
+  $$ = new ObjectMods;
+  $$->pigment = $1;
+  $$->finish = *$2;
+  $$->is_finish_set = true;
+  delete $2;
+}
+| finish pigment {
+  $$ = new ObjectMods;
+  $$->pigment = $2;
+  $$->finish = *$1;
+  $$->is_finish_set = true;
+  delete $1;
+}
+| pigment {
+  $$ = new ObjectMods;
+  $$->pigment = $1;
+  $$->is_finish_set = false;
+}
+| finish {
+  $$ = new ObjectMods;
+  $$->pigment = 0;
+  $$->finish = *$1;
+  $$->is_finish_set = true;
+  delete $1;
+}
+| /*empty*/ {
+  $$ = new ObjectMods;
+  $$->pigment = 0;
+  $$->is_finish_set = false;
+}
 
 pigment:
 KEY_PIGMENT LBRACE color RBRACE {
@@ -404,11 +465,6 @@ image:	KEY_IMAGE LBRACE KEY_PPM STRING RBRACE {
 	}
 	;
 
-opt_finish: { $$ = new Protracer::Finish(Protracer::Finish::DEFAULT_DIFFUSION,
-					 Protracer::Finish::DEFAULT_REFLECTION); }
-        /* empty */
-        | finish { $$ = $1; } 
-	;
 
 finish: KEY_FINISH LBRACE opt_diffuse opt_reflection RBRACE {
   $$ = new Protracer::Finish($3 ? *$3 : Protracer::Finish::DEFAULT_DIFFUSION,
@@ -845,6 +901,10 @@ DIRECTIVE_DECLARE NAME EQ number SEMICOLON {
   Protracer::Declaration::add_global_declaration(Protracer::Declaration($2, $4));
   free($2);
 }
+| DIRECTIVE_DECLARE NAME EQ object opt_semicolon {
+  Protracer::Declaration::add_global_declaration(Protracer::Declaration($2, $4));
+  free($2);
+} 
 ;
 
 opt_semicolon:
