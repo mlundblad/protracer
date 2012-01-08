@@ -544,6 +544,7 @@ KEY_COLOR KEY_RGB vector {
   } else {
     error(std::string("Variable ") + $1 + " is undefined.");
   }
+  free($1);
 }
 ;
 
