@@ -547,24 +547,37 @@ KEY_COLOR KEY_RGB vector {
 }
 ;
 
-camera:
-	KEY_CAMERA LBRACE
-	KEY_LOCATION vector
-	KEY_SKY vector
-	KEY_LOOK vector
-	RBRACE { /*printf("Camera\n");*/
-	  global_camera =
-	    Protracer::Camera(*$4, *$8, *$6,
-			      global_parameters.get_zoom(),
-			      global_parameters.get_world_width(),
-			      global_parameters.get_world_height(),
-			      global_parameters.get_pixel_width(),
-			      global_parameters.get_pixel_height());
-	  delete $4;
-	  delete $6;
-	  delete $8;
-	}
-	;
+camera: KEY_CAMERA LBRACE KEY_LOCATION vector
+KEY_SKY vector
+KEY_LOOK vector
+RBRACE {
+  global_camera =
+    Protracer::Camera(*$4, *$8, *$6,
+		      global_parameters.get_zoom(),
+		      global_parameters.get_world_width(),
+		      global_parameters.get_world_height(),
+		      global_parameters.get_pixel_width(),
+		      global_parameters.get_pixel_height());
+  delete $4;
+  delete $6;
+  delete $8;
+}
+| KEY_CAMERA LBRACE NAME RBRACE {
+  if (Protracer::Declaration::is_defined($3)) {
+    Protracer::Declaration d = Protracer::Declaration::get_declaration($3);
+    
+    if (d.get_type() == Protracer::Declaration::CAMERA) {
+      global_camera = d.get_camera();
+    } else {
+      error(std::string("Variable ") + $3 + " is not a camera.");
+    }
+  } else {
+    error(std::string("Variable ") + $3 + " is undefined.");
+  }
+  
+  free($3);
+}
+;
 
 background:
 	KEY_BACKGROUND LBRACE
@@ -899,6 +912,12 @@ DIRECTIVE_DECLARE NAME EQ number SEMICOLON {
 }
 | DIRECTIVE_DECLARE NAME EQ pigment opt_semicolon {
   Protracer::Declaration::add_global_declaration(Protracer::Declaration($2, $4));
+  free($2);
+}
+| DIRECTIVE_DECLARE NAME EQ camera opt_semicolon {
+  Protracer::Declaration::add_global_declaration(
+			  Protracer::Declaration($2,
+						 global_camera));
   free($2);
 }
 | DIRECTIVE_DECLARE NAME EQ object opt_semicolon {
