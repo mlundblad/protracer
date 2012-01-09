@@ -135,6 +135,7 @@ int yyerror(char *s);
   Protracer::Disc*        disc;
   Protracer::Object*      object;
   Protracer::Camera*      camera;
+  Protracer::Light*       light;
   Protracer::Color*       color;
   SphereOptions*   sphereOptions;
   ObjectMods*  objectMods;
@@ -229,17 +230,32 @@ item {}
 item: object { global_object_list.push_back($1); }
 | camera     { }
 | background { }
-| light      { } 
+| light      {
+  global_light_list.push_back(*$1);
+  delete $1;
+} 
 ;
 
-light:
-	KEY_LIGHT LBRACE
-	vector
-	RBRACE {
-	  global_light_list.push_back(Protracer::Light(*$3));
-	  delete $3;
-	}
-	;
+light: KEY_LIGHT LBRACE vector RBRACE {
+  $$ = new Protracer::Light(*$3);
+  delete $3;
+}
+| KEY_LIGHT LBRACE NAME RBRACE {
+  if (Protracer::Declaration::is_defined($3)) {
+    Protracer::Declaration d = Protracer::Declaration::get_declaration($3);
+    
+    if (d.get_type() == Protracer::Declaration::LIGHT) {
+      $$ = new Protracer::Light(d.get_light());
+    } else {
+      error(std::string("Variable ") + $3 + " is not a camera.");
+    }
+  } else {
+    error(std::string("Variable ") + $3 + " is undefined.");
+  }
+  
+  free($3);
+}
+;
 
 object: sphere { $$ = $1; }
 | triangle { $$ = $1; }
@@ -920,6 +936,12 @@ DIRECTIVE_DECLARE NAME EQ number SEMICOLON {
 			  Protracer::Declaration($2,
 						 global_camera));
   free($2);
+}
+| DIRECTIVE_DECLARE NAME EQ light opt_semicolon {
+  Protracer::Declaration::add_global_declaration(
+			  Protracer::Declaration($2, *$4));
+  free($2);
+  delete $4;
 }
 | DIRECTIVE_DECLARE NAME EQ object opt_semicolon {
   Protracer::Declaration::add_global_declaration(Protracer::Declaration($2, $4));

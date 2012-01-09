@@ -60,6 +60,14 @@ namespace Protracer {
     value.camera = new Camera(camera);
   }
 
+  Declaration::Declaration(const std::string& name, const Light& light)
+  {
+    type = LIGHT;
+    this->name = name;
+    value.light = new Light(light);
+  }
+
+
   Declaration::Declaration(const std::string& name, Pigment* pigment)
   {
     type = PIGMENT;
@@ -106,6 +114,8 @@ namespace Protracer {
 	delete d.value.pigment;
       else if (d.get_type() == CAMERA)
         delete d.value.camera;
+      else if (d.get_type() == LIGHT)
+        delete d.value.light;
     }
 
     global_declarations.insert(std::pair<std::string, Declaration>(decl.get_name(),
@@ -129,6 +139,8 @@ namespace Protracer {
       delete d.value.pigment;
     else if (d.get_type() == CAMERA)
       delete d.value.camera;
+    else if (d.get_type() == LIGHT)
+      delete d.value.light;
 
     global_declarations.erase(name);
   }

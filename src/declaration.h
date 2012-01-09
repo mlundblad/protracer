@@ -29,6 +29,7 @@
 #include "vector.h"
 #include "finish.h"
 #include "camera.h"
+#include "light.h"
 
 namespace Protracer {
 
@@ -42,6 +43,7 @@ namespace Protracer {
       FINISH,
       PIGMENT,
       CAMERA,
+      LIGHT,
       OBJECT
     } type;
 
@@ -52,6 +54,7 @@ namespace Protracer {
       Finish* finish;
       Pigment* pigment;
       Camera* camera;
+      Light* light;
       Object* object;
     } value;
 
@@ -61,6 +64,7 @@ namespace Protracer {
     Declaration(const std::string& name, const Finish& finish);
     Declaration(const std::string& name, Pigment* pigment);
     Declaration(const std::string& name, const Camera& camera);
+    Declaration(const std::string& name, const Light& light);
     Declaration(const std::string& name, Object* object);
 
     const std::string get_name() const { return name; }
@@ -71,6 +75,7 @@ namespace Protracer {
     const Pigment* get_pigment() const { return type == PIGMENT ?
 	value.pigment : 0; }
     const Camera& get_camera() const { return *(value.camera); }
+    const Light& get_light() const { return *(value.light); }
     const Object* get_object() const { return type == OBJECT ? value.object : 0; }
     Type get_type() const { return type; }
     
