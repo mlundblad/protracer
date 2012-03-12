@@ -1,3 +1,11 @@
+version 2.2 (2012-xx-xx)
+	* Enhance scene description language:
+	  * Support declaring variables hold scalar values, vectors, colors, pigments,
+	    finishes, cameras, light sources, and objects.
+	  * Support modifying the pigment and finish of an object (for intantiating an
+	    object from a declared variable).
+	  * Support arithmetic and logical operators on vector expressions.
+
 version 2.1 "Two Candles" (2011-12-04)
 	* Enhance scene description language:
 	  * Support specifying floating point literal values in scientific notation.
