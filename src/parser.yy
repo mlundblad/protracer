@@ -534,18 +534,18 @@ KEY_COLOR
 KEY_RED number
 KEY_GREEN number
 KEY_BLUE number {
-  $$ = new Protracer::Color($3 * Protracer::Color::COMPONENT_MAX, 
-			    $5 * Protracer::Color::COMPONENT_MAX, 
-			    $7 * Protracer::Color::COMPONENT_MAX);
+  $$ = new Protracer::Color((unsigned char)($3 * Protracer::Color::COMPONENT_MAX), 
+			    (unsigned char)($5 * Protracer::Color::COMPONENT_MAX), 
+			    (unsigned char)($7 * Protracer::Color::COMPONENT_MAX));
 }
 |
 KEY_COLOR KEY_RGB vector {
-  $$ = new Protracer::Color($3->get_x() *
-			    Protracer::Color::COMPONENT_MAX,
-			    $3->get_y() *
-			    Protracer::Color::COMPONENT_MAX,
-			    $3->get_z() *
-			    Protracer::Color::COMPONENT_MAX);
+  $$ = new Protracer::Color((unsigned char)($3->get_x() *
+					  Protracer::Color::COMPONENT_MAX),
+			    (unsigned char)($3->get_y() *
+					  Protracer::Color::COMPONENT_MAX),
+			    (unsigned char)($3->get_z() *
+					  Protracer::Color::COMPONENT_MAX));
   delete $3;
 }
 | NAME {

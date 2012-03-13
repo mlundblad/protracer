@@ -69,12 +69,12 @@ namespace Protracer {
   public:
     ColorShade(const ColorExpression<E>& c, float s) : c(c), s(s) {}
     
-    unsigned char get_red() const { return int(c.get_red()) * s >
-	Color::COMPONENT_MAX ? Color::COMPONENT_MAX : c.get_red() * s; }
-    unsigned char get_green() const { return int(c.get_green()) * s >
-	Color::COMPONENT_MAX ? Color::COMPONENT_MAX : c.get_green() * s; }
-    unsigned char get_blue() const { return int(c.get_blue()) * s >
-	Color::COMPONENT_MAX ? Color::COMPONENT_MAX : c.get_blue() * s; }
+    unsigned char get_red() const { return float(c.get_red()) * s >
+	Color::COMPONENT_MAX ? Color::COMPONENT_MAX : float(c.get_red()) * s; }
+    unsigned char get_green() const { return float(c.get_green()) * s >
+	Color::COMPONENT_MAX ? Color::COMPONENT_MAX : float(c.get_green()) * s; }
+    unsigned char get_blue() const { return float(c.get_blue()) * s >
+	Color::COMPONENT_MAX ? Color::COMPONENT_MAX : float(c.get_blue()) * s; }
   };
 
   template <typename E1, typename E2>
