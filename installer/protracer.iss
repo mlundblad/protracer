@@ -1,5 +1,5 @@
 #define APPNAME="protracer"
-#define APPVERS="2.2devel"
+#define APPVERS="2.2"
 #define LOGO="logo.png"
 #define MINGW="C:\MinGW\bin"
 
@@ -12,7 +12,7 @@ OutputBaseFileName={#APPNAME}-{#APPVERS}-setup
 DefaultDirName={pf}\{#APPNAME} {#APPVERS}
 DefaultGroupName={#APPNAME}
 ;PrivilegesRequired=admin
-AppCopyright=Copyright © 1999 - 2011 Marcus Lundblad
+AppCopyright=Copyright © 1999 - 2012 Marcus Lundblad
 AppPublisher=Marcus Lundblad
 AppPublisherURL=https://github.com/mlundblad/protracer
 OutputDir=.
