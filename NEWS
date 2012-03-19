@@ -1,20 +1,21 @@
-version 2.2 (2012-xx-xx)
+version 2.2 (2012-03-19)
 	* Enhance scene description language:
-	  * Support declaring variables hold scalar values, vectors, colors, pigments,
-	    finishes, cameras, light sources, and objects.
-	  * Support modifying the pigment and finish of an object (for intantiating an
-	    object from a declared variable).
+	  * Support declaring variables hold scalar values, vectors, colors,
+	    pigments, finishes, cameras, light sources, and objects.
+	  * Support modifying the pigment and finish of an object
+	    (for intantiating an object from a declared variable).
 	  * Support arithmetic and logical operators on vector expressions.
 
 version 2.1 "Two Candles" (2011-12-04)
 	* Enhance scene description language:
-	  * Support specifying floating point literal values in scientific notation.
+	  * Support specifying floating point literal values in scientific
+	    notation.
 	  * Support basic arithmetic operators (+-*/) for floating point
 	    expressions.
 	  * Support the following built-in functions for floating point values:
-	    abs, acos, asin, asinh, atan, atanh, ceil, cos, cosh, degrees, div, exp,
-	    floor, int, ln, log, max, min, mod, pow, radians, select, sin, sinh,
-	    tan, tanh.
+	    abs, acos, asin, asinh, atan, atanh, ceil, cos, cosh, degrees, div,
+	    exp, floor, int, ln, log, max, min, mod, pow, radians, select, sin,
+	    sinh, tan, tanh.
 	  * Support floating point constants: false, no, off (=0),
 	    on, true, yes (=1) and pi.
 	  * Support logical operators =,!=,<,<=,>,>=,& (and) ,| (or),! (not).
@@ -25,10 +26,11 @@ version 2.1 "Two Candles" (2011-12-04)
 	    vcross, vdot, vlength, vnormalize.
 	  * Support built-in vector constants x,y, and z for unit vectors in the
 	    respective dimensions.
-	  * Support casting a floating point value to a vector (with all elements
-	    set to that value, for example 0 to specify origo).
-	* Support the new geometric object "disc" (only using single-color pigment
-	  for now).
+	  * Support casting a floating point value to a vector
+	    (with all elements set to that value, for example 0 to specify
+	    origo).
+	* Support the new geometric object "disc" (only using single-color
+	  pigment for now).
 
 version 2.0 (2011-10-26)
 	* Re-written in C++.
