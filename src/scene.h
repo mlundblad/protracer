@@ -31,10 +31,6 @@
 namespace Protracer {
   class Scene {
   public:
-    Scene(const std::vector<Object*>& objects, 
-	  const std::vector<Light>& lights,
-	  const Camera& cam, const Color& background);
-
     virtual ~Scene();
 
     // getters
@@ -48,6 +44,11 @@ namespace Protracer {
     
     Color color_of_pixel(int x, int y, int refl_depth, 
 				bool no_shadow_no_reflection) const;
+
+    void add_object(Object* object);
+    void add_light(const Light& light);
+    void set_camera(const Camera& camera);
+    void set_background(const Color& color);
 
   private:
     std::vector<Object*> objects;

@@ -46,24 +46,19 @@ static void print_version()
   std::cerr << PACKAGE << " " << VERSION << std::endl;
 }
 
-Protracer::Scene
-parse(FILE *input, const Protracer::Parameters& params)
+void
+parse(FILE *input, Protracer::Scene& scene, const Protracer::Parameters& params)
 {
     global_parameters = params;
-    global_object_list = std::vector<Protracer::Object*>();
-    global_light_list = std::vector<Protracer::Light>();
-
     global_background = Protracer::DEFAULT_BACKGROUND;
+    global_scene = &scene;
 
     yyin = input;
     yyparse();
-    
-    Protracer::Scene scene = Protracer::Scene(global_object_list,
-                                              global_light_list,
-                                              global_camera,
-                                              global_background);
 
-    return scene;
+    // set background (this is not set from within the parser, since we want
+    // to get the default one incase none was set in the scene definition)
+    scene.set_background(global_background);
 }
 
 void
@@ -276,7 +271,9 @@ int main(int argc, char **argv)
     try {
       Protracer::Parameters params =
         Protracer::Parameters(zoom, width, height, xpix, ypix);
-      Protracer::Scene scene = parse(in_file, params);
+      Protracer::Scene scene;
+
+      parse(in_file, scene, params);
 
       /* Start the tracing */      
       Protracer::Bitmap result = Protracer::Bitmap(xpix, ypix);

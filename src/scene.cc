@@ -28,27 +28,6 @@
 #include "object.h"
 
 namespace Protracer {
-  
-  Scene::Scene(const std::vector<Object*>& objects,
-	       const std::vector<Light>& lights, 
-	       const Camera& cam, const Color& background )
-  {
-    Vector c;
-       
-    this->camera =     cam;
-    this->lights =     lights;
-    this->objects =    objects;
-    this->background = background;
-    
-    c = Vector(camera.get_look_at() - camera.get_location()).normal();
-
-    this->c_right = Vector(camera.get_up() * c).normal();
-    this->c_down = Vector(c_right * c).normal();
-
-    this->c_corner = cam.get_location() + 
-      (cam.get_zoom() * c) - (cam.get_world_width() / 2 * c_right +
-			      cam.get_world_height() / 2 * c_down);
-  }
 
   Scene::~Scene()
   {
@@ -180,5 +159,41 @@ namespace Protracer {
 
      return c;
    }
+
+  void
+  Scene::add_object(Object* object)
+  {
+    objects.push_back(object);
+  }
+
+  void
+  Scene::add_light(const Light& light)
+  {
+    lights.push_back(light);
+  }
+
+  void
+  Scene::set_camera(const Camera& cam)
+  {
+    Vector c;
+       
+    this->camera =     cam;
+
+    c = Vector(camera.get_look_at() - camera.get_location()).normal();
+
+    this->c_right = Vector(camera.get_up() * c).normal();
+    this->c_down = Vector(c_right * c).normal();
+
+    this->c_corner = cam.get_location() + 
+      (cam.get_zoom() * c) - (cam.get_world_width() / 2 * c_right +
+			      cam.get_world_height() / 2 * c_down);
+  }
+
+  void
+  Scene::set_background(const Color& background)
+  {
+    this->background = background;
+  }
+
 }
 

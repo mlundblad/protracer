@@ -28,6 +28,8 @@
 #include <cmath>
 #include <cstdio>
 #include <math.h>
+
+#include "scene.h"
 #include "vector.h"
 #include "plane.h"
 #include "sphere.h"
@@ -45,9 +47,8 @@
 #include "parameters.h"
 #include "declaration.h"
 
+  Protracer::Scene*      global_scene;
   Protracer::Parameters global_parameters;
-  std::vector<Protracer::Object*> global_object_list;
-  std::vector<Protracer::Light> global_light_list;
   Protracer::Color      global_background;
   Protracer::Camera     global_camera;
   Protracer::PPMFile    global_image_file;
@@ -71,6 +72,7 @@ int yyerror(char *s);
 #include <list>
 #include <algorithm>
 
+#include "scene.h"
 #include "vector.h"
 #include "plane.h"
 #include "sphere.h"
@@ -95,9 +97,8 @@ int yyerror(char *s);
   extern FILE        *yyin;
 
   // global variables used by the parser
+  extern Protracer::Scene*     global_scene;
   extern Protracer::Parameters global_parameters;
-  extern std::vector<Protracer::Object*> global_object_list;
-  extern std::vector<Protracer::Light> global_light_list;
   extern Protracer::Color      global_background;
   extern Protracer::Camera     global_camera;
   extern Protracer::PPMFile    global_image_file;
@@ -227,11 +228,11 @@ item {}
 | undefine {}
 ;
 
-item: object { global_object_list.push_back($1); }
+item: object { global_scene->add_object($1); }
 | camera     { }
 | background { }
 | light      {
-  global_light_list.push_back(*$1);
+  global_scene->add_light(*$1);
   delete $1;
 } 
 ;
@@ -575,6 +576,7 @@ RBRACE {
 		      global_parameters.get_world_height(),
 		      global_parameters.get_pixel_width(),
 		      global_parameters.get_pixel_height());
+  global_scene->set_camera(global_camera);
   delete $4;
   delete $6;
   delete $8;
@@ -585,6 +587,7 @@ RBRACE {
     
     if (d.get_type() == Protracer::Declaration::CAMERA) {
       global_camera = d.get_camera();
+      global_scene->set_camera(global_camera);
     } else {
       error(std::string("Variable ") + $3 + " is not a camera.");
     }
