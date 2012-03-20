@@ -1,4 +1,6 @@
 version 2.3 (2012-xx-xx)
+	* If started interactively (i.e. not reading input from a pipe), print the
+	  usage help if no input file is given.
 
 version 2.2 "March" (2012-03-19)
 	* Enhance scene description language:

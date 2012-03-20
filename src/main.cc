@@ -19,6 +19,7 @@
 
 #include <stdlib.h>
 #include <getopt.h>
+#include <unistd.h>
 
 #include <iostream>
 #include <vector>
@@ -261,6 +262,14 @@ int main(int argc, char **argv)
     if (argv[optind] != NULL) {
       in_file = fopen(argv[optind], "r");
     } else {
+      // if running interactively without giving an input file, show usage
+      // instead of "getting stuck" waiting for input, this way it will still work
+      // to pipe input
+      if (isatty(STDIN_FILENO)) {
+        usage();
+        exit(0);
+      }
+
       in_file = stdin;
     }
 
