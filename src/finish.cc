@@ -21,9 +21,6 @@
 
 namespace Protracer {
 
-  const float Finish::DEFAULT_REFLECTION = 0.0f;
-  const float Finish::DEFAULT_DIFFUSION = 1.0f;
-
   Finish::Finish(float diffusion, float reflection)
   {
     this->diffusion = diffusion;

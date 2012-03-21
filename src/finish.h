@@ -24,8 +24,8 @@ namespace Protracer {
 
   class Finish {
   public:
-    static const float DEFAULT_REFLECTION; // = 0.0
-    static const float DEFAULT_DIFFUSION;  // = 1.0
+    static const float DEFAULT_REFLECTION = 0.0f;
+    static const float DEFAULT_DIFFUSION = 1.0f;
 
     Finish(float diffusion = DEFAULT_DIFFUSION,
 	   float reflection = DEFAULT_REFLECTION);

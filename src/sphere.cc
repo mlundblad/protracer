@@ -22,14 +22,6 @@
 
 namespace Protracer {
 
-  const float Sphere::POLE_DEFAULT_X = 0.0f;
-  const float Sphere::POLE_DEFAULT_Y = 1.0f;
-  const float Sphere::POLE_DEFAULT_Z = 0.0f;
-  const float Sphere::EQUATOR_DEFAULT_X = 1.0f;
-  const float Sphere::EQUATOR_DEFAULT_Y = 0.0f;
-  const float Sphere::EQUATOR_DEFAULT_Z = 0.0f;
-  const float Sphere::EPS = 0.001f;
-
   Sphere::Sphere(const Vector& center, float radius, const Vector& pole,
 		 const Vector& equator, Pigment* pigment,
 		 const Finish& finish) :
