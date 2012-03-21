@@ -83,7 +83,7 @@ static void usage()
 	    << std::endl
             << std::endl
 	    << "   -n, --no-shadows                          "
-            << "no shadows or reflecions will be"
+            << "no shadows or reflections will be"
 	    << "                                                used"
             << std::endl
             << "   -r, --reflection-depth=REFLECTION_DEPTH   "
@@ -111,10 +111,13 @@ static void usage()
             << "   -q, --quiet                               "
 	    << "don't print a progress meter" << std::endl
             << std::endl
-            << "If no input file is given, input is read from stdin."
+            << "If input is redirected (piped) to the program "
+            << "no input file is required to be"
             << std::endl
-            << "Likewise, if no output file is given, output "
-            << "(in PPM format) is written to" << std::endl << "stdout"
+            << "specified."
+            << std::endl
+            << "If no output file is given, output "
+            << "(in PPM format) is written to stdout"
             << std::endl;
 }
 
