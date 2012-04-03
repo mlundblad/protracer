@@ -18,7 +18,7 @@
  */
 
 #include "vector.h"
-#include <math.h>
+#include <cmath>
 
 namespace Protracer {
   
@@ -40,4 +40,26 @@ namespace Protracer {
     return Vector(len_inv * x, len_inv * y, len_inv * z);
   }
 
+  Vector
+  Vector::rotate(const Vector& around, float a) const
+  {
+    float u = around.get_x();
+    float v = around.get_y();
+    float w = around.get_z();
+    float ux = u * x;
+    float uy = u * y;
+    float uz = u * z;
+    float vx = v * x;
+    float vy = v * y;
+    float vz = v * z;
+    float wx = w * x;
+    float wy = w * y;
+    float wz = w * z;
+    float sa = std::sin(a);
+    float ca = std::cos(a);
+
+    return Vector(u*(ux+vy+wz)+(x*(v*v+w*w)-u*(vy+wz))*ca+(-wy+vz)*sa,
+                  v*(ux+vy+wz)+(y*(u*u+w*w)-v*(ux+wz))*ca+(wx-uz)*sa,
+                  w*(ux+vy+wz)+(z*(u*u+v*v)-w*(ux+vy))*ca+(-vx+uy)*sa);
+  }
 }

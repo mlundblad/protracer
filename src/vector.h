@@ -77,6 +77,9 @@ namespace Protracer {
     float length() const { return sqrt(x * x + y * y + z * z); }
     Vector normal() const;
 
+    // rotate vector around another one by specified amound (in radians)
+    Vector rotate(const Vector& around, float angle) const;
+
   private:
     float x;
     float y;
