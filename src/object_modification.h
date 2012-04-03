@@ -20,6 +20,8 @@
 #ifndef OBJECT_MODIFICATION_H
 #define OBJECT_MODIFICATION_H
 
+#include "object.h"
+
 namespace Protracer {
   class ObjectModification {
   public:
