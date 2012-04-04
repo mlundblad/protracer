@@ -16,6 +16,8 @@ protracer_SOURCES=bitmap.cc \
 	exception.h \
 	finish.cc \
 	finish.h \
+	finish_modification.cc \
+	finish_modification.h \
 	hit_calculation.h \
 	lexer.ll \
 	light.cc \
@@ -23,10 +25,13 @@ protracer_SOURCES=bitmap.cc \
 	main.cc \
 	object.cc \
 	object.h \
+	object_modification.h \
 	parameters.cc \
 	parameters.h \
 	parser.yy \
 	pigment.h \
+	pigment_modification.cc \
+	pigment_modification.h \
 	plane.cc \
 	plane.h \
 	planar_object.cc \
