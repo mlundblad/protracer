@@ -47,6 +47,11 @@
 #include "parameters.h"
 #include "declaration.h"
 
+#include "object_modification.h"
+#include "finish_modification.h"
+#include "pigment_modification.h"
+
+
   Protracer::Scene*      global_scene;
   Protracer::Parameters global_parameters;
   Protracer::Color      global_background;
@@ -81,6 +86,9 @@ int yyerror(char *s);
 #include "camera.h"
 #include "color.h"
 #include "object.h"
+#include "object_modification.h"
+#include "finish_modification.h"
+#include "pigment_modification.h"
 #include "light.h"
 #include "exception.h"
 
@@ -102,13 +110,6 @@ int yyerror(char *s);
   extern Protracer::Color      global_background;
   extern Protracer::Camera     global_camera;
   extern Protracer::PPMFile    global_image_file;
-
-  // internal structs used for parsing
-  struct ObjectMods {
-    Protracer::Pigment* pigment;
-    Protracer::Finish finish;
-    bool is_finish_set;
-  };
 
   struct SphereOptions {
     ~SphereOptions()
@@ -139,7 +140,8 @@ int yyerror(char *s);
   Protracer::Light*       light;
   Protracer::Color*       color;
   SphereOptions*   sphereOptions;
-  ObjectMods*  objectMods;
+  std::list<Protracer::ObjectModification*>* objectMods;
+  Protracer::ObjectModification* objectMod;
   Protracer::Finish*      finish;
   Protracer::Pigment*     pigment;
   Protracer::Bitmap*      bitmap;
@@ -200,7 +202,8 @@ int yyerror(char *s);
 %type <camera> camera
 %type <color> color
 %type <sphereOptions> sphere_opt
-%type <objectMods> object_mods  /* opt_pigment, opt_finish*/
+%type <objectMods> object_mods
+%type <objectMod> object_mod
 %type <pigment> pigment
 %type <finish> finish
 %type <bitmap> image
@@ -268,12 +271,14 @@ object: sphere { $$ = $1; }
 
     if (d.get_type() == Protracer::Declaration::OBJECT) {
       $$ = d.get_object()->copy();
-      if ($4->pigment) {
-	$$->set_pigment($4->pigment);
+      
+      for (std::list<Protracer::ObjectModification*>::iterator it = $4->begin() ;
+	   it != $4->end() ; it++) {
+	Protracer::ObjectModification* mod = *it;
+	mod->apply($$);
+	delete mod;
       }
-      if ($4->is_finish_set) {
-	$$->set_finish($4->finish);
-      }
+
       delete $4;
     } else {
       delete $4;
@@ -292,10 +297,16 @@ plane:
 	object_mods
 	RBRACE {
 	  $$ = new Protracer::Plane(*$3, Protracer::Vector(0, 0, $5), 
-				    $6->pigment ?
-				    $6->pigment : new Protracer::ColorPigment(),
-				    $6->is_finish_set ?
-				    $6->finish : Protracer::Finish());
+				    new Protracer::ColorPigment(),
+				    Protracer::Finish());
+
+	  for (std::list<Protracer::ObjectModification*>::iterator it = $6->begin() ;
+	       it != $6->end() ; it++) {
+	    Protracer::ObjectModification* mod = *it;
+	    mod->apply($$);
+	    delete mod;
+	  }
+
 	  delete $3;
 	  delete $6;
 	}
@@ -308,10 +319,16 @@ plane:
 	object_mods
 	RBRACE {
 	  $$ = new Protracer::Plane(*$5, *$3,
-				    $6->pigment ?
-				    $6->pigment : new Protracer::ColorPigment(),
-				    $6->is_finish_set ?
-				    $6->finish : Protracer::Finish());
+				    new Protracer::ColorPigment(),
+				    Protracer::Finish());
+
+	  for (std::list<Protracer::ObjectModification*>::iterator it = $6->begin() ;
+	       it != $6->end() ; it++) {
+	    Protracer::ObjectModification* mod = *it;
+	    mod->apply($$);
+	    delete mod;
+	  }
+
 	  delete $3;
 	  delete $5;
 	  delete $6;
@@ -323,10 +340,16 @@ sphere:
 	object_mods
 	RBRACE {
 	  $$ = new Protracer::Sphere(*$3, $5, *($6->pole), *($6->equator), 
-				     $7->pigment ?
-				     $7->pigment : new Protracer::ColorPigment, 
-				     $7->is_finish_set ?
-				     $7->finish : Protracer::Finish());
+				     new Protracer::ColorPigment, 
+				     Protracer::Finish());
+
+	  for (std::list<Protracer::ObjectModification*>::iterator it = $7->begin() ;
+	       it != $7->end() ; it++) {
+	    Protracer::ObjectModification* mod = *it;
+	    mod->apply($$);
+	    delete mod;
+	  }
+
 	  delete $3;
 	  delete $6;
 	  delete $7;
@@ -357,10 +380,16 @@ triangle:
 	object_mods
 	RBRACE { 
 	  $$ = new Protracer::Triangle(*$3, *$5, *$7,
-				       $8->pigment ?
-				       $8->pigment : new Protracer::ColorPigment(),
-				       $8->is_finish_set ?
-				       $8->finish : Protracer::Finish());
+				       new Protracer::ColorPigment(),
+				       Protracer::Finish());
+
+	  for (std::list<Protracer::ObjectModification*>::iterator it = $8->begin() ;
+	       it != $8->end() ; it++) {
+	    Protracer::ObjectModification* mod = *it;
+	    mod->apply($$);
+	    delete mod;
+	  }
+
 	  delete $3;
 	  delete $5;
 	  delete $7;
@@ -378,11 +407,17 @@ triangle:
 	object_mods
 	RBRACE {
 	  $$ = new Protracer::Triangle(*$3, *$5, *$7,
-				       $8->pigment ?
-				       $8->pigment : new Protracer::ColorPigment(),
-				       $8->is_finish_set ?
-				       $8->finish : Protracer::Finish(),
+				       new Protracer::ColorPigment(),
+				       Protracer::Finish(),
 				       true);
+
+	  for (std::list<Protracer::ObjectModification*>::iterator it = $8->begin() ;
+	       it != $8->end() ; it++) {
+	    Protracer::ObjectModification* mod = *it;
+	    mod->apply($$);
+	    delete mod;
+	  }
+
 	  delete $3;
 	  delete $5;
 	  delete $7;
@@ -399,10 +434,16 @@ disc:
     object_mods
     RBRACE {
       $$ = new Protracer::Disc(*$3, *$5, $7, $8,
-			       $9->pigment ?
-			       $9->pigment : new Protracer::ColorPigment(),
-			       $9->is_finish_set ?
-			       $9->finish :Protracer::Finish());
+			       new Protracer::ColorPigment(),
+			       Protracer::Finish());
+
+      for (std::list<Protracer::ObjectModification*>::iterator it = $9->begin() ;
+	   it != $9->end() ; it++) {
+	Protracer::ObjectModification* mod = *it;
+	mod->apply($$);
+	delete mod;
+      }
+
       delete $3;
       delete $5;
       delete $9;
@@ -417,37 +458,23 @@ opt_hole: {
   $$ = $2;
 }
 
-object_mods: pigment finish {
-  $$ = new ObjectMods;
-  $$->pigment = $1;
-  $$->finish = *$2;
-  $$->is_finish_set = true;
-  delete $2;
+object_mods: // empty
+{
+  $$ = new std::list<Protracer::ObjectModification*>;
 }
-| finish pigment {
-  $$ = new ObjectMods;
-  $$->pigment = $2;
-  $$->finish = *$1;
-  $$->is_finish_set = true;
+| object_mods object_mod {
+  $1->push_back($2);
+  $$ = $1;
+};
+
+object_mod: finish {
+  $$ = new Protracer::FinishModification(*$1);
   delete $1;
 }
 | pigment {
-  $$ = new ObjectMods;
-  $$->pigment = $1;
-  $$->is_finish_set = false;
-}
-| finish {
-  $$ = new ObjectMods;
-  $$->pigment = 0;
-  $$->finish = *$1;
-  $$->is_finish_set = true;
-  delete $1;
-}
-| /*empty*/ {
-  $$ = new ObjectMods;
-  $$->pigment = 0;
-  $$->is_finish_set = false;
-}
+  $$ = new Protracer::PigmentModification($1);
+};
+
 
 pigment:
 KEY_PIGMENT LBRACE color RBRACE {
