@@ -4,6 +4,7 @@ version 2.3 (2012-xx-xx)
 	* Enhance scene description language:
 	  * Support the function vaxis_rotate to rotate a given vector around
 	    another vector describing an axis by a specified amound in degrees.
+	  * Support moving objects with the "translate" keyword.
 
 version 2.2 "March" (2012-03-19)
 	* Enhance scene description language:
