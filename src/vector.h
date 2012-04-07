@@ -80,6 +80,9 @@ namespace Protracer {
     // rotate vector around another one by specified amound (in radians)
     Vector rotate(const Vector& around, float angle) const;
 
+    Vector& operator+=(const Vector& v);
+    Vector& operator-=(const Vector& v);
+
   private:
     float x;
     float y;

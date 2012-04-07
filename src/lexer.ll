@@ -99,6 +99,7 @@ sky		return KEY_SKY;
 sphere		return KEY_SPHERE;
 tan             return KEY_TAN;
 tanh            return KEY_TANH;
+translate       return KEY_TRANSLATE;
 triangle	return KEY_TRIANGLE;
 triangle_point	return KEY_TRIANGLEPNT;
 true            return KEY_TRUE;

@@ -54,4 +54,11 @@ namespace Protracer {
 
     return HitCalculation(false);
   }
+
+  void
+  Plane::translate(const Vector& v)
+  {
+    point += v;
+    d = point.dot(normal);
+  }
 }

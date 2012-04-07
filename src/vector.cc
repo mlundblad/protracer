@@ -62,4 +62,23 @@ namespace Protracer {
                   v*(ux+vy+wz)+(y*(u*u+w*w)-v*(ux+wz))*ca+(wx-uz)*sa,
                   w*(ux+vy+wz)+(z*(u*u+v*v)-w*(ux+vy))*ca+(-vx+uy)*sa);
   }
+
+  Vector&
+  Vector::operator+=(const Vector& v)
+  {
+    x += v.x;
+    y += v.y;
+    z += v.z;
+    return *this;
+  }
+
+  Vector&
+  Vector::operator-=(const Vector& v)
+  {
+    x -= v.x;
+    y -= v.y;
+    z -= v.z;
+    return *this;
+  }
+
 }

@@ -50,6 +50,7 @@
 #include "object_modification.h"
 #include "finish_modification.h"
 #include "pigment_modification.h"
+#include "translation.h"
 
 
   Protracer::Scene*      global_scene;
@@ -89,6 +90,7 @@ int yyerror(char *s);
 #include "object_modification.h"
 #include "finish_modification.h"
 #include "pigment_modification.h"
+#include "translation.h"
 #include "light.h"
 #include "exception.h"
 
@@ -173,6 +175,7 @@ int yyerror(char *s);
 %token KEY_RADIANS KEY_SELECT KEY_SIN KEY_SINH KEY_TAN KEY_TANH KEY_VDOT KEY_VLENGTH
 %token KEY_FALSE KEY_NO KEY_ON KEY_OFF KEY_PI KEY_TRUE KEY_YES
 %token KEY_VAXIS_ROTATE KEY_VCROSS KEY_VNORMALIZE
+%token KEY_TRANSLATE
 %left QUESTION COLON
 %left AND OR
 %left EQ NOT_EQ LANGLE RANGLE LT_EQ GT_EQ
@@ -473,7 +476,12 @@ object_mod: finish {
 }
 | pigment {
   $$ = new Protracer::PigmentModification($1);
-};
+}
+| KEY_TRANSLATE vector {
+  $$ = new Protracer::Translation(*$2);
+  delete $2;
+}
+;
 
 
 pigment:

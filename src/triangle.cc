@@ -68,4 +68,11 @@ namespace Protracer {
     return HitCalculation(false);
   }
 
+  void
+  Triangle::translate(const Vector& v)
+  {
+    t0 += v;
+    span_plane.translate(v);
+  }
+
 }

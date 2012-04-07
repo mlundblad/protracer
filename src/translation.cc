@@ -17,31 +17,14 @@
  *
  */
 
-#ifndef DISC_H
-#define DISC_H
-
-#include "planar_object.h"
+#include "translation.h"
 
 namespace Protracer {
 
-  class Disc : public PlanarObject {
-  public:
-    Disc(const Vector& center, const Vector& normal, float radius,
-	 float hole_radius, Pigment* pigment, const Finish& finish);
-
-    Disc* copy() const;
-    
-    HitCalculation calculate_hit(const Ray& ray) const;
-
-    virtual void translate(const Vector& v);
-
-  private:
-    Vector center;
-    Vector normal;
-    float radius;
-    float hole_radius;
-  };
+  void
+  Translation::apply(Object* o) const
+  {
+    o->translate(v);
+  }
 
 }
-
-#endif //DISC_H

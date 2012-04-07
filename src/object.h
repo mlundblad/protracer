@@ -44,6 +44,10 @@ namespace Protracer {
     // like PlanarObject which needs to sync the pigment with a spanning plane
     virtual void set_pigment(Pigment* pigment);
 
+    // translate object by moving it to a new position relative the given
+    // vector
+    virtual void translate(const Vector& v) = 0;
+
   protected:
     Finish finish;
     Pigment* pigment;

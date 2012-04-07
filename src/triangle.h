@@ -39,6 +39,7 @@ namespace Protracer {
     Triangle* copy() const;
 
     virtual HitCalculation calculate_hit(const Ray& ray) const;
+    virtual void translate(const Vector& v);
 
   private:
     Vector t0;

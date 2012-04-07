@@ -94,4 +94,10 @@ namespace Protracer {
     return pigment->get_color(u, v);
   }
 
+  void
+  Sphere::translate(const Vector& v)
+  {
+    center += v;
+  }
+
 }

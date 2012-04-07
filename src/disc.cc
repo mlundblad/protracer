@@ -50,5 +50,11 @@ namespace Protracer {
     return HitCalculation(false);
   }
 
+  void
+  Disc::translate(const Vector& v)
+  {
+    center += v;
+    span_plane.translate(v);
+  }
 
 }
