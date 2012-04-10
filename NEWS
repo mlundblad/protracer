@@ -8,6 +8,7 @@ version 2.3 (2012-xx-xx)
 	    axis (x, y, and z) by the amount specified by the second vector
 	    argument.
 	  * Support moving objects with the "translate" keyword.
+	  * Support rotating objects with the "rotate" keyword.
 
 version 2.2 "March" (2012-03-19)
 	* Enhance scene description language:
