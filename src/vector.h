@@ -80,6 +80,10 @@ namespace Protracer {
     // rotate vector around another one by specified amound (in radians)
     Vector rotate(const Vector& around, float angle) const;
 
+    // rotate vector around each of the axis (x, y, z) in turn by the amount
+    // (in radians) expressed by the rotation vector
+    Vector rotate(const Vector& rot) const;
+
     Vector& operator+=(const Vector& v);
     Vector& operator-=(const Vector& v);
 

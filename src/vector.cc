@@ -63,6 +63,13 @@ namespace Protracer {
                   w*(ux+vy+wz)+(z*(u*u+v*v)-w*(ux+vy))*ca+(-vx+uy)*sa);
   }
 
+  Vector
+  Vector::rotate(const Vector& rot) const
+  {
+    return rotate(unit_x(), rot.x).rotate(unit_y(), rot.y)
+      .rotate(unit_z(), rot.z);
+  }
+
   Vector&
   Vector::operator+=(const Vector& v)
   {
