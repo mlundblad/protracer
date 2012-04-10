@@ -39,6 +39,8 @@ protracer_SOURCES=bitmap.cc \
 	ppm_file.cc \
 	ppm_file.h \
 	ray.h \
+	rotation.cc \
+	rotation.h \
 	scene.h \
 	scene.cc \
 	sphere.cc \

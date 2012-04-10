@@ -34,6 +34,7 @@ namespace Protracer {
     HitCalculation calculate_hit(const Ray& ray) const;
 
     virtual void translate(const Vector& v);
+    virtual void rotate(const Vector& rot);
 
   private:
     Vector center;

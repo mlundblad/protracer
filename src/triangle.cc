@@ -75,4 +75,13 @@ namespace Protracer {
     span_plane.translate(v);
   }
 
+  void
+  Triangle::rotate(const Vector& rot)
+  {
+    t0 = t0.rotate(rot);
+    va = va.rotate(rot);
+    vb = vb.rotate(rot);
+    span_plane.rotate(rot);
+  }
+
 }

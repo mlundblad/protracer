@@ -61,4 +61,12 @@ namespace Protracer {
     point += v;
     d = point.dot(normal);
   }
+
+  void
+  Plane::rotate(const Vector& rot)
+  {
+    point = point.rotate(rot);
+    normal = normal.rotate(rot);
+    d = point.dot(normal);
+  }
 }

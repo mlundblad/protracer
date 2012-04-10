@@ -51,6 +51,7 @@
 #include "finish_modification.h"
 #include "pigment_modification.h"
 #include "translation.h"
+#include "rotation.h"
 
 
   Protracer::Scene*      global_scene;
@@ -91,6 +92,7 @@ int yyerror(char *s);
 #include "finish_modification.h"
 #include "pigment_modification.h"
 #include "translation.h"
+#include "rotation.h"
 #include "light.h"
 #include "exception.h"
 
@@ -175,7 +177,7 @@ int yyerror(char *s);
 %token KEY_RADIANS KEY_SELECT KEY_SIN KEY_SINH KEY_TAN KEY_TANH KEY_VDOT KEY_VLENGTH
 %token KEY_FALSE KEY_NO KEY_ON KEY_OFF KEY_PI KEY_TRUE KEY_YES
 %token KEY_VAXIS_ROTATE KEY_VCROSS KEY_VNORMALIZE KEY_VROTATE
-%token KEY_TRANSLATE
+%token KEY_TRANSLATE KEY_ROTATE
 %left QUESTION COLON
 %left AND OR
 %left EQ NOT_EQ LANGLE RANGLE LT_EQ GT_EQ
@@ -479,6 +481,10 @@ object_mod: finish {
 }
 | KEY_TRANSLATE vector {
   $$ = new Protracer::Translation(*$2);
+  delete $2;
+}
+| KEY_ROTATE vector {
+  $$ = new Protracer::Rotation((M_PI / 180) * *$2);
   delete $2;
 }
 ;
@@ -918,12 +924,12 @@ number COMMA number RANGLE {
   delete $3;
 }
 | KEY_VAXIS_ROTATE LPAREN vector COMMA vector COMMA number RPAREN {
-  $$ = new Protracer::Vector($3->rotate(*$5, $7 / 2 * M_PI));
+  $$ = new Protracer::Vector($3->rotate(*$5, $7 * M_PI / 180));
   delete $3;
   delete $5;
 }
 | KEY_VROTATE LPAREN vector COMMA vector RPAREN {
-  $$ = new Protracer::Vector($3->rotate((1 / (2 * M_PI)) * *$5));
+  $$ = new Protracer::Vector($3->rotate(M_PI / 180 * *$5));
   delete $3;
   delete $5;
 }

@@ -100,4 +100,11 @@ namespace Protracer {
     center += v;
   }
 
+  void
+  Sphere::rotate(const Vector& rot)
+  {
+    center = center.rotate(rot);
+    pole = pole.rotate(rot);
+    equator = equator.rotate(rot);
+  }
 }

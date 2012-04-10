@@ -48,6 +48,9 @@ namespace Protracer {
     // vector
     virtual void translate(const Vector& v) = 0;
 
+    // rotate object around each axis as specified by the rotation vector
+    virtual void rotate(const Vector& rot) = 0;
+
   protected:
     Finish finish;
     Pigment* pigment;

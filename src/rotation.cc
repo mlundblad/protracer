@@ -17,33 +17,14 @@
  *
  */
 
-#ifndef PLANE_H
-#define PLANE_H
-
-#include "object.h"
-#include "hit_calculation.h"
-#include "vector.h"
-#include "ray.h"
+#include "rotation.h"
 
 namespace Protracer {
-
-  class Plane : public Object {
-  public:
-    Plane(const Vector& normal, const Vector& point, Pigment* pigment,
-	  const Finish& finish);
-
-    Plane* copy() const;
-
-    virtual HitCalculation calculate_hit(const Ray& ray) const;
-    virtual void translate(const Vector& v);
-    virtual void rotate(const Vector& rot);
-
-  private:
-    Vector normal;
-    Vector point;
-    float d;
-  };
+  
+  void
+  Rotation::apply(Object* object) const
+  {
+    object->rotate(rot_v);
+  }
 
 }
-
-#endif //PLANE_H

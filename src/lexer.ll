@@ -92,6 +92,7 @@ radians         return KEY_RADIANS;
 red		return KEY_RED;
 reflection	return KEY_REFLECTION;
 rgb		return KEY_RGB;
+rotate          return KEY_ROTATE;
 select          return KEY_SELECT;
 sin             return KEY_SIN;
 sinh            return KEY_SINH;
