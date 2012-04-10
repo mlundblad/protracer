@@ -174,7 +174,7 @@ int yyerror(char *s);
 %token KEY_FLOOR KEY_INT KEY_LOG KEY_LN KEY_MAX KEY_MIN KEY_MOD KEY_POW
 %token KEY_RADIANS KEY_SELECT KEY_SIN KEY_SINH KEY_TAN KEY_TANH KEY_VDOT KEY_VLENGTH
 %token KEY_FALSE KEY_NO KEY_ON KEY_OFF KEY_PI KEY_TRUE KEY_YES
-%token KEY_VAXIS_ROTATE KEY_VCROSS KEY_VNORMALIZE
+%token KEY_VAXIS_ROTATE KEY_VCROSS KEY_VNORMALIZE KEY_VROTATE
 %token KEY_TRANSLATE
 %left QUESTION COLON
 %left AND OR
@@ -919,6 +919,11 @@ number COMMA number RANGLE {
 }
 | KEY_VAXIS_ROTATE LPAREN vector COMMA vector COMMA number RPAREN {
   $$ = new Protracer::Vector($3->rotate(*$5, $7 / 2 * M_PI));
+  delete $3;
+  delete $5;
+}
+| KEY_VROTATE LPAREN vector COMMA vector RPAREN {
+  $$ = new Protracer::Vector($3->rotate((1 / (2 * M_PI)) * *$5));
   delete $3;
   delete $5;
 }

@@ -108,6 +108,7 @@ vcross          return KEY_VCROSS;
 vdot            return KEY_VDOT;
 vlength         return KEY_VLENGTH;
 vnormalize      return KEY_VNORMALIZE;
+vrotate         return KEY_VROTATE;
 x               return KEY_X;
 y               return KEY_Y;
 yes             return KEY_YES;
