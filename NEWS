@@ -2,8 +2,11 @@ version 2.3 (2012-xx-xx)
 	* If started interactively (i.e. not reading input from a pipe), print the
 	  usage help if no input file is given.
 	* Enhance scene description language:
-	  * Support the function vaxis_rotate to rotate a given vector around
-	    another vector describing an axis by a specified amound in degrees.
+	  * Support the function "vaxis_rotate" to rotate a given vector around
+	    another vector describing an axis by a specified amount in degrees
+	    and the function "vrotate" to rotate a vector around each of the
+	    axis (x, y, and z) by the amount specified by the second vector
+	    argument.
 	  * Support moving objects with the "translate" keyword.
 
 version 2.2 "March" (2012-03-19)
