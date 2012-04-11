@@ -30,6 +30,7 @@
 #include "finish.h"
 #include "camera.h"
 #include "light.h"
+#include "transformation.h"
 
 namespace Protracer {
 
@@ -44,7 +45,8 @@ namespace Protracer {
       PIGMENT,
       CAMERA,
       LIGHT,
-      OBJECT
+      OBJECT,
+      TRANSFORMATION
     } type;
 
     union Value {
@@ -56,6 +58,7 @@ namespace Protracer {
       Camera* camera;
       Light* light;
       Object* object;
+      Transformation* transform;
     } value;
 
     Declaration(const std::string& name, float scalar);
@@ -66,6 +69,7 @@ namespace Protracer {
     Declaration(const std::string& name, const Camera& camera);
     Declaration(const std::string& name, const Light& light);
     Declaration(const std::string& name, Object* object);
+    Declaration(const std::string& name, Transformation* tranform);
 
     const std::string get_name() const { return name; }
     const float get_scalar() const { return value.scalar; }
@@ -77,6 +81,8 @@ namespace Protracer {
     const Camera& get_camera() const { return *(value.camera); }
     const Light& get_light() const { return *(value.light); }
     const Object* get_object() const { return type == OBJECT ? value.object : 0; }
+    const Transformation* get_transformation() const {
+      return type == TRANSFORMATION ? value.transform : 0; }
     Type get_type() const { return type; }
     
     static bool is_defined(const std::string& name);

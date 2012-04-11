@@ -53,6 +53,7 @@
 #include "transformation.h"
 #include "translation.h"
 #include "rotation.h"
+#include "composed_transformation.h"
 
 
   Protracer::Scene*      global_scene;
@@ -95,6 +96,7 @@ int yyerror(char *s);
 #include "transformation.h"
 #include "translation.h"
 #include "rotation.h"
+#include "composed_transformation.h"
 #include "light.h"
 #include "exception.h"
 
@@ -149,6 +151,7 @@ int yyerror(char *s);
   std::list<Protracer::ObjectModification*>* objectMods;
   Protracer::ObjectModification* objectMod;
   Protracer::Transformation* transformation;
+  std::list<Protracer::Transformation*>* transformations;
   Protracer::Finish*      finish;
   Protracer::Pigment*     pigment;
   Protracer::Bitmap*      bitmap;
@@ -180,7 +183,7 @@ int yyerror(char *s);
 %token KEY_RADIANS KEY_SELECT KEY_SIN KEY_SINH KEY_TAN KEY_TANH KEY_VDOT KEY_VLENGTH
 %token KEY_FALSE KEY_NO KEY_ON KEY_OFF KEY_PI KEY_TRUE KEY_YES
 %token KEY_VAXIS_ROTATE KEY_VCROSS KEY_VNORMALIZE KEY_VROTATE
-%token KEY_TRANSLATE KEY_ROTATE
+%token KEY_TRANSLATE KEY_ROTATE KEY_TRANSFORM
 %left QUESTION COLON
 %left AND OR
 %left EQ NOT_EQ LANGLE RANGLE LT_EQ GT_EQ
@@ -213,6 +216,8 @@ int yyerror(char *s);
 %type <objectMods> object_mods
 %type <objectMod> object_mod
 %type <transformation> transformation
+%type <transformation> transformation_decl
+%type <transformations> transformations
 %type <pigment> pigment
 %type <finish> finish
 %type <bitmap> image
@@ -496,6 +501,42 @@ transformation: KEY_TRANSLATE vector {
   $$ = new Protracer::Rotation((M_PI / 180) * *$2);
   delete $2;
 }
+| transformation_decl {
+  $$ = $1;
+} 
+;
+
+transformation_decl: KEY_TRANSFORM LBRACE NAME RBRACE {
+  if (Protracer::Declaration::is_defined($3)) {
+    Protracer::Declaration d = Protracer::Declaration::get_declaration($3);
+    
+    if (d.get_type() == Protracer::Declaration::TRANSFORMATION) {
+      $$ = d.get_transformation()->copy();
+    } else {
+      error(std::string("Variable ") + $3 + std::string(" is not a transform."));
+      free($3);
+    }
+  } else {
+    error(std::string("Variable ") + $3 + std::string(" is not defined."));
+    free($3);
+  }
+}
+| KEY_TRANSFORM LBRACE transformation RBRACE {
+  $$ = $3;
+}
+| KEY_TRANSFORM LBRACE transformations RBRACE {
+  $$ = new Protracer::ComposedTransformation(*$3);
+  delete $3;
+};
+
+transformations: transformation {
+  $$ = new std::list<Protracer::Transformation*>;
+  $$->push_back($1);
+}
+| transformations transformation {
+  $1->push_back($2);
+  $$ = $1;
+};
 
 
 pigment:
@@ -1007,7 +1048,13 @@ DIRECTIVE_DECLARE NAME EQ number SEMICOLON {
 | DIRECTIVE_DECLARE NAME EQ object opt_semicolon {
   Protracer::Declaration::add_global_declaration(Protracer::Declaration($2, $4));
   free($2);
-} 
+}
+| DIRECTIVE_DECLARE NAME EQ transformation_decl 
+  opt_semicolon {
+  Protracer::Declaration::add_global_declaration(Protracer::Declaration($2,
+									$4));
+  free($2);
+}
 ;
 
 opt_semicolon:

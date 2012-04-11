@@ -27,4 +27,10 @@ namespace Protracer {
     object->rotate(rot_v);
   }
 
+  Rotation*
+  Rotation::copy() const
+  {
+    return new Rotation(rot_v);
+  }
+
 }

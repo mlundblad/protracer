@@ -8,6 +8,8 @@ protracer_SOURCES=bitmap.cc \
 	camera.h \
 	color.h \
 	color_pigment.h \
+	composed_transformation.cc \
+	composed_transformation.h \
 	constants.h \
 	declaration.cc \
 	declaration.h \

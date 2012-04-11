@@ -25,6 +25,8 @@
 namespace Protracer {
 
   class Transformation : public ObjectModification {
+  public:
+    virtual Transformation* copy() const = 0;
   };
 }
 

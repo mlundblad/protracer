@@ -83,6 +83,14 @@ namespace Protracer {
     value.object = object;
   }
 
+  Declaration::Declaration(const std::string& name, Transformation* transform)
+  {
+    type = TRANSFORMATION;
+    this->name = name;
+    value.transform = transform;
+  }
+  
+
   bool
   Declaration::is_defined(const std::string& name)
   {
@@ -116,6 +124,8 @@ namespace Protracer {
         delete d.value.camera;
       else if (d.get_type() == LIGHT)
         delete d.value.light;
+      else if (d.get_type() == TRANSFORMATION)
+        delete d.value.transform;
     }
 
     global_declarations.insert(std::pair<std::string, Declaration>(decl.get_name(),
@@ -141,6 +151,8 @@ namespace Protracer {
       delete d.value.camera;
     else if (d.get_type() == LIGHT)
       delete d.value.light;
+    else if (d.get_type() == TRANSFORMATION)
+      delete d.value.transform;
 
     global_declarations.erase(name);
   }

@@ -17,23 +17,27 @@
  *
  */
 
-#ifndef TRANSLATION_H
-#define TRANSLATION_H
+#ifndef COMPOSED_TRANSFORMATION_H
+#define COMPOSED_TRANSFORMATION_H
 
 #include "transformation.h"
-#include "vector.h"
+
+#include <list>
 
 namespace Protracer {
-
-  class Translation : public Transformation {
+  
+  class ComposedTransformation : public Transformation {
   public:
-    Translation(const Vector& v) : v(v) {}
-    virtual void apply(Object* o) const;
-    virtual Translation* copy() const;
+    ComposedTransformation(const std::list<Transformation*>& transformations) :
+      transformations(transformations) {}
+    virtual ~ComposedTransformation();
+
+    virtual void apply(Object* object) const;
+    virtual ComposedTransformation* copy() const;
 
   private:
-    Vector v;
+    std::list<Transformation*> transformations;
   };
 }
 
-#endif //PIGMENT_MODIFICATION_H
+#endif //COMPOSED_TRANSFORMATION_H

@@ -17,20 +17,38 @@
  *
  */
 
-#include "translation.h"
+#include "composed_transformation.h"
 
 namespace Protracer {
 
-  void
-  Translation::apply(Object* o) const
+  ComposedTransformation::~ComposedTransformation()
   {
-    o->translate(v);
+    for (std::list<Transformation*>::iterator it = transformations.begin() ;
+	 it != transformations.end() ; it++) {
+      delete *it;
+    }
   }
 
-  Translation*
-  Translation::copy() const
+  void
+  ComposedTransformation::apply(Object* object) const
   {
-    return new Translation(v);
+    for (std::list<Transformation*>::const_iterator it = transformations.begin() ;
+	 it != transformations.end() ; it++) {
+      (*it)->apply(object);
+    }
+  }
+
+  ComposedTransformation*
+  ComposedTransformation::copy() const
+  {
+    std::list<Transformation*> trans;
+
+    for (std::list<Transformation*>::const_iterator it = transformations.begin() ;
+	 it != transformations.end() ; it++) {
+      trans.push_back((*it)->copy());
+    }
+
+    return new ComposedTransformation(trans);
   }
 
 }

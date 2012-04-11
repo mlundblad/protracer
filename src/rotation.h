@@ -30,6 +30,7 @@ namespace Protracer {
     Rotation(const Vector& rot) : rot_v(rot) {}
     
     virtual void apply(Object* object) const;
+    virtual Rotation* copy() const;
 
   private:
     Vector rot_v;
