@@ -45,6 +45,7 @@ protracer_SOURCES=bitmap.cc \
 	scene.cc \
 	sphere.cc \
 	sphere.h \
+	transformation.h \
 	translation.cc \
 	translation.h \
 	triangle.cc \

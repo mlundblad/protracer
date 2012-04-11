@@ -17,22 +17,15 @@
  *
  */
 
-#ifndef TRANSLATION_H
-#define TRANSLATION_H
+#ifndef TRANSFORMATION_H
+#define TRANSFORMATION_H
 
-#include "transformation.h"
-#include "vector.h"
+#include "object_modification.h"
 
 namespace Protracer {
 
-  class Translation : public Transformation {
-  public:
-    Translation(const Vector& v) : v(v) {}
-    virtual void apply(Object* o) const;
-
-  private:
-    Vector v;
+  class Transformation : public ObjectModification {
   };
 }
 
-#endif //PIGMENT_MODIFICATION_H
+#endif //TRANSFORMATION_H

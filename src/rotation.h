@@ -20,12 +20,12 @@
 #ifndef ROTATION_H
 #define ROTATION_H
 
-#include "object_modification.h"
+#include "transformation.h"
 #include "vector.h"
 
 namespace Protracer {
   
-  class Rotation : public ObjectModification {
+  class Rotation : public Transformation {
   public:
     Rotation(const Vector& rot) : rot_v(rot) {}
     

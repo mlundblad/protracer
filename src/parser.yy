@@ -50,6 +50,7 @@
 #include "object_modification.h"
 #include "finish_modification.h"
 #include "pigment_modification.h"
+#include "transformation.h"
 #include "translation.h"
 #include "rotation.h"
 
@@ -91,6 +92,7 @@ int yyerror(char *s);
 #include "object_modification.h"
 #include "finish_modification.h"
 #include "pigment_modification.h"
+#include "transformation.h"
 #include "translation.h"
 #include "rotation.h"
 #include "light.h"
@@ -146,6 +148,7 @@ int yyerror(char *s);
   SphereOptions*   sphereOptions;
   std::list<Protracer::ObjectModification*>* objectMods;
   Protracer::ObjectModification* objectMod;
+  Protracer::Transformation* transformation;
   Protracer::Finish*      finish;
   Protracer::Pigment*     pigment;
   Protracer::Bitmap*      bitmap;
@@ -209,6 +212,7 @@ int yyerror(char *s);
 %type <sphereOptions> sphere_opt
 %type <objectMods> object_mods
 %type <objectMod> object_mod
+%type <transformation> transformation
 %type <pigment> pigment
 %type <finish> finish
 %type <bitmap> image
@@ -479,7 +483,12 @@ object_mod: finish {
 | pigment {
   $$ = new Protracer::PigmentModification($1);
 }
-| KEY_TRANSLATE vector {
+| transformation {
+  $$ = $1;
+}
+;
+
+transformation: KEY_TRANSLATE vector {
   $$ = new Protracer::Translation(*$2);
   delete $2;
 }
@@ -487,7 +496,6 @@ object_mod: finish {
   $$ = new Protracer::Rotation((M_PI / 180) * *$2);
   delete $2;
 }
-;
 
 
 pigment:
