@@ -1,8 +1,9 @@
 examplesdir = $(pkgdatadir)/examples
-examples_DATA = example1.pov example2.pov example3.pov example4.pov sky.ppm
+examples_DATA = example1.pov example2.pov example3.pov example4.pov\
+	example5.pov sky.ppm
 
-CLEANFILES=example1.pov example2.pov example3.pov example4.pov
-DISTCLEANFILES=example1.pov example2.pov example3.pov example4.pov
+CLEANFILES=example1.pov example2.pov example3.pov example4.pov example5.pov
+DISTCLEANFILES=example1.pov example2.pov example3.pov example4.pov example5.pov
 
 edit = sed \
 	-e 's|@EXAMPLESDIR[@]|$(examplesdir)|g'
@@ -19,4 +20,8 @@ example3.pov: example3.pov.in Makefile
 example4.pov: example4.pov.in Makefile
 	$(edit) $< >$@
 
-EXTRA_DIST = example1.pov.in example2.pov.in example3.pov.in example4.pov.in sky.ppm
+example5.pov: example5.pov.in Makefile
+	$(edit) $< >$@
+
+EXTRA_DIST = example1.pov.in example2.pov.in example3.pov.in example4.pov.in \
+	example5.pov.in sky.ppm
