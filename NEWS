@@ -9,6 +9,7 @@ version 2.3 (2012-xx-xx)
 	    argument.
 	  * Support moving objects with the "translate" keyword.
 	  * Support rotating objects with the "rotate" keyword.
+	  * Support declaring and using transformation variables.
 
 version 2.2 "March" (2012-03-19)
 	* Enhance scene description language:
