@@ -216,7 +216,7 @@ int yyerror(char *s);
 %type <objectMods> object_mods
 %type <objectMod> object_mod
 %type <transformation> transformation
-%type <transformation> transformation_decl
+%type <transformation> transformation_block
 %type <transformations> transformations
 %type <pigment> pigment
 %type <finish> finish
@@ -501,39 +501,37 @@ transformation: KEY_TRANSLATE vector {
   $$ = new Protracer::Rotation((M_PI / 180) * *$2);
   delete $2;
 }
-| transformation_decl {
-  $$ = $1;
-} 
+| KEY_TRANSFORM LBRACE transformations RBRACE {
+  $$ = new Protracer::ComposedTransformation(*$3);
+  delete $3;
+}
 ;
 
-transformation_decl: KEY_TRANSFORM LBRACE NAME RBRACE {
-  if (Protracer::Declaration::is_defined($3)) {
-    Protracer::Declaration d = Protracer::Declaration::get_declaration($3);
+transformation_block: NAME {
+  if (Protracer::Declaration::is_defined($1)) {
+    Protracer::Declaration d = Protracer::Declaration::get_declaration($1);
     
     if (d.get_type() == Protracer::Declaration::TRANSFORMATION) {
       $$ = d.get_transformation()->copy();
     } else {
-      error(std::string("Variable ") + $3 + std::string(" is not a transform."));
-      free($3);
+      error(std::string("Variable ") + $1 + std::string(" is not a transform."));
+      free($1);
     }
   } else {
-    error(std::string("Variable ") + $3 + std::string(" is not defined."));
-    free($3);
+    error(std::string("Variable ") + $1 + std::string(" is not defined."));
+    free($1);
   }
 }
-| KEY_TRANSFORM LBRACE transformation RBRACE {
-  $$ = $3;
-}
-| KEY_TRANSFORM LBRACE transformations RBRACE {
-  $$ = new Protracer::ComposedTransformation(*$3);
-  delete $3;
+| transformation {
+  $$ = $1;
 };
 
-transformations: transformation {
+
+transformations: transformation_block {
   $$ = new std::list<Protracer::Transformation*>;
   $$->push_back($1);
 }
-| transformations transformation {
+| transformations transformation_block {
   $1->push_back($2);
   $$ = $1;
 };
@@ -1049,11 +1047,12 @@ DIRECTIVE_DECLARE NAME EQ number SEMICOLON {
   Protracer::Declaration::add_global_declaration(Protracer::Declaration($2, $4));
   free($2);
 }
-| DIRECTIVE_DECLARE NAME EQ transformation_decl 
+| DIRECTIVE_DECLARE NAME EQ KEY_TRANSFORM LBRACE transformations RBRACE 
   opt_semicolon {
   Protracer::Declaration::add_global_declaration(Protracer::Declaration($2,
-									$4));
+				  new Protracer::ComposedTransformation(*$6)));
   free($2);
+  delete $6;
 }
 ;
 
