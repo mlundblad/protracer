@@ -1,3 +1,5 @@
+version 2.4 (2012-xx-xx)
+
 version 2.3 "Friday the 13th"(2012-04-13)
 	* If started interactively (i.e. not reading input from a pipe), print the
 	  usage help if no input file is given.
