@@ -184,6 +184,7 @@ int yyerror(char *s);
 %token KEY_FALSE KEY_NO KEY_ON KEY_OFF KEY_PI KEY_TRUE KEY_YES
 %token KEY_VAXIS_ROTATE KEY_VCROSS KEY_VNORMALIZE KEY_VROTATE
 %token KEY_TRANSLATE KEY_ROTATE KEY_TRANSFORM
+%token KEY_IMAGE_WIDTH KEY_IMAGE_HEIGHT
 %left QUESTION COLON
 %left AND OR
 %left EQ NOT_EQ LANGLE RANGLE LT_EQ GT_EQ
@@ -825,6 +826,8 @@ KEY_FALSE { $$ = 0.0; }
 | KEY_PI { $$ = M_PI; }
 | KEY_TRUE { $$ = 1.0; }
 | KEY_YES { $$ = 1.0; }
+| KEY_IMAGE_WIDTH { $$ = global_parameters.get_pixel_width(); }
+| KEY_IMAGE_HEIGHT { $$ = global_parameters.get_pixel_height(); }
 ;
 
 numbers: number {
