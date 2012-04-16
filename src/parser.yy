@@ -55,7 +55,6 @@
 #include "rotation.h"
 #include "composed_transformation.h"
 
-
   Protracer::Scene*      global_scene;
   Protracer::Parameters global_parameters;
   Protracer::Color      global_background;
@@ -287,19 +286,20 @@ object: sphere { $$ = $1; }
     if (d.get_type() == Protracer::Declaration::OBJECT) {
       $$ = d.get_object()->copy();
       
-      for (std::list<Protracer::ObjectModification*>::iterator it = $4->begin() ;
-	   it != $4->end() ; it++) {
-	Protracer::ObjectModification* mod = *it;
-	mod->apply($$);
-	delete mod;
-      }
-
+      std::for_each($4->begin(), $4->end(),
+		    Protracer::ObjectModification::Applier($$));
+      std::for_each($4->begin(), $4->end(),
+		    Protracer::ObjectModification::Deleter());
       delete $4;
     } else {
+      std::for_each($4->begin(), $4->end(),
+		    Protracer::ObjectModification::Deleter());
       delete $4;
       error(std::string("Variable ") + $3 + std::string(" is not an object."));
     }
   } else {
+    std::for_each($4->begin(), $4->end(),
+		  Protracer::ObjectModification::Deleter());
     delete $4;
     error(std::string("Variable ") + $3 + std::string(" is not defined."));
   }
@@ -315,13 +315,10 @@ plane:
 				    new Protracer::ColorPigment(),
 				    Protracer::Finish());
 
-	  for (std::list<Protracer::ObjectModification*>::iterator it = $6->begin() ;
-	       it != $6->end() ; it++) {
-	    Protracer::ObjectModification* mod = *it;
-	    mod->apply($$);
-	    delete mod;
-	  }
-
+	  std::for_each($6->begin(), $6->end(),
+			Protracer::ObjectModification::Applier($$));
+	  std::for_each($6->begin(), $6->end(),
+			Protracer::ObjectModification::Deleter());
 	  delete $3;
 	  delete $6;
 	}
@@ -337,13 +334,10 @@ plane:
 				    new Protracer::ColorPigment(),
 				    Protracer::Finish());
 
-	  for (std::list<Protracer::ObjectModification*>::iterator it = $6->begin() ;
-	       it != $6->end() ; it++) {
-	    Protracer::ObjectModification* mod = *it;
-	    mod->apply($$);
-	    delete mod;
-	  }
-
+	  std::for_each($6->begin(), $6->end(),
+			Protracer::ObjectModification::Applier($$));
+	  std::for_each($6->begin(), $6->end(),
+			Protracer::ObjectModification::Deleter());
 	  delete $3;
 	  delete $5;
 	  delete $6;
@@ -358,13 +352,10 @@ sphere:
 				     new Protracer::ColorPigment, 
 				     Protracer::Finish());
 
-	  for (std::list<Protracer::ObjectModification*>::iterator it = $7->begin() ;
-	       it != $7->end() ; it++) {
-	    Protracer::ObjectModification* mod = *it;
-	    mod->apply($$);
-	    delete mod;
-	  }
-
+	  std::for_each($7->begin(), $7->end(),
+			Protracer::ObjectModification::Applier($$));
+	  std::for_each($7->begin(), $7->end(),
+			Protracer::ObjectModification::Deleter());
 	  delete $3;
 	  delete $6;
 	  delete $7;
@@ -398,13 +389,10 @@ triangle:
 				       new Protracer::ColorPigment(),
 				       Protracer::Finish());
 
-	  for (std::list<Protracer::ObjectModification*>::iterator it = $8->begin() ;
-	       it != $8->end() ; it++) {
-	    Protracer::ObjectModification* mod = *it;
-	    mod->apply($$);
-	    delete mod;
-	  }
-
+	  std::for_each($8->begin(), $8->end(),
+			Protracer::ObjectModification::Applier($$));
+	  std::for_each($8->begin(), $8->end(),
+			Protracer::ObjectModification::Deleter());
 	  delete $3;
 	  delete $5;
 	  delete $7;
@@ -426,13 +414,10 @@ triangle:
 				       Protracer::Finish(),
 				       true);
 
-	  for (std::list<Protracer::ObjectModification*>::iterator it = $8->begin() ;
-	       it != $8->end() ; it++) {
-	    Protracer::ObjectModification* mod = *it;
-	    mod->apply($$);
-	    delete mod;
-	  }
-
+	  std::for_each($8->begin(), $8->end(),
+			Protracer::ObjectModification::Applier($$));
+	  std::for_each($8->begin(), $8->end(),
+			Protracer::ObjectModification::Deleter());
 	  delete $3;
 	  delete $5;
 	  delete $7;
@@ -452,13 +437,10 @@ disc:
 			       new Protracer::ColorPigment(),
 			       Protracer::Finish());
 
-      for (std::list<Protracer::ObjectModification*>::iterator it = $9->begin() ;
-	   it != $9->end() ; it++) {
-	Protracer::ObjectModification* mod = *it;
-	mod->apply($$);
-	delete mod;
-      }
-
+      std::for_each($9->begin(), $9->end(),
+		    Protracer::ObjectModification::Applier($$));
+      std::for_each($9->begin(), $9->end(),
+		    Protracer::ObjectModification::Deleter());
       delete $3;
       delete $5;
       delete $9;
