@@ -22,9 +22,9 @@
 namespace Protracer {
   
   void
-  Rotation::apply(Object* object) const
+  Rotation::apply(Item* item) const
   {
-    object->rotate(rot_v);
+    item->rotate(rot_v);
   }
 
   Rotation*

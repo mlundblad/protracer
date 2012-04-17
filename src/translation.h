@@ -28,7 +28,7 @@ namespace Protracer {
   class Translation : public Transformation {
   public:
     Translation(const Vector& v) : v(v) {}
-    virtual void apply(Object* o) const;
+    virtual void apply(Item* item) const;
     virtual Translation* copy() const;
 
   private:

@@ -20,13 +20,14 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
+#include "item.h"
 #include "finish.h"
 #include "pigment.h"
 #include "hit_calculation.h"
 #include "ray.h"
 
 namespace Protracer {
-  class Object {
+  class Object : public Item {
   public:
     Object(Pigment* pigment, const Finish& finish) :
       pigment(pigment), finish(finish) {}
@@ -43,13 +44,6 @@ namespace Protracer {
     // this will need to be polymorphically overridable for extending classes
     // like PlanarObject which needs to sync the pigment with a spanning plane
     virtual void set_pigment(Pigment* pigment);
-
-    // translate object by moving it to a new position relative the given
-    // vector
-    virtual void translate(const Vector& v) = 0;
-
-    // rotate object around each axis as specified by the rotation vector
-    virtual void rotate(const Vector& rot) = 0;
 
   protected:
     Finish finish;

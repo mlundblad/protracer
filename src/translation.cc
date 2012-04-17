@@ -22,9 +22,9 @@
 namespace Protracer {
 
   void
-  Translation::apply(Object* o) const
+  Translation::apply(Item* item) const
   {
-    o->translate(v);
+    item->translate(v);
   }
 
   Translation*

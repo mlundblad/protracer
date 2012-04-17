@@ -17,20 +17,23 @@
  *
  */
 
-#ifndef TRANSFORMATION_H
-#define TRANSFORMATION_H
+#ifndef ITEM_H
+#define ITEM_H
 
-#include "object_modification.h"
-#include "item.h"
+#include "vector.h"
 
 namespace Protracer {
 
-  class Transformation : public ObjectModification {
+  class Item {
   public:
-    virtual void apply(Item* item) const = 0;
-    virtual void apply(Object* o) const { apply(static_cast<Item*> (o)); }
-    virtual Transformation* copy() const = 0;
+    // translate item by moving it to a new position relative the given
+    // vector
+    virtual void translate(const Vector& v) = 0;
+
+    // rotate item around each axis as specified by the rotation vector
+    virtual void rotate(const Vector& rot) = 0;
   };
+
 }
 
-#endif //TRANSFORMATION_H
+#endif //ITEM_H

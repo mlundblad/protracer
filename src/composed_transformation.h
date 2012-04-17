@@ -32,7 +32,7 @@ namespace Protracer {
       transformations(transformations) {}
     virtual ~ComposedTransformation();
 
-    virtual void apply(Object* object) const;
+    virtual void apply(Item* item) const;
     virtual ComposedTransformation* copy() const;
 
   private:

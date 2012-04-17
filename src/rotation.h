@@ -29,7 +29,7 @@ namespace Protracer {
   public:
     Rotation(const Vector& rot) : rot_v(rot) {}
     
-    virtual void apply(Object* object) const;
+    virtual void apply(Item* item) const;
     virtual Rotation* copy() const;
 
   private:

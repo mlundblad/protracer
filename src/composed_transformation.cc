@@ -30,11 +30,11 @@ namespace Protracer {
   }
 
   void
-  ComposedTransformation::apply(Object* object) const
+  ComposedTransformation::apply(Item* item) const
   {
     for (std::list<Transformation*>::const_iterator it = transformations.begin() ;
 	 it != transformations.end() ; it++) {
-      (*it)->apply(object);
+      (*it)->apply(item);
     }
   }
 
