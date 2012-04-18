@@ -661,6 +661,7 @@ KEY_COLOR KEY_RGB vector {
 camera: KEY_CAMERA LBRACE KEY_LOCATION vector
 KEY_SKY vector
 KEY_LOOK vector
+transformations_opt
 RBRACE {
   global_camera =
     Protracer::Camera(*$4, *$8, *$6,
@@ -670,24 +671,35 @@ RBRACE {
 		      global_parameters.get_pixel_width(),
 		      global_parameters.get_pixel_height());
   global_scene->set_camera(global_camera);
+  std::for_each($9->begin(), $9->end(),
+		Protracer::Transformation::Applier(&global_camera));
+  std::for_each($9->begin(), $9->end(), Protracer::Transformation::Deleter());
   delete $4;
   delete $6;
   delete $8;
+  delete $9;
 }
-| KEY_CAMERA LBRACE NAME RBRACE {
+| KEY_CAMERA LBRACE NAME transformations_opt RBRACE {
   if (Protracer::Declaration::is_defined($3)) {
     Protracer::Declaration d = Protracer::Declaration::get_declaration($3);
     
     if (d.get_type() == Protracer::Declaration::CAMERA) {
       global_camera = d.get_camera();
+      std::for_each($4->begin(), $4->end(),
+		    Protracer::Transformation::Applier(&global_camera));
+      std::for_each($4->begin(), $4->end(),
+		    Protracer::Transformation::Deleter());
       global_scene->set_camera(global_camera);
+      delete $4;
     } else {
+      delete $4;
       error(std::string("Variable ") + $3 + " is not a camera.");
     }
   } else {
+    delete $4;
     error(std::string("Variable ") + $3 + " is undefined.");
   }
-  
+
   free($3);
 }
 ;
