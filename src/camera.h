@@ -20,11 +20,12 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
+#include "item.h"
 #include "vector.h"
 
 namespace Protracer {
 
-  class Camera {
+  class Camera : public Item {
   public:
     Camera();
     Camera(const Vector& location, const Vector& look_at, const Vector& up,
@@ -39,6 +40,9 @@ namespace Protracer {
     float get_world_height() const { return world_height; }
     unsigned int get_pixel_width() const { return pixel_width; }
     unsigned int get_pixel_height() const { return pixel_height; }
+
+    virtual void translate(const Vector& v);
+    virtual void rotate(const Vector& v);
 
   private:
     Vector location;

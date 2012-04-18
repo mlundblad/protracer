@@ -51,4 +51,19 @@ namespace Protracer {
     this->pixel_width = pixel_width;
     this->pixel_height = pixel_height;
   }
+
+  void
+  Camera::translate(const Vector& v)
+  {
+    location += v;
+  }
+
+  void
+  Camera::rotate(const Vector& v)
+  {
+    location = location.rotate(v);
+    look_at = location.rotate(v);
+    up = up.rotate(v);
+  }
+
 }
