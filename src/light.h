@@ -20,14 +20,18 @@
 #ifndef LIGHT_H
 #define LIGHT_H
 
+#include "item.h"
 #include "vector.h"
 
 namespace Protracer {
-  class Light {
+  class Light : public Item {
   public:
     Light(const Vector& position);
     
     const Vector& get_position() const { return position; }
+
+    virtual void translate(const Vector& v);
+    virtual void rotate(const Vector& v);
 
   private:
     Vector position;

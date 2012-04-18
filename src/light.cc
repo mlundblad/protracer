@@ -24,4 +24,17 @@ namespace Protracer {
   {
     this->position = position;
   }
+
+  void
+  Light::translate(const Vector& v)
+  {
+    position += v;
+  }
+
+  void
+  Light::rotate(const Vector& v)
+  {
+    position = position.rotate(v);
+  }
+
 }
