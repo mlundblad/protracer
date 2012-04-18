@@ -218,6 +218,7 @@ int yyerror(char *s);
 %type <transformation> transformation
 %type <transformation> transformation_block
 %type <transformations> transformations
+%type <transformations> transformations_opt
 %type <pigment> pigment
 %type <finish> finish
 %type <bitmap> image
@@ -254,20 +255,33 @@ item: object { global_scene->add_object($1); }
 } 
 ;
 
-light: KEY_LIGHT LBRACE vector RBRACE {
+light: KEY_LIGHT LBRACE vector transformations_opt RBRACE {
   $$ = new Protracer::Light(*$3);
+  std::for_each($4->begin(), $4->end(), Protracer::Transformation::Applier($$));
+  std::for_each($4->begin(), $4->end(), Protracer::Transformation::Deleter());
   delete $3;
+  delete $4;
 }
-| KEY_LIGHT LBRACE NAME RBRACE {
+| KEY_LIGHT LBRACE NAME transformations_opt RBRACE {
   if (Protracer::Declaration::is_defined($3)) {
     Protracer::Declaration d = Protracer::Declaration::get_declaration($3);
     
     if (d.get_type() == Protracer::Declaration::LIGHT) {
       $$ = new Protracer::Light(d.get_light());
+      std::for_each($4->begin(), $4->end(),
+		    Protracer::Transformation::Applier($$));
+      std::for_each($4->begin(), $4->end(),
+		    Protracer::Transformation::Deleter());
+      delete $4;
     } else {
+      std::for_each($4->begin(), $4->end(),
+		    Protracer::Transformation::Deleter());
+      delete $4;
       error(std::string("Variable ") + $3 + " is not a camera.");
     }
   } else {
+    std::for_each($4->begin(), $4->end(), Protracer::Transformation::Deleter());
+    delete $4;
     error(std::string("Variable ") + $3 + " is undefined.");
   }
   
@@ -519,6 +533,14 @@ transformations: transformation_block {
   $$ = $1;
 };
 
+// used for instansiating light sources and cameras, need to be able to set
+// an empty list of transformations, unlike for the "transformation" block
+transformations_opt: /* empty */ {
+  $$ = new std::list<Protracer::Transformation*>;
+}
+| transformations {
+  $$ = $1;
+};
 
 pigment:
 KEY_PIGMENT LBRACE color RBRACE {
