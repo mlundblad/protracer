@@ -2,6 +2,8 @@ version 2.4 (2012-xx-xx)
 	* Enhanced scene description language:
 	  * Added numerical constants "image_width" and "image_height"
 	    set to the image width and height (in pixels).
+	  * Add support for moving and rotating light sources with the
+	    "translate" and "rotate" keywords.
 
 version 2.3 "Friday the 13th"(2012-04-13)
 	* If started interactively (i.e. not reading input from a pipe), print the
