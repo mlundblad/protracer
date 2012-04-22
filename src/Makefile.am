@@ -21,6 +21,7 @@ protracer_SOURCES=bitmap.cc \
 	finish_modification.cc \
 	finish_modification.h \
 	hit_calculation.h \
+	item.h \
 	lexer.ll \
 	light.cc \
 	light.h \
