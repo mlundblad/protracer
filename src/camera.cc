@@ -56,13 +56,14 @@ namespace Protracer {
   Camera::translate(const Vector& v)
   {
     location += v;
+    look_at += v;
   }
 
   void
   Camera::rotate(const Vector& v)
   {
     location = location.rotate(v);
-    look_at = location.rotate(v);
+    look_at = look_at.rotate(v);
     up = up.rotate(v);
   }
 

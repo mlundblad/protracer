@@ -670,10 +670,10 @@ RBRACE {
 		      global_parameters.get_world_height(),
 		      global_parameters.get_pixel_width(),
 		      global_parameters.get_pixel_height());
-  global_scene->set_camera(global_camera);
   std::for_each($9->begin(), $9->end(),
 		Protracer::Transformation::Applier(&global_camera));
   std::for_each($9->begin(), $9->end(), Protracer::Transformation::Deleter());
+  global_scene->set_camera(global_camera);
   delete $4;
   delete $6;
   delete $8;
