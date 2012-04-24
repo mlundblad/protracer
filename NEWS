@@ -1,3 +1,5 @@
+version 2.5 (2012-xx-xx)
+
 version 2.4 "Springtracer" (2012-04-23)
 	* Enhanced scene description language:
 	  * Added numerical constants "image_width" and "image_height"
