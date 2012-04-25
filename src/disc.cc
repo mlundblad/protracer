@@ -61,6 +61,7 @@ namespace Protracer {
   Disc::rotate(const Vector& rot)
   {
     center = center.rotate(rot);
+    normal = normal.rotate(rot);
     span_plane.rotate(rot);
   }
 
