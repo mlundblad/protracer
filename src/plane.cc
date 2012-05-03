@@ -19,6 +19,8 @@
 
 #include "plane.h"
 
+#include <math.h>
+
 namespace Protracer {
 
   Plane::Plane(const Vector& normal, const Vector& point,
@@ -69,4 +71,17 @@ namespace Protracer {
     normal = normal.rotate(rot);
     d = point.dot(normal);
   }
+
+  Vector
+  Plane::get_max_extent() const
+  {
+    return Vector(HUGE_VAL);
+  }
+
+  Vector
+  Plane::get_min_extent() const
+  {
+    return Vector(-HUGE_VAL);
+  }
+
 }
