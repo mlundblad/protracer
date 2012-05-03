@@ -45,6 +45,10 @@ namespace Protracer {
     // like PlanarObject which needs to sync the pigment with a spanning plane
     virtual void set_pigment(Pigment* pigment);
 
+    // get bounding box extents
+    virtual Vector get_max_extent() const = 0;
+    virtual Vector get_min_extent() const = 0;
+
   protected:
     Finish finish;
     Pigment* pigment;

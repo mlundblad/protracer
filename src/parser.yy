@@ -182,6 +182,7 @@ int yyerror(char *s);
 %token KEY_RADIANS KEY_SELECT KEY_SIN KEY_SINH KEY_TAN KEY_TANH KEY_VDOT KEY_VLENGTH
 %token KEY_FALSE KEY_NO KEY_ON KEY_OFF KEY_PI KEY_TRUE KEY_YES
 %token KEY_VAXIS_ROTATE KEY_VCROSS KEY_VNORMALIZE KEY_VROTATE
+%token KEY_MAX_EXTENT KEY_MIN_EXTENT
 %token KEY_TRANSLATE KEY_ROTATE KEY_TRANSFORM
 %token KEY_IMAGE_WIDTH KEY_IMAGE_HEIGHT
 %left QUESTION COLON
@@ -998,6 +999,34 @@ number COMMA number RANGLE {
   $$ = new Protracer::Vector($3->rotate(M_PI / 180 * *$5));
   delete $3;
   delete $5;
+}
+| KEY_MAX_EXTENT LPAREN NAME RPAREN {
+  if (Protracer::Declaration::is_defined($3)) {
+    Protracer::Declaration d = Protracer::Declaration::get_declaration($3);
+
+    if (d.get_type() == Protracer::Declaration::OBJECT) {
+      $$ = new Protracer::Vector(d.get_object().get_max_extent());
+    } else {
+      error(std::string("Variable ") + $3 + " is not an object value.");
+    }
+  } else {
+    error(std::string("Variable ") + $3 + " is undefined.");
+  }
+  free($3);
+}
+| KEY_MIN_EXTENT LPAREN NAME RPAREN {
+  if (Protracer::Declaration::is_defined($3)) {
+    Protracer::Declaration d = Protracer::Declaration::get_declaration($3);
+
+    if (d.get_type() == Protracer::Declaration::OBJECT) {
+      $$ = new Protracer::Vector(d.get_object().get_min_extent());
+    } else {
+      error(std::string("Variable ") + $3 + " is not an object value.");
+    }
+  } else {
+    error(std::string("Variable ") + $3 + " is undefined.");
+  }
+  free($3);
 }
 ;
 
