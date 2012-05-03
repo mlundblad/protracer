@@ -107,4 +107,17 @@ namespace Protracer {
     pole = pole.rotate(rot);
     equator = equator.rotate(rot);
   }
+
+  Vector
+  Sphere::get_max_extent() const
+  {
+    return center + Vector(radius);
+  }
+
+  Vector
+  Sphere::get_min_extent() const
+  {
+    return center - Vector(radius);
+  }
+
 }
