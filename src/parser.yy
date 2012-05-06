@@ -1005,7 +1005,7 @@ number COMMA number RANGLE {
     Protracer::Declaration d = Protracer::Declaration::get_declaration($3);
 
     if (d.get_type() == Protracer::Declaration::OBJECT) {
-      $$ = new Protracer::Vector(d.get_object().get_max_extent());
+      $$ = new Protracer::Vector(d.get_object()->get_max_extent());
     } else {
       error(std::string("Variable ") + $3 + " is not an object value.");
     }
@@ -1019,7 +1019,7 @@ number COMMA number RANGLE {
     Protracer::Declaration d = Protracer::Declaration::get_declaration($3);
 
     if (d.get_type() == Protracer::Declaration::OBJECT) {
-      $$ = new Protracer::Vector(d.get_object().get_min_extent());
+      $$ = new Protracer::Vector(d.get_object()->get_min_extent());
     } else {
       error(std::string("Variable ") + $3 + " is not an object value.");
     }
