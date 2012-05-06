@@ -1,5 +1,9 @@
 version 2.5 (2012-xx-xx)
 	* Bugfix: Fix rotation of discs working properly.
+	* Enhanced scene description language:
+	  * Added support for the functions max_extents and min_extents
+	    to get the bounding box coordinates (as vectors) of a declared
+	    object.
 
 version 2.4 "Springtracer" (2012-04-23)
 	* Enhanced scene description language:
