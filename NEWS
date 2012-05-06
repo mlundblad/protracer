@@ -1,4 +1,4 @@
-version 2.5 (2012-xx-xx)
+version 2.5 "May-tracer" (2012-05-06)
 	* Bugfix: Fix rotation of discs working properly.
 	* Enhanced scene description language:
 	  * Added support for the functions max_extents and min_extents
