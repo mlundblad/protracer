@@ -42,6 +42,9 @@ namespace Protracer {
     virtual void translate(const Vector& v);
     virtual void rotate(const Vector& rot);
 
+    virtual Vector get_max_extent() const;
+    virtual Vector get_min_extent() const;
+
   private:
     Vector t0;
     Vector va;

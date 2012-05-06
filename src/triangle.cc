@@ -84,4 +84,40 @@ namespace Protracer {
     span_plane.rotate(rot);
   }
 
+  Vector
+  Triangle::get_max_extent() const
+  {
+    float x0 = t0.get_x();
+    float y0 = t0.get_y();
+    float z0 = t0.get_z();
+    float x1 = x0 + va.get_x();
+    float y1 = y0 + va.get_y();
+    float z1 = z0 + va.get_z();
+    float x2 = x0 + vb.get_x();
+    float y2 = y0 + vb.get_y();
+    float z2 = z0 + vb.get_z();
+
+    return Vector(x0 > x1 ? (x0 > x2 ? x0 : x2) : x1,
+                  y0 > y1 ? (y0 > y2 ? y0 : y2) : y1,
+                  z0 > z1 ? (z0 > z2 ? z0 : z2) : z1);
+  }
+
+  Vector
+  Triangle::get_min_extent() const
+  {
+    float x0 = t0.get_x();
+    float y0 = t0.get_y();
+    float z0 = t0.get_z();
+    float x1 = x0 + va.get_x();
+    float y1 = y0 + va.get_y();
+    float z1 = z0 + va.get_z();
+    float x2 = x0 + vb.get_x();
+    float y2 = y0 + vb.get_y();
+    float z2 = z0 + vb.get_z();
+
+    return Vector(x0 < x1 ? (x0 < x2 ? x0 : x2) : x1,
+                  y0 < y1 ? (y0 < y2 ? y0 : y2) : y1,
+                  z0 < z1 ? (z0 < z2 ? z0 : z2) : z1);
+  }
+
 }
