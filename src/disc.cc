@@ -65,4 +65,26 @@ namespace Protracer {
     span_plane.rotate(rot);
   }
 
+  Vector
+  Disc::get_max_extent() const
+  {
+    // calculate inclination against each axis
+    float x_incl = fabs(acos(normal.dot(Vector::unit_x())) - M_PI / 2);
+    float y_incl = fabs(acos(normal.dot(Vector::unit_y())) - M_PI / 2);
+    float z_incl = fabs(acos(normal.dot(Vector::unit_z())) - M_PI / 2);
+
+    return center + Vector(cos(x_incl), cos(y_incl), cos(z_incl)) * radius;
+  }
+
+  Vector
+  Disc::get_min_extent() const
+  {
+    // calculate inclination against each axis
+    float x_incl = fabs(acos(normal.dot(Vector::unit_x())) - M_PI / 2);
+    float y_incl = fabs(acos(normal.dot(Vector::unit_y())) - M_PI / 2);
+    float z_incl = fabs(acos(normal.dot(Vector::unit_z())) - M_PI / 2);
+
+    return center - Vector(cos(x_incl), cos(y_incl), cos(z_incl)) * radius;
+  }
+
 }
