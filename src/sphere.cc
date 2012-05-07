@@ -120,4 +120,10 @@ namespace Protracer {
     return center - Vector(radius);
   }
 
+  bool
+  Sphere::is_inside(const Vector& v) const
+  {
+    return Vector(v - center).length() <= radius;
+  }
+
 }

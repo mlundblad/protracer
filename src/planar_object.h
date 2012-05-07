@@ -28,6 +28,10 @@
 namespace Protracer {
 
   class PlanarObject : public Object {
+  public:
+    // all planar objects are without an interior volume
+    virtual bool is_inside(const Vector& v) const { return false; }
+
   protected:
     PlanarObject(const Vector& normal, const Vector& point,
 		 Pigment* pigment, const Finish& finish) :

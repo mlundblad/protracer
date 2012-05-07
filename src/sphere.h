@@ -50,6 +50,8 @@ namespace Protracer {
     virtual Vector get_max_extent() const;
     virtual Vector get_min_extent() const;
 
+    virtual bool is_inside(const Vector& v) const;
+    
   private:
     Vector center;
     float radius;

@@ -49,6 +49,9 @@ namespace Protracer {
     virtual Vector get_max_extent() const = 0;
     virtual Vector get_min_extent() const = 0;
 
+    // determine if a vector is located inside an object
+    virtual bool is_inside(const Vector& v) const = 0;
+
   protected:
     Finish finish;
     Pigment* pigment;
