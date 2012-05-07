@@ -1,4 +1,7 @@
 version 2.6 (2012-xx-xx)
+	* Enhanced scene description language:
+	  * Added support for the function "inside" to determine if a point
+	    (vector) is located inside an object.
 
 version 2.5 "May-tracer" (2012-05-06)
 	* Bugfix: Fix rotation of discs working properly.

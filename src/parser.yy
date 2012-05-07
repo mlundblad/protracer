@@ -183,7 +183,7 @@ int yyerror(char *s);
 %token KEY_FALSE KEY_NO KEY_ON KEY_OFF KEY_PI KEY_TRUE KEY_YES
 %token KEY_VAXIS_ROTATE KEY_VCROSS KEY_VNORMALIZE KEY_VROTATE
 %token KEY_MAX_EXTENT KEY_MIN_EXTENT
-%token KEY_TRANSLATE KEY_ROTATE KEY_TRANSFORM
+%token KEY_TRANSLATE KEY_ROTATE KEY_TRANSFORM KEY_INSIDE
 %token KEY_IMAGE_WIDTH KEY_IMAGE_HEIGHT
 %left QUESTION COLON
 %left AND OR
@@ -832,6 +832,23 @@ KEY_ABS LPAREN number RPAREN { $$ = std::fabs($3); }
 | KEY_VLENGTH LPAREN vector RPAREN {
   $$ = $3->length();
   delete $3;
+}
+| KEY_INSIDE LPAREN NAME COMMA vector RPAREN {
+  if (Protracer::Declaration::is_defined($3)) {
+    Protracer::Declaration d = Protracer::Declaration::get_declaration($3);
+
+    if (d.get_type() == Protracer::Declaration::OBJECT) {
+      $$ = d.get_object()->is_inside(*$5);
+    } else {
+      delete $5;
+      error(std::string("Variable ") + $3 + " is not an object value.");
+    }
+  } else {
+    delete $5;
+    error(std::string("Variable ") + $3 + " is undefined.");
+  }
+  delete $5;
+  free($3);
 }
 ;
 

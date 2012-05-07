@@ -68,6 +68,7 @@ finish		return KEY_FINISH;
 floor           return KEY_FLOOR;
 green		return KEY_GREEN;
 int             return KEY_INT;
+inside          return KEY_INSIDE;
 image_map	return KEY_IMAGE;
 image_width     return KEY_IMAGE_WIDTH;
 image_height    return KEY_IMAGE_HEIGHT;
