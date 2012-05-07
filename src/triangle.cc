@@ -81,10 +81,6 @@ namespace Protracer {
     t0 = t0.rotate(rot);
     va = va.rotate(rot);
     vb = vb.rotate(rot);
-    aa = va.dot(va);
-    bb = vb.dot(vb);
-    ab = va.dot(vb);
-
     span_plane.rotate(rot);
   }
 
