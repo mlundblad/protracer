@@ -81,6 +81,10 @@ namespace Protracer {
     t0 = t0.rotate(rot);
     va = va.rotate(rot);
     vb = vb.rotate(rot);
+    // note: we don't need to recalculate the dot products since
+    // a . a = length(a) ^ 2
+    // a . b = length(a) * length(b) * cos(phi), where phi is the angle b/w
+    // those vectors, and angle and length is unaffected by rotation
     span_plane.rotate(rot);
   }
 
