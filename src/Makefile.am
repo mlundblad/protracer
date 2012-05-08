@@ -4,6 +4,8 @@ protracer_SOURCES=bitmap.cc \
 	bitmap.h \
 	bitmap_pigment.cc \
 	bitmap_pigment.h \
+	box.cc \
+	box.h \
 	camera.cc \
 	camera.h \
 	color.h \
