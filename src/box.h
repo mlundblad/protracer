@@ -32,6 +32,8 @@ namespace Protracer {
 
     virtual HitCalculation calculate_hit(const Ray& ray) const;
 
+    virtual void set_pigment(Pigment* pigment);
+
     virtual void translate(const Vector& v);
     virtual void rotate(const Vector& r);
 

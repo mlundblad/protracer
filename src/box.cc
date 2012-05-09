@@ -104,6 +104,18 @@ namespace Protracer {
   }
 
   void
+  Box::set_pigment(Pigment* pigment)
+  {
+    this->pigment = pigment;
+    front_plane.set_pigment(pigment->copy());
+    back_plane.set_pigment(pigment->copy());
+    top_plane.set_pigment(pigment->copy());
+    bottom_plane.set_pigment(pigment->copy());
+    left_plane.set_pigment(pigment->copy());
+    right_plane.set_pigment(pigment->copy());
+  }
+
+  void
   Box::translate(const Vector& v)
   {
     bottom_front_left += v;
