@@ -32,6 +32,9 @@ namespace Protracer {
 
     virtual HitCalculation calculate_hit(const Ray& ray) const;
 
+    virtual void translate(const Vector& v);
+    virtual void rotate(const Vector& r);
+
   private:
     // define enough points and side vectors to be able to efficiantly
     // calculate hits on all four side areas

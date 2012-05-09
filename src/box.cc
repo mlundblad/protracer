@@ -102,4 +102,41 @@ namespace Protracer {
 
     return HitCalculation(false);
   }
+
+  void
+  Box::translate(const Vector& v)
+  {
+    bottom_front_left += v;
+    bottom_back_left += v;
+    bottom_front_right += v;
+    top_front_left += v;
+    
+    front_plane.translate(v);
+    back_plane.translate(v);
+    top_plane.translate(v);
+    bottom_plane.translate(v);
+    left_plane.translate(v);
+    right_plane.translate(v);
+  }
+
+  void
+  Box::rotate(const Vector& r)
+  {
+    bottom_front_left = bottom_front_left.rotate(r);
+    bottom_back_left = bottom_back_left.rotate(r);
+    bottom_front_right = bottom_front_right.rotate(r);
+    top_front_left = top_front_left.rotate(r);
+    
+    up = up.rotate(r);
+    right = right.rotate(r);
+    in = in.rotate(r);
+
+    front_plane.rotate(r);
+    back_plane.rotate(r);
+    top_plane.rotate(r);
+    bottom_plane.rotate(r);
+    left_plane.rotate(r);
+    right_plane.rotate(r);
+  }
+
 }
