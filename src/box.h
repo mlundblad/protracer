@@ -58,6 +58,11 @@ namespace Protracer {
     Plane left_plane;
     Plane right_plane;
 
+    // keep track of rotations to simplify bounds checking, etc.
+    Vector rotation;
+    // dito for dimensions
+    float width, height, depth;
+
     // calculate hit against one "side pane"
     HitCalculation calculate_hit(const Ray& ray, const Plane& span_plane,
 				 const Vector& point,

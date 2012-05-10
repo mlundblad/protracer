@@ -40,6 +40,11 @@ namespace Protracer {
     up = Vector(0, (c2 - c1).get_y(), 0);
     right = Vector((c2 - c1).get_x(), 0, 0);
     in = Vector(0, 0, (c2 - c1).get_z());
+
+    rotation = 0;
+    width = c2.get_x() - c1.get_x();
+    height = c2.get_y() - c1.get_y();
+    depth = c2.get_z() - c1.get_z();
   }
 
   HitCalculation
@@ -149,6 +154,8 @@ namespace Protracer {
     bottom_plane.rotate(r);
     left_plane.rotate(r);
     right_plane.rotate(r);
+
+    rotation += r;
   }
 
 }
