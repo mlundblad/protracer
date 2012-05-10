@@ -37,6 +37,8 @@ namespace Protracer {
     virtual void translate(const Vector& v);
     virtual void rotate(const Vector& r);
 
+    virtual bool is_inside(const Vector& v) const;
+
   private:
     // define enough points and side vectors to be able to efficiantly
     // calculate hits on all four side areas

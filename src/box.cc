@@ -42,6 +42,8 @@ namespace Protracer {
     in = Vector(0, 0, (c2 - c1).get_z());
 
     rotation = 0;
+
+    // these are really kept as distances (ie. can be negative)
     width = c2.get_x() - c1.get_x();
     height = c2.get_y() - c1.get_y();
     depth = c2.get_z() - c1.get_z();
@@ -158,4 +160,19 @@ namespace Protracer {
     rotation += r;
   }
 
+  bool
+  Box::is_inside(const Vector& v)
+  {
+    // the relative position in the box
+    const Vector p = v - bottom_front_left;
+    // align with the original coordinate system
+    const Vector pr = p.rotate(-rotation);
+
+    return (width > 0 ? pr.get_x() >= 0 && pr.get_x() < width :
+	    pr.get_x() <= 0 && pr.get_x() > width) &&
+      (height > 0 ? pr.get_y() >= 0 && pr.get_y() < height :
+       pr.get_y() <= 0 && pr.get_y() > height) &&
+      (depth > 0 ? pr.get_z() >= 0 && pr.get_z() < depth :
+       pr.get_z() <= 0 && pr.get_x() > depth);
+  }
 }
