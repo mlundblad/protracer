@@ -34,7 +34,11 @@ namespace Protracer {
     bottom_front_left = c1;
     bottom_back_left = c1 + Vector(0, 0, (c2 - c1).get_z());
     bottom_front_right = c1 + Vector((c2 - c1).get_x(), 0, 0);
+    bottom_back_right = c1 + Vector((c2 - c1).get_x(), 0, (c2 - c1).get_z());
     top_front_left = c1 + Vector(0, (c2 - c1).get_y(), 0);
+    top_back_left = c1 + Vector(0, (c2 - c1).get_y(), (c2 - c1).get_z());
+    top_front_right = c1 + Vector((c2 - c1).get_x(), (c2 - c1).get_y(), 0);
+    top_back_right = c2;
 
     // the side vectors are initially aligned to the coordinate axis
     up = Vector(0, (c2 - c1).get_y(), 0);
@@ -47,6 +51,44 @@ namespace Protracer {
     width = c2.get_x() - c1.get_x();
     height = c2.get_y() - c1.get_y();
     depth = c2.get_z() - c1.get_z();
+  }
+
+  Box::Box(const Box& box) :
+    Object(box.pigment->copy(), box.finish),
+    front_plane(Plane(box.front_plane.get_normal(),
+		      box.front_plane.get_point(), box.pigment->copy(),
+		      box.finish)),
+    back_plane(Plane(box.back_plane.get_normal(),
+		      box.back_plane.get_point(), box.pigment->copy(),
+		      box.finish)),
+    bottom_plane(Plane(box.bottom_plane.get_normal(),
+		      box.bottom_plane.get_point(), box.pigment->copy(),
+		      box.finish)),
+    top_plane(Plane(box.top_plane.get_normal(),
+		      box.top_plane.get_point(), box.pigment->copy(),
+		      box.finish)),
+    left_plane(Plane(box.left_plane.get_normal(),
+		      box.left_plane.get_point(), box.pigment->copy(),
+		      box.finish)),
+    right_plane(Plane(box.right_plane.get_normal(),
+		      box.right_plane.get_point(), box.pigment->copy(),
+		      box.finish))
+  {
+    bottom_front_left = box.bottom_front_left;
+    bottom_back_left = box.bottom_back_left;
+    bottom_front_right = box.bottom_front_right;
+    bottom_back_right = box.bottom_back_right;
+    top_front_left = box.top_front_left;
+    top_back_left = box.top_back_left;
+    top_front_right = box.top_front_right;
+    top_back_right = box.top_back_right;
+    up = box.up;
+    right = box.right;
+    in = box.in;
+    rotation = box.rotation;
+    width = box.width;
+    height = box.height;
+    depth = box.depth;
   }
 
   HitCalculation
@@ -110,6 +152,12 @@ namespace Protracer {
     return HitCalculation(false);
   }
 
+  Box*
+  Box::copy() const
+  {
+    return new Box(*this);
+  }
+
   void
   Box::set_pigment(Pigment* pigment)
   {
@@ -128,8 +176,12 @@ namespace Protracer {
     bottom_front_left += v;
     bottom_back_left += v;
     bottom_front_right += v;
+    bottom_back_right += v;
     top_front_left += v;
-    
+    top_back_left += v;
+    top_front_right += v;
+    top_back_right += v;
+
     front_plane.translate(v);
     back_plane.translate(v);
     top_plane.translate(v);
@@ -144,7 +196,11 @@ namespace Protracer {
     bottom_front_left = bottom_front_left.rotate(r);
     bottom_back_left = bottom_back_left.rotate(r);
     bottom_front_right = bottom_front_right.rotate(r);
+    bottom_back_right = bottom_back_right.rotate(r);
     top_front_left = top_front_left.rotate(r);
+    top_back_left = top_back_left.rotate(r);
+    top_front_right = top_front_right.rotate(r);
+    top_back_right = top_back_right.rotate(r);
     
     up = up.rotate(r);
     right = right.rotate(r);
@@ -160,8 +216,21 @@ namespace Protracer {
     rotation += r;
   }
 
+  Vector
+  Box::get_max_extent() const
+  {
+
+
+  }
+
+  Vector
+  Box::get_min_extent() const
+  {
+
+  }
+
   bool
-  Box::is_inside(const Vector& v)
+  Box::is_inside(const Vector& v) const
   {
     // the relative position in the box
     const Vector p = v - bottom_front_left;

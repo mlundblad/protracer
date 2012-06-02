@@ -32,20 +32,32 @@ namespace Protracer {
 
     virtual HitCalculation calculate_hit(const Ray& ray) const;
 
+    virtual Box* copy() const;
+
     virtual void set_pigment(Pigment* pigment);
 
     virtual void translate(const Vector& v);
     virtual void rotate(const Vector& r);
 
+    virtual Vector get_max_extent() const;
+    virtual Vector get_min_extent() const;
+
     virtual bool is_inside(const Vector& v) const;
 
   private:
-    // define enough points and side vectors to be able to efficiantly
-    // calculate hits on all four side areas
+    // we need a copy contructor for the copy() method to avoid having to
+    // do all the pre-calculations when copying
+    Box(const Box& box);
+
+    // to simplify hit and bounding calculations, store all corner points
     Vector bottom_front_left;
     Vector bottom_back_left;
     Vector bottom_front_right;
+    Vector bottom_back_right;
     Vector top_front_left;
+    Vector top_back_left;
+    Vector top_front_right;
+    Vector top_back_right;
 
     // sides
     Vector up;
