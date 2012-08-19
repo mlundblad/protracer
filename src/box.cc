@@ -19,6 +19,11 @@
 
 #include "box.h"
 
+#include <algorithm>
+
+using std::max;
+using std::min;
+
 namespace Protracer {
   
   Box::Box(const Vector& c1, const Vector& c2, Pigment* pigment,
@@ -219,14 +224,71 @@ namespace Protracer {
   Vector
   Box::get_max_extent() const
   {
-
-
+    float max_x =
+      max(bottom_front_left.get_x(),
+          max(bottom_back_left.get_x(),
+              max(bottom_front_right.get_x(),
+                  max(bottom_back_right.get_x(),
+                      max(top_front_left.get_x(),
+                          max(top_back_left.get_x(),
+                              max(top_front_right.get_x(),
+                                  top_back_right.get_x())))))));
+    float max_y =
+      max(bottom_front_left.get_y(),
+          max(bottom_back_left.get_y(),
+              max(bottom_front_right.get_y(),
+                  max(bottom_back_right.get_y(),
+                      max(top_front_left.get_y(),
+                          max(top_back_left.get_y(),
+                              max(top_front_right.get_y(),
+                                  top_back_right.get_y())))))));
+    float max_z =
+      max(bottom_front_left.get_z(),
+          max(bottom_back_left.get_z(),
+              max(bottom_front_right.get_z(),
+                  max(bottom_back_right.get_z(),
+                      max(top_front_left.get_z(),
+                          max(top_back_left.get_z(),
+                              max(top_front_right.get_z(),
+                                  top_back_right.get_z())))))));
+    
+                 
+    return Vector(max_x, max_y, max_z);
   }
 
   Vector
   Box::get_min_extent() const
   {
-
+    float min_x =
+      min(bottom_front_left.get_x(),
+          min(bottom_back_left.get_x(),
+              min(bottom_front_right.get_x(),
+                  min(bottom_back_right.get_x(),
+                      min(top_front_left.get_x(),
+                          min(top_back_left.get_x(),
+                              min(top_front_right.get_x(),
+                                  top_back_right.get_x())))))));
+    float min_y =
+      min(bottom_front_left.get_y(),
+          min(bottom_back_left.get_y(),
+              min(bottom_front_right.get_y(),
+                  min(bottom_back_right.get_y(),
+                      min(top_front_left.get_y(),
+                          min(top_back_left.get_y(),
+                              min(top_front_right.get_y(),
+                                  top_back_right.get_y())))))));
+    float min_z =
+      min(bottom_front_left.get_z(),
+          min(bottom_back_left.get_z(),
+              min(bottom_front_right.get_z(),
+                  min(bottom_back_right.get_z(),
+                      min(top_front_left.get_z(),
+                          min(top_back_left.get_z(),
+                              min(top_front_right.get_z(),
+                                  top_back_right.get_z())))))));
+    
+                 
+    return Vector(min_x, min_y, min_z);
   }
 
   bool
