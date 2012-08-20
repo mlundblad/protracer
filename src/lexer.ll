@@ -51,6 +51,7 @@ atanh           return KEY_ATANH;
 atan2           return KEY_ATAN2;
 background	return KEY_BACKGROUND;
 blue		return KEY_BLUE;
+box             return KEY_BOX;
 camera		return KEY_CAMERA;
 ceil            return KEY_CEIL;
 color		return KEY_COLOR;

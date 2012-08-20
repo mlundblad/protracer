@@ -86,6 +86,7 @@ int yyerror(char *s);
 #include "sphere.h"
 #include "triangle.h"
 #include "disc.h"
+#include "box.h"
 #include "camera.h"
 #include "color.h"
 #include "object.h"
@@ -142,6 +143,7 @@ int yyerror(char *s);
   Protracer::Triangle*    triangle;
   Protracer::Plane*       plane;
   Protracer::Disc*        disc;
+  Protracer::Box*         box;
   Protracer::Object*      object;
   Protracer::Camera*      camera;
   Protracer::Light*       light;
@@ -174,7 +176,7 @@ int yyerror(char *s);
 %token KEY_CAMERA KEY_RGB KEY_SKY KEY_LIGHT
 %token KEY_PLANE KEY_PLANEPNT KEY_IMAGE KEY_PPM
 %token KEY_OBJECT
-%token KEY_POLE KEY_EQUATOR KEY_DISC
+%token KEY_POLE KEY_EQUATOR KEY_DISC KEY_BOX
 %token KEY_X KEY_Y KEY_Z
 %token KEY_ABS KEY_ACOS KEY_ACOSH KEY_ASIN KEY_ASINH KEY_ATAN KEY_ATANH
 %token KEY_ATAN2 KEY_CEIL KEY_COS KEY_COSH KEY_DEGREES KEY_DIV KEY_EXP
@@ -204,6 +206,7 @@ int yyerror(char *s);
 %type <triangle> triangle
 %type <sphere> sphere
 %type <disc> disc
+%type <box> box
 %type <vector> vector
 %type <vector> vector_builtin;
 %type <value> number
@@ -294,6 +297,7 @@ object: sphere { $$ = $1; }
 | triangle { $$ = $1; }
 | plane { $$ = $1; }
 | disc { $$ = $1; }
+| box { $$ = $1; }
 | KEY_OBJECT LBRACE NAME object_mods RBRACE {
   if (Protracer::Declaration::is_defined($3)) {
     Protracer::Declaration d = Protracer::Declaration::get_declaration($3);
@@ -461,6 +465,22 @@ disc:
       delete $9;
     };
 
+box:
+   KEY_BOX LBRACE
+   vector COMMA
+   vector
+   object_mods
+   RBRACE {
+     $$ = new Protracer::Box(*$3, *$5, new Protracer::ColorPigment(),
+			     Protracer::Finish());
+     std::for_each($6->begin(), $6->end(),
+		   Protracer::ObjectModification::Applier($$));
+     std::for_each($6->begin(), $6->end(),
+		   Protracer::ObjectModification::Deleter());
+     delete $3;
+     delete $5;
+     delete $6;
+   };
 
 opt_hole: {
   // empty
