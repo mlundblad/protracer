@@ -20,6 +20,8 @@
 #include "box.h"
 
 #include <algorithm>
+#include <iostream>
+#include <limits>
 
 using std::max;
 using std::min;
@@ -111,20 +113,34 @@ namespace Protracer {
 				       in, up);
     HitCalculation hc6 = calculate_hit(ray, right_plane, bottom_front_right,
 				       in, up);
+    HitCalculation hc;
 
-    HitCalculation hc = hc1;
+    float nearest = std::numeric_limits<float>::max();
 
-    if (hc2.is_hit() && hc2.get_distance() < hc.get_distance())
+    if (hc1.is_hit() && hc1.get_distance() < nearest) {
+      nearest = hc1.get_distance();
+      hc = hc1;
+    }
+    if (hc2.is_hit() && hc2.get_distance() < nearest) {
+      nearest = hc2.get_distance();
       hc = hc2;
-    if (hc3.is_hit() && hc3.get_distance() < hc.get_distance())
+    }
+    if (hc3.is_hit() && hc3.get_distance() < nearest) {
+      nearest = hc3.get_distance();
       hc = hc3;
-    if (hc4.is_hit() && hc4.get_distance() < hc.get_distance())
+    }
+    if (hc4.is_hit() && hc4.get_distance() < nearest) {
+      nearest = hc4.get_distance();
       hc = hc4;
-    if (hc5.is_hit() && hc5.get_distance() < hc.get_distance())
+    }
+    if (hc5.is_hit() && hc5.get_distance() < nearest) {
+      nearest = hc5.get_distance();
       hc = hc5;
-    if (hc6.is_hit() && hc6.get_distance() < hc.get_distance())
+    }
+    if (hc6.is_hit() && hc6.get_distance() < nearest) {
       hc = hc6;
- 
+    }
+
     return hc;
   }
 
