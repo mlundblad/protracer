@@ -20,7 +20,6 @@
 #include "box.h"
 
 #include <algorithm>
-#include <iostream>
 #include <limits>
 
 using std::max;
