@@ -1,5 +1,6 @@
 version 2.6 (2012-xx-xx)
 	* Enhanced scene description language:
+	  * Support new geometric object "box".
 	  * Added support for the function "inside" to determine if a point
 	    (vector) is located inside an object.
 
