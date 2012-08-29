@@ -1,3 +1,5 @@
+version 2.7 (2012-xx-xx)
+
 version 2.6 "Trace outside the box" (2012-08-28)
 	* Enhanced scene description language:
 	  * Support new geometric object "box".
