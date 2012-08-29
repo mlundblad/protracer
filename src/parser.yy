@@ -896,7 +896,11 @@ numbers: number {
 vector:
 LANGLE number COMMA
 number COMMA number RANGLE {
-  $$ = new Protracer::Vector($2, $4, $6); }
+  $$ = new Protracer::Vector($2, $4, $6);
+}
+| LANGLE number COMMA number RANGLE {
+  $$ = new Protracer::Vector($2, $4, 0);
+}
 | MINUS vector %prec NEG {
   $$ = new Protracer::Vector(-(*$2));
   delete $2;
