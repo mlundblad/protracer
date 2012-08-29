@@ -1,4 +1,7 @@
 version 2.7 (2012-xx-xx)
+	* Enhanced scene description language:
+	  * Support declaring vectors using only two components,
+	    assuming z = 0.
 
 version 2.6 "Trace outside the box" (2012-08-28)
 	* Enhanced scene description language:
