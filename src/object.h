@@ -40,9 +40,9 @@ namespace Protracer {
     const Finish& get_finish() const { return finish; }
     const Pigment& get_pigment() const { return *pigment; }
 
-    void set_finish(const Finish& finish);
-    // this will need to be polymorphically overridable for extending classes
+    // theese will need to be polymorphically overridable for extending classes
     // like PlanarObject which needs to sync the pigment with a spanning plane
+    virtual void set_finish(const Finish& finish);
     virtual void set_pigment(Pigment* pigment);
 
     // get bounding box extents

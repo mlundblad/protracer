@@ -30,4 +30,10 @@ namespace Protracer {
       this->pigment = pigment;
     }
   }
+
+  void
+  PlanarObject::set_finish(const Finish& finish)
+  {
+    span_plane.set_finish(finish);
+  }
 }

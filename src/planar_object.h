@@ -40,6 +40,7 @@ namespace Protracer {
 
     // override to allow syncing pigment with the spanning plane
     void set_pigment(Pigment* pigment);
+    void set_finish(const Finish& finish);
 
     Plane span_plane;
   };
