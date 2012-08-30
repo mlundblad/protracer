@@ -28,13 +28,15 @@ namespace Protracer {
   public:
     HitCalculation(bool hit = false) : hit(hit) {}
     HitCalculation(bool hit, float distance, const Vector& normal,
-		   const Color& color) :
-      hit(hit), distance(distance), normal(normal), color(color) {}
+		   const Color& color, const Finish& finish) :
+      hit(hit), distance(distance), normal(normal), color(color),
+      finish(finish) {}
 
     bool is_hit() const { return hit; }
     float get_distance() const { return distance; }
     const Vector& get_normal() const { return normal; }
     const Color& get_color() const { return color; }
+    const Finish& get_finish() const { return finish; }
 
     void set_color(const Color& c) { color = c; }
 
@@ -43,6 +45,7 @@ namespace Protracer {
     float distance;
     Vector normal;
     Color color;
+    Finish finish;
   };
 
 }

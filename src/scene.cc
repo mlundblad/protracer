@@ -53,8 +53,6 @@ namespace Protracer {
 
     HitCalculation     nearest_hit;
 
-    Object* hit_object;
-
     for(std::vector<Object*>::const_iterator it = objects.begin() ;
 	it != objects.end() ; it++) {
       Object* o = *it;
@@ -65,7 +63,6 @@ namespace Protracer {
 	if (hc.get_distance() < least_distance) {
 	  least_distance = hc.get_distance();
 	  nearest_hit = hc;
-	  hit_object = o;
 	}
       }
     }
@@ -120,7 +117,7 @@ namespace Protracer {
 	 but shade the accumulated light from light sources */
       if (refl_depth == 0) {
 	return nearest_hit.get_color() *
-	  shade * hit_object->get_finish().get_diffusion();
+	  shade * nearest_hit.get_finish().get_diffusion();
       } else {
 	/* calculate reflected ray */
 	/* move EPS in the normal direction, to avoid rounding errors */
@@ -133,9 +130,9 @@ namespace Protracer {
 	col = color_at_hit_point(x, y, refl_ray, refl_depth,
 				 no_shadow_no_reflection);
 	
-	return col * hit_object->get_finish().get_reflection() +
+	return col * nearest_hit.get_finish().get_reflection() +
 	  nearest_hit.get_color() * shade *
-	  hit_object->get_finish().get_diffusion();
+	  nearest_hit.get_finish().get_diffusion();
       } 
     }
    }

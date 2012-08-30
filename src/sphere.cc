@@ -55,7 +55,8 @@ namespace Protracer {
 	Vector temp = ray.get_origin() + distance * ray.get_direction();
 	temp = 1.0 / radius * (temp - center);
 	
-	return HitCalculation(true, distance, temp, color_at(temp));
+	return HitCalculation(true, distance, temp, color_at(temp),
+                              finish);
       } else {
 	return HitCalculation(false);
       }
@@ -66,7 +67,7 @@ namespace Protracer {
     Vector temp = ray.get_origin() + distance * ray.get_direction();
     temp = -1.0 / radius * (temp - center);
     
-    return HitCalculation(true, distance, temp, color_at(temp));
+    return HitCalculation(true, distance, temp, color_at(temp), finish);
   }
 
   Color

@@ -57,8 +57,9 @@ namespace Protracer {
 	float v = (q.dot(vb) - u * ab) / bb;
 	
 	if (0 < v && v < 1 && u + v <= 1) {
-	  if (!pigment->is_uniform())
+	  if (!pigment->is_uniform()) {
 	    hc.set_color(pigment->get_color(u, v));
+          }
 
 	  return hc;
 	}

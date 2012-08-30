@@ -50,7 +50,7 @@ namespace Protracer {
       if(t >= 0) {
 	Vector rn = (vd < 0 ? 1.0 : -1.0) * normal;
 
-	return HitCalculation(true, t, rn, pigment->get_color());
+	return HitCalculation(true, t, rn, pigment->get_color(), finish);
       }
     }
 
