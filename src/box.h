@@ -35,6 +35,7 @@ namespace Protracer {
     virtual Box* copy() const;
 
     virtual void set_pigment(Pigment* pigment);
+    virtual void set_finish(const Finish& finish);
 
     virtual void translate(const Vector& v);
     virtual void rotate(const Vector& r);

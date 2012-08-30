@@ -191,6 +191,19 @@ namespace Protracer {
   }
 
   void
+  Box::set_finish(const Finish& finish)
+  {
+    this->finish = finish;
+    front_plane.set_finish(finish);
+    back_plane.set_finish(finish);
+    top_plane.set_finish(finish);
+    bottom_plane.set_finish(finish);
+    left_plane.set_finish(finish);
+    right_plane.set_finish(finish);
+  }
+
+
+  void
   Box::translate(const Vector& v)
   {
     bottom_front_left += v;
