@@ -23,9 +23,7 @@
 namespace Protracer {
 
   Sphere::Sphere(const Vector& center, float radius, const Vector& pole,
-		 const Vector& equator, Pigment* pigment,
-		 const Finish& finish) :
-    Object(pigment, finish)
+		 const Vector& equator)
   {
     this->center = center;
     this->radius = radius;
@@ -37,7 +35,12 @@ namespace Protracer {
   Sphere*
   Sphere::copy() const
   {
-    return new Sphere(center, radius, pole, equator, pigment->copy(), finish);
+    Sphere* sphere = new Sphere(center, radius, pole, equator);
+
+    sphere->set_pigment(get_pigment().copy());
+    sphere->set_finish(get_finish());
+
+    return sphere;
   }
 
   HitCalculation
@@ -56,7 +59,7 @@ namespace Protracer {
 	temp = 1.0 / radius * (temp - center);
 	
 	return HitCalculation(true, distance, temp, color_at(temp),
-                              finish);
+                              get_finish());
       } else {
 	return HitCalculation(false);
       }
@@ -67,14 +70,16 @@ namespace Protracer {
     Vector temp = ray.get_origin() + distance * ray.get_direction();
     temp = -1.0 / radius * (temp - center);
     
-    return HitCalculation(true, distance, temp, color_at(temp), finish);
+    return HitCalculation(true, distance, temp, color_at(temp), get_finish());
   }
 
   Color
   Sphere::color_at(const Vector& normal) const
   {
-    if (pigment->is_uniform())
-      return pigment->get_color();
+    const Pigment& pigment = get_pigment();
+
+    if (pigment.is_uniform())
+      return pigment.get_color();
 
     float phi = acos(-(normal.dot(pole)));
     float v = 1 - phi / M_PI;
@@ -92,7 +97,7 @@ namespace Protracer {
 
     /* Ok, u and v are the % coordinates into the bitmap.
        Lets return the correct color for the given point. */    
-    return pigment->get_color(u, v);
+    return pigment.get_color(u, v);
   }
 
   void

@@ -27,15 +27,13 @@ using std::min;
 
 namespace Protracer {
   
-  Box::Box(const Vector& c1, const Vector& c2, Pigment* pigment,
-	   const Finish& finish) :
-    Object(pigment, finish),
-    front_plane(Plane(Vector::unit_z(), c1, pigment->copy(), finish)),
-    back_plane(Plane(Vector::unit_z(), c2, pigment->copy(), finish)),
-    bottom_plane(Plane(Vector::unit_y(), c1, pigment->copy(), finish)),
-    top_plane(Plane(Vector::unit_y(), c2, pigment->copy(), finish)),
-    left_plane(Plane(Vector::unit_x(), c1, pigment->copy(), finish)),
-    right_plane(Plane(Vector::unit_x(), c2, pigment->copy(), finish))
+  Box::Box(const Vector& c1, const Vector& c2) :
+    front_plane(Plane(Vector::unit_z(), c1)),
+    back_plane(Plane(Vector::unit_z(), c2)),
+    bottom_plane(Plane(Vector::unit_y(), c1)),
+    top_plane(Plane(Vector::unit_y(), c2)),
+    left_plane(Plane(Vector::unit_x(), c1)),
+    right_plane(Plane(Vector::unit_x(), c2))
   {
     bottom_front_left = c1;
     bottom_back_left = c1 + Vector(0, 0, (c2 - c1).get_z());
@@ -59,43 +57,6 @@ namespace Protracer {
     depth = c2.get_z() - c1.get_z();
   }
 
-  Box::Box(const Box& box) :
-    Object(box.pigment->copy(), box.finish),
-    front_plane(Plane(box.front_plane.get_normal(),
-		      box.front_plane.get_point(), box.pigment->copy(),
-		      box.finish)),
-    back_plane(Plane(box.back_plane.get_normal(),
-		      box.back_plane.get_point(), box.pigment->copy(),
-		      box.finish)),
-    bottom_plane(Plane(box.bottom_plane.get_normal(),
-		      box.bottom_plane.get_point(), box.pigment->copy(),
-		      box.finish)),
-    top_plane(Plane(box.top_plane.get_normal(),
-		      box.top_plane.get_point(), box.pigment->copy(),
-		      box.finish)),
-    left_plane(Plane(box.left_plane.get_normal(),
-		      box.left_plane.get_point(), box.pigment->copy(),
-		      box.finish)),
-    right_plane(Plane(box.right_plane.get_normal(),
-		      box.right_plane.get_point(), box.pigment->copy(),
-		      box.finish))
-  {
-    bottom_front_left = box.bottom_front_left;
-    bottom_back_left = box.bottom_back_left;
-    bottom_front_right = box.bottom_front_right;
-    bottom_back_right = box.bottom_back_right;
-    top_front_left = box.top_front_left;
-    top_back_left = box.top_back_left;
-    top_front_right = box.top_front_right;
-    top_back_right = box.top_back_right;
-    up = box.up;
-    right = box.right;
-    in = box.in;
-    rotation = box.rotation;
-    width = box.width;
-    height = box.height;
-    depth = box.depth;
-  }
 
   HitCalculation
   Box::calculate_hit(const Ray& ray) const
@@ -175,13 +136,41 @@ namespace Protracer {
   Box*
   Box::copy() const
   {
-    return new Box(*this);
+    Box* box = new Box(Vector(0, 0, 0), Vector(0, 0, 0));
+
+    box->set_pigment(get_pigment().copy());
+    box->set_finish(get_finish());
+
+    box->front_plane = *(front_plane.copy());
+    box->back_plane = *(back_plane.copy());
+    box->bottom_plane = *(bottom_plane.copy());
+    box->top_plane = *(top_plane.copy());
+    box->left_plane = *(left_plane.copy());
+    box->right_plane = *(right_plane.copy());
+
+    box->bottom_front_left = bottom_front_left;
+    box->bottom_back_left = bottom_back_left;
+    box->bottom_front_right = bottom_front_right;
+    box->bottom_back_right = bottom_back_right;
+    box->top_front_left = top_front_left;
+    box->top_back_left = top_back_left;
+    box->top_front_right = top_front_right;
+    box->top_back_right = top_back_right;
+    box->up = up;
+    box->right = right;
+    box->in = in;
+    box->rotation = rotation;
+    box->width = width;
+    box->height = height;
+    box->depth = depth;
+
+    return box;
   }
 
   void
   Box::set_pigment(Pigment* pigment)
   {
-    this->pigment = pigment;
+    Object::set_pigment(pigment);
     front_plane.set_pigment(pigment->copy());
     back_plane.set_pigment(pigment->copy());
     top_plane.set_pigment(pigment->copy());
@@ -193,7 +182,7 @@ namespace Protracer {
   void
   Box::set_finish(const Finish& finish)
   {
-    this->finish = finish;
+    Object::set_finish(finish);
     front_plane.set_finish(finish);
     back_plane.set_finish(finish);
     top_plane.set_finish(finish);

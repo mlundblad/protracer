@@ -29,9 +29,7 @@
 namespace Protracer {
   class Object : public Item {
   public:
-    Object(Pigment* pigment, const Finish& finish) :
-      pigment(pigment), finish(finish) {}
-
+    Object();
     virtual ~Object() { delete pigment; }
 
     virtual Object* copy() const = 0;
@@ -52,7 +50,7 @@ namespace Protracer {
     // determine if a vector is located inside an object
     virtual bool is_inside(const Vector& v) const = 0;
 
-  protected:
+  private:
     Finish finish;
     Pigment* pigment;
   };

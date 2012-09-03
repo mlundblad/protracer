@@ -330,9 +330,7 @@ plane:
 	vector COMMA number
 	object_mods
 	RBRACE {
-	  $$ = new Protracer::Plane(*$3, Protracer::Vector(0, 0, $5), 
-				    new Protracer::ColorPigment(),
-				    Protracer::Finish());
+	  $$ = new Protracer::Plane(*$3, Protracer::Vector(0, 0, $5));
 
 	  std::for_each($6->begin(), $6->end(),
 			Protracer::ObjectModification::Applier($$));
@@ -349,9 +347,7 @@ plane:
 	vector COMMA vector
 	object_mods
 	RBRACE {
-	  $$ = new Protracer::Plane(*$5, *$3,
-				    new Protracer::ColorPigment(),
-				    Protracer::Finish());
+	  $$ = new Protracer::Plane(*$5, *$3);
 
 	  std::for_each($6->begin(), $6->end(),
 			Protracer::ObjectModification::Applier($$));
@@ -367,9 +363,7 @@ sphere:
 	KEY_SPHERE LBRACE vector COMMA number sphere_opt
 	object_mods
 	RBRACE {
-	  $$ = new Protracer::Sphere(*$3, $5, *($6->pole), *($6->equator), 
-				     new Protracer::ColorPigment, 
-				     Protracer::Finish());
+	  $$ = new Protracer::Sphere(*$3, $5, *($6->pole), *($6->equator));
 
 	  std::for_each($7->begin(), $7->end(),
 			Protracer::ObjectModification::Applier($$));
@@ -404,9 +398,7 @@ triangle:
 	vector
 	object_mods
 	RBRACE { 
-	  $$ = new Protracer::Triangle(*$3, *$5, *$7,
-				       new Protracer::ColorPigment(),
-				       Protracer::Finish());
+	  $$ = new Protracer::Triangle(*$3, *$5, *$7);
 
 	  std::for_each($8->begin(), $8->end(),
 			Protracer::ObjectModification::Applier($$));
@@ -428,10 +420,7 @@ triangle:
 	vector
 	object_mods
 	RBRACE {
-	  $$ = new Protracer::Triangle(*$3, *$5, *$7,
-				       new Protracer::ColorPigment(),
-				       Protracer::Finish(),
-				       true);
+	  $$ = new Protracer::Triangle(*$3, *$5, *$7, true);
 
 	  std::for_each($8->begin(), $8->end(),
 			Protracer::ObjectModification::Applier($$));
@@ -452,9 +441,7 @@ disc:
     opt_hole
     object_mods
     RBRACE {
-      $$ = new Protracer::Disc(*$3, *$5, $7, $8,
-			       new Protracer::ColorPigment(),
-			       Protracer::Finish());
+      $$ = new Protracer::Disc(*$3, *$5, $7, $8);
 
       std::for_each($9->begin(), $9->end(),
 		    Protracer::ObjectModification::Applier($$));
@@ -471,8 +458,8 @@ box:
    vector
    object_mods
    RBRACE {
-     $$ = new Protracer::Box(*$3, *$5, new Protracer::ColorPigment(),
-			     Protracer::Finish());
+     $$ = new Protracer::Box(*$3, *$5);
+
      std::for_each($6->begin(), $6->end(),
 		   Protracer::ObjectModification::Applier($$));
      std::for_each($6->begin(), $6->end(),

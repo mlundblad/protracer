@@ -23,9 +23,7 @@
 
 namespace Protracer {
 
-  Plane::Plane(const Vector& normal, const Vector& point,
-	       Pigment* pigment, const Finish& finish) :
-    Object(pigment, finish)
+  Plane::Plane(const Vector& normal, const Vector& point)
   {
     this->normal = normal.normal();
     this->point = point;
@@ -35,7 +33,12 @@ namespace Protracer {
   Plane*
   Plane::copy() const
   {
-    return new Plane(normal, point, pigment->copy(), finish);
+    Plane* plane = new Plane(normal, point);
+
+    plane->set_pigment(get_pigment().copy());
+    plane->set_finish(get_finish());
+
+    return plane;
   }
 
   HitCalculation
@@ -50,7 +53,8 @@ namespace Protracer {
       if(t >= 0) {
 	Vector rn = (vd < 0 ? 1.0 : -1.0) * normal;
 
-	return HitCalculation(true, t, rn, pigment->get_color(), finish);
+	return HitCalculation(true, t, rn, get_pigment().get_color(),
+                              get_finish());
       }
     }
 

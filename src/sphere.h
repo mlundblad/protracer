@@ -37,8 +37,7 @@ namespace Protracer {
     static const float EQUATOR_DEFAULT_Z = 0.0f;
 
     Sphere(const Vector& center, float radius, const Vector& pole,
-	   const Vector& equator, Pigment* pigment,
-	   const Finish& finish);
+	   const Vector& equator);
 
     Sphere* copy() const;
 

@@ -29,8 +29,7 @@ namespace Protracer {
 
   class Plane : public Object {
   public:
-    Plane(const Vector& normal, const Vector& point, Pigment* pigment,
-	  const Finish& finish);
+    Plane(const Vector& normal, const Vector& point);
 
     Vector get_normal() const { return normal; }
     Vector get_point() const { return point; }

@@ -33,10 +33,8 @@ namespace Protracer {
     virtual bool is_inside(const Vector& v) const { return false; }
 
   protected:
-    PlanarObject(const Vector& normal, const Vector& point,
-		 Pigment* pigment, const Finish& finish) :
-      Object(pigment, finish), span_plane(normal, point, pigment, finish) {}
-    ~PlanarObject() { pigment = 0; }
+    PlanarObject(const Vector& normal, const Vector& point) :
+      span_plane(normal, point) {}
 
     // override to allow syncing pigment with the spanning plane
     void set_pigment(Pigment* pigment);

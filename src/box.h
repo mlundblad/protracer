@@ -27,8 +27,7 @@ namespace Protracer {
 
   class Box : public Object {
   public:
-    Box(const Vector& c1, const Vector& c2, Pigment* pigment,
-	const Finish& finish);
+    Box(const Vector& c1, const Vector& c2);
 
     virtual HitCalculation calculate_hit(const Ray& ray) const;
 
@@ -46,10 +45,6 @@ namespace Protracer {
     virtual bool is_inside(const Vector& v) const;
 
   private:
-    // we need a copy contructor for the copy() method to avoid having to
-    // do all the pre-calculations when copying
-    Box(const Box& box);
-
     // to simplify hit and bounding calculations, store all corner points
     Vector bottom_front_left;
     Vector bottom_back_left;

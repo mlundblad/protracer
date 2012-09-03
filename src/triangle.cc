@@ -22,12 +22,11 @@
 namespace Protracer {
 
   Triangle::Triangle(const Vector& c0, const Vector& c1, const Vector& c2,
-	   Pigment* pigment, const Finish& finish,
 	   bool relative) :
     va(relative ? c1 : c1 - c0),
     vb(relative ? c2 : c2 - c0),
     PlanarObject(Vector((relative ? c1 : c1 - c0) * (relative ? c2 : c2 - c0)).normal(),
-                 c0, pigment, finish)
+                 c0)
   {
     t0 = c0;
     aa = va.dot(va);
@@ -39,7 +38,12 @@ namespace Protracer {
   Triangle*
   Triangle::copy() const
   {
-    return new Triangle(t0, va, vb, pigment->copy(), finish, true);
+    Triangle* triangle = new Triangle(t0, va, vb, true); 
+
+    triangle->set_pigment(get_pigment().copy());
+    triangle->set_finish(get_finish());
+
+    return triangle;
   }
 
   HitCalculation
@@ -57,8 +61,9 @@ namespace Protracer {
 	float v = (q.dot(vb) - u * ab) / bb;
 	
 	if (0 < v && v < 1 && u + v <= 1) {
-	  if (!pigment->is_uniform()) {
-	    hc.set_color(pigment->get_color(u, v));
+          const Pigment& pigment = get_pigment();
+	  if (!pigment.is_uniform()) {
+	    hc.set_color(pigment.get_color(u, v));
           }
 
 	  return hc;

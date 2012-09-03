@@ -27,7 +27,7 @@ namespace Protracer {
   class Disc : public PlanarObject {
   public:
     Disc(const Vector& center, const Vector& normal, float radius,
-	 float hole_radius, Pigment* pigment, const Finish& finish);
+	 float hole_radius);
 
     Disc* copy() const;
     

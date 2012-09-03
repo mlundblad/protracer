@@ -18,8 +18,15 @@
  */
 
 #include "object.h"
+#include "color_pigment.h"
 
 namespace Protracer {
+
+  Object::Object()
+  {
+    // set default pigment
+    pigment = new ColorPigment;
+  }
 
   void
   Object::set_finish(const Finish& finish)

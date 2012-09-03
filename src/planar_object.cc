@@ -24,10 +24,10 @@ namespace Protracer {
   void
   PlanarObject::set_pigment(Pigment* pigment)
   {
-    if (pigment != this->pigment) {
+    if (pigment != &get_pigment()) {
       // this will delete the old pigment, which is shared with the spanning plane
-      span_plane.set_pigment(pigment);
-      this->pigment = pigment;
+      span_plane.set_pigment(pigment->copy());
+      Object::set_pigment(pigment);
     }
   }
 

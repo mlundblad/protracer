@@ -22,8 +22,8 @@
 namespace Protracer {
 
   Disc::Disc(const Vector& center, const Vector& normal, float radius,
-	     float hole_radius, Pigment* pigment, const Finish& finish) :
-    PlanarObject(normal, center, pigment, finish),
+	     float hole_radius) :
+    PlanarObject(normal, center),
     center(center), normal(normal), radius(radius), hole_radius(hole_radius)
   {
   }
@@ -31,7 +31,12 @@ namespace Protracer {
   Disc*
   Disc::copy() const
   {
-    return new Disc(center, normal, radius, hole_radius, pigment->copy(), finish);
+    Disc* disc = new Disc(center, normal, radius, hole_radius);
+    
+    disc->set_pigment(get_pigment().copy());
+    disc->set_finish(get_finish());
+
+    return disc;
   }
 
   HitCalculation
