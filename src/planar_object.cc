@@ -35,5 +35,6 @@ namespace Protracer {
   PlanarObject::set_finish(const Finish& finish)
   {
     span_plane.set_finish(finish);
+    Object::set_finish(finish);
   }
 }
