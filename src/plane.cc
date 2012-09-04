@@ -35,8 +35,10 @@ namespace Protracer {
   {
     Plane* plane = new Plane(normal, point);
 
-    plane->set_pigment(get_pigment().copy());
-    plane->set_finish(get_finish());
+    if (has_custom_pigment())
+      plane->set_pigment(get_pigment().copy());
+    if (has_custom_finish())
+      plane->set_finish(get_finish());
 
     return plane;
   }

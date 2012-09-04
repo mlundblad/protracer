@@ -32,6 +32,7 @@ namespace Protracer {
   Object::set_finish(const Finish& finish)
   {
     this->finish = finish;
+    this->custom_finish = true;
   }
   
   void
@@ -40,6 +41,7 @@ namespace Protracer {
     if (pigment != this->pigment) {
       delete this->pigment;
       this->pigment = pigment;
+      this->custom_pigment = true;
     }
   }
 }

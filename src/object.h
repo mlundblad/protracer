@@ -43,6 +43,12 @@ namespace Protracer {
     virtual void set_finish(const Finish& finish);
     virtual void set_pigment(Pigment* pigment);
 
+    // determines whether a specific finish and pigment has been set for the
+    // object (to be used to be able to override a "higher" texture f.ex. for
+    // unions
+    bool has_custom_finish() const { return custom_finish; }
+    bool has_custom_pigment() const { return custom_pigment; }
+
     // get bounding box extents
     virtual Vector get_max_extent() const = 0;
     virtual Vector get_min_extent() const = 0;
@@ -53,6 +59,8 @@ namespace Protracer {
   private:
     Finish finish;
     Pigment* pigment;
+    bool custom_finish;
+    bool custom_pigment;
   };
 }
 

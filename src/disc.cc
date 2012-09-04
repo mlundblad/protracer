@@ -33,8 +33,10 @@ namespace Protracer {
   {
     Disc* disc = new Disc(center, normal, radius, hole_radius);
     
-    disc->set_pigment(get_pigment().copy());
-    disc->set_finish(get_finish());
+    if (has_custom_pigment())
+      disc->set_pigment(get_pigment().copy());
+    if (has_custom_finish())
+      disc->set_finish(get_finish());
 
     return disc;
   }

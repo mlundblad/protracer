@@ -138,8 +138,10 @@ namespace Protracer {
   {
     Box* box = new Box(Vector(0, 0, 0), Vector(0, 0, 0));
 
-    box->set_pigment(get_pigment().copy());
-    box->set_finish(get_finish());
+    if (has_custom_pigment())
+      box->set_pigment(get_pigment().copy());
+    if (has_custom_finish())
+      box->set_finish(get_finish());
 
     box->front_plane = *(front_plane.copy());
     box->back_plane = *(back_plane.copy());
