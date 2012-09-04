@@ -20,6 +20,8 @@
 #include <stdlib.h>
 #include <getopt.h>
 #include <unistd.h>
+#include <string.h>
+#include <errno.h>
 
 #include <iostream>
 #include <vector>
@@ -259,6 +261,12 @@ int main(int argc, char **argv)
     /* open in file */
     if (argv[optind] != NULL) {
       in_file = fopen(argv[optind], "r");
+
+      if (in_file == 0) {
+        std::cerr << "Could not read \"" << argv[optind] << "\": "
+                  << strerror(errno) << std::endl;
+        exit(-1);
+      }
     } else {
       // if running interactively without giving an input file, show usage
       // instead of "getting stuck" waiting for input, this way it will still work
