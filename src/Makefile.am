@@ -55,6 +55,8 @@ protracer_SOURCES=bitmap.cc \
 	translation.h \
 	triangle.cc \
 	triangle.h \
+	union.cc \
+	union.h \
 	util.cc \
 	util.h \
 	vector.cc \

@@ -39,6 +39,7 @@ namespace Protracer {
     const Finish& get_finish() const { return finish; }
 
     void set_color(const Color& c) { color = c; }
+    void set_finish(const Finish& f) { finish = f; }
 
   private:
     bool hit;
