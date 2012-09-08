@@ -111,6 +111,7 @@ translate       return KEY_TRANSLATE;
 triangle	return KEY_TRIANGLE;
 triangle_point	return KEY_TRIANGLEPNT;
 true            return KEY_TRUE;
+union           return KEY_UNION;
 vaxis_rotate    return KEY_VAXIS_ROTATE;
 vcross          return KEY_VCROSS;
 vdot            return KEY_VDOT;

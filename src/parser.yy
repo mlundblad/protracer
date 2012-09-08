@@ -87,6 +87,7 @@ int yyerror(char *s);
 #include "triangle.h"
 #include "disc.h"
 #include "box.h"
+#include "union.h"
 #include "camera.h"
 #include "color.h"
 #include "object.h"
@@ -144,6 +145,7 @@ int yyerror(char *s);
   Protracer::Plane*       plane;
   Protracer::Disc*        disc;
   Protracer::Box*         box;
+  Protracer::Union*       Union;
   Protracer::Object*      object;
   Protracer::Camera*      camera;
   Protracer::Light*       light;
@@ -153,6 +155,7 @@ int yyerror(char *s);
   Protracer::ObjectModification* objectMod;
   Protracer::Transformation* transformation;
   std::list<Protracer::Transformation*>* transformations;
+  std::list<Protracer::Object*>* object_list;
   Protracer::Finish*      finish;
   Protracer::Pigment*     pigment;
   Protracer::Bitmap*      bitmap;
@@ -176,7 +179,7 @@ int yyerror(char *s);
 %token KEY_CAMERA KEY_RGB KEY_SKY KEY_LIGHT
 %token KEY_PLANE KEY_PLANEPNT KEY_IMAGE KEY_PPM
 %token KEY_OBJECT
-%token KEY_POLE KEY_EQUATOR KEY_DISC KEY_BOX
+%token KEY_POLE KEY_EQUATOR KEY_DISC KEY_BOX KEY_UNION
 %token KEY_X KEY_Y KEY_Z
 %token KEY_ABS KEY_ACOS KEY_ACOSH KEY_ASIN KEY_ASINH KEY_ATAN KEY_ATANH
 %token KEY_ATAN2 KEY_CEIL KEY_COS KEY_COSH KEY_DEGREES KEY_DIV KEY_EXP
@@ -207,6 +210,7 @@ int yyerror(char *s);
 %type <sphere> sphere
 %type <disc> disc
 %type <box> box
+%type <Union> union
 %type <vector> vector
 %type <vector> vector_builtin;
 %type <value> number
@@ -223,6 +227,7 @@ int yyerror(char *s);
 %type <transformation> transformation_block
 %type <transformations> transformations
 %type <transformations> transformations_opt
+%type <object_list> object_list
 %type <pigment> pigment
 %type <finish> finish
 %type <bitmap> image
@@ -469,6 +474,25 @@ box:
      delete $6;
    };
 
+union:
+  KEY_UNION LBRACE
+  object_list
+  object_mods
+  RBRACE {
+    $$ = new Protracer::Union;
+    
+    for (std::vector<Object*>::iterator it = $3->begin() ;
+	 it != $3->end() ; it++) {
+      $$->add_object(*it);
+    }
+
+    std::for_each($4->begin(), $4->end(),
+		  Protracer::ObjectModification::Applier($$));
+    std::for_each($4->begin(), $4->end(),
+		   Protracer::ObjectModification::Deleter());
+    delete $3;
+  };
+
 opt_hole: {
   // empty
   $$ = 0.0f;
@@ -574,6 +598,16 @@ KEY_PIGMENT LBRACE color RBRACE {
   free($3);
 }
 ;
+
+object_list:
+// empty
+{
+  $$ = new std::list<Object*>;
+}
+| object_list object {
+  $1->push_back($2);
+  $$ = $1;
+};
 
                 
 image:	KEY_IMAGE LBRACE KEY_PPM STRING RBRACE {
