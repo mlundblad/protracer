@@ -303,6 +303,7 @@ object: sphere { $$ = $1; }
 | plane { $$ = $1; }
 | disc { $$ = $1; }
 | box { $$ = $1; }
+| union { $$ = $1; }
 | KEY_OBJECT LBRACE NAME object_mods RBRACE {
   if (Protracer::Declaration::is_defined($3)) {
     Protracer::Declaration d = Protracer::Declaration::get_declaration($3);
@@ -481,7 +482,7 @@ union:
   RBRACE {
     $$ = new Protracer::Union;
     
-    for (std::vector<Object*>::iterator it = $3->begin() ;
+    for (std::list<Protracer::Object*>::iterator it = $3->begin() ;
 	 it != $3->end() ; it++) {
       $$->add_object(*it);
     }
@@ -602,7 +603,7 @@ KEY_PIGMENT LBRACE color RBRACE {
 object_list:
 // empty
 {
-  $$ = new std::list<Object*>;
+  $$ = new std::list<Protracer::Object*>;
 }
 | object_list object {
   $1->push_back($2);
