@@ -79,11 +79,11 @@ namespace Protracer {
     if (hc.is_hit()) {
       if (!hit_object->has_custom_pigment()) {
 	// for now, only consider single pigment color...
-	hc.set_color(hit_object->get_pigment().get_color());
+	hc.set_color(get_pigment().get_color());
       }
       
       if (!hit_object->has_custom_finish()) {
-	hc.set_finish(hit_object->get_finish());
+	hc.set_finish(get_finish());
       }
     }
 
