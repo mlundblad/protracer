@@ -67,7 +67,7 @@ namespace Protracer {
       Object* o = *it;
       HitCalculation hc2 = o->calculate_hit(ray);
 
-      if (hc2.is_hit() && hc2.get_distance() < nearest) {
+      if (hc2.is_hit() && hc2.get_distance() <= nearest) {
 	hc = hc2;
 	nearest = hc2.get_distance();
 	hit_object = o;
