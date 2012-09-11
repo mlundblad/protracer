@@ -19,7 +19,7 @@
 
 #include <iostream>
 #include <vector>
-#include <math.h>
+#include <limits>
 
 #include "scene.h"
 #include "util.h"
@@ -43,11 +43,8 @@ namespace Protracer {
   Scene::color_at_hit_point(int x, int y, const Ray& ray, int refl_depth,
 			    bool no_shadow_no_reflection) const
   {
-    int         j;
-    int         index = 0;
-    float      least_distance = HUGE_VAL;
-    float      shade = 0.0;
-    bool        isLit;
+    float least_distance = std::numeric_limits<float>::infinity();
+    float shade = 0.0;
 
     Color       col;
 
@@ -67,7 +64,7 @@ namespace Protracer {
       }
     }
 
-    if (least_distance == HUGE_VAL)
+    if (least_distance == std::numeric_limits<float>::infinity())
         return background;
 
     /* leastDistance is the distance to the nearest object hit */
