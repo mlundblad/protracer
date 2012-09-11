@@ -1,0 +1,22 @@
+// camera located at origo
+camera { location 0 sky y look_at z }
+
+// light source
+light_source { -100 * z }
+
+// a union of two discs
+union {
+   disc { x + z * 10, z, 1.5 pigment { color rgb <0.6, 0.23, 0.23> }}
+   disc { -x + z * 10, z, 1.5 pigment { color rgb <0.6, 0.23, 0.23> }}
+}
+
+// a union with one component with unspecified pigment, and a union fallback
+// pigment
+// demonstrates transformations performed on a union as a single unit
+union {
+   disc { x, z, 1.5 pigment { color rgb <0.8, 0.8, 0.8> }}
+   disc { -x, z, 1.5 }
+   pigment { color rgb <0.6, 0.6, 0.6> }
+   rotate y * 45
+   translate z * 10 + y * 4
+}
