@@ -61,45 +61,30 @@ namespace Protracer {
   HitCalculation
   Box::calculate_hit(const Ray& ray) const
   {
-    HitCalculation hc1 = calculate_hit(ray, front_plane, bottom_front_left,
-				      up, right);
-    HitCalculation hc2 = calculate_hit(ray, back_plane, bottom_back_left,
-				       up, right);
-    HitCalculation hc3 = calculate_hit(ray, top_plane, top_front_left,
-				       in, right);
-    HitCalculation hc4 = calculate_hit(ray, bottom_plane, bottom_front_left,
-				       in, right);
-    HitCalculation hc5 = calculate_hit(ray, left_plane, bottom_front_left,
-				       in, up);
-    HitCalculation hc6 = calculate_hit(ray, right_plane, bottom_front_right,
-				       in, up);
+    // calculate hits for each surface
+    HitCalculation hcs[6] = {calculate_hit(ray, front_plane, bottom_front_left,
+                                           up, right),
+                             calculate_hit(ray, back_plane, bottom_back_left,
+                                           up, right),
+                             calculate_hit(ray, top_plane, top_front_left,
+                                           in, right),
+                             calculate_hit(ray, bottom_plane, bottom_front_left,
+                                           in, right),
+                             calculate_hit(ray, left_plane, bottom_front_left,
+                                           in, up),
+                             calculate_hit(ray, right_plane, bottom_front_right,
+                                           in, up)};
     HitCalculation hc;
 
-    float nearest = std::numeric_limits<float>::max();
+    float nearest = std::numeric_limits<float>::infinity();
 
-    if (hc1.is_hit() && hc1.get_distance() < nearest) {
-      nearest = hc1.get_distance();
-      hc = hc1;
-    }
-    if (hc2.is_hit() && hc2.get_distance() < nearest) {
-      nearest = hc2.get_distance();
-      hc = hc2;
-    }
-    if (hc3.is_hit() && hc3.get_distance() < nearest) {
-      nearest = hc3.get_distance();
-      hc = hc3;
-    }
-    if (hc4.is_hit() && hc4.get_distance() < nearest) {
-      nearest = hc4.get_distance();
-      hc = hc4;
-    }
-    if (hc5.is_hit() && hc5.get_distance() < nearest) {
-      nearest = hc5.get_distance();
-      hc = hc5;
-    }
-    if (hc6.is_hit() && hc6.get_distance() < nearest) {
-      hc = hc6;
-    }
+    // collect the nearest hit
+    for (int i = 0 ; i < 6 ; i++) {
+      if (hcs[i].is_hit() && hcs[i].get_distance() < nearest) {
+        nearest = hcs[i].get_distance();
+        hc = hcs[i];
+      }
+    } 
 
     return hc;
   }
