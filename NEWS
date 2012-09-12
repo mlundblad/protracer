@@ -1,4 +1,4 @@
-version 2.7 (2012-xx-xx)
+version 2.7 "September" (2012-09-12)
 	* Enhanced scene description language:
 	  * Support declaring vectors using only two components,
 	    assuming z = 0.
