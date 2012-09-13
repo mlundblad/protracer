@@ -29,12 +29,12 @@ namespace Protracer {
   class Sphere : public Object {
   public:
 
-    static const float POLE_DEFAULT_X = 0.0f;
-    static const float POLE_DEFAULT_Y = 1.0f;
-    static const float POLE_DEFAULT_Z = 0.0f;
-    static const float EQUATOR_DEFAULT_X = 1.0f;
-    static const float EQUATOR_DEFAULT_Y = 0.0f;
-    static const float EQUATOR_DEFAULT_Z = 0.0f;
+    static constexpr float POLE_DEFAULT_X = 0.0f;
+    static constexpr float POLE_DEFAULT_Y = 1.0f;
+    static constexpr float POLE_DEFAULT_Z = 0.0f;
+    static constexpr float EQUATOR_DEFAULT_X = 1.0f;
+    static constexpr float EQUATOR_DEFAULT_Y = 0.0f;
+    static constexpr float EQUATOR_DEFAULT_Z = 0.0f;
 
     Sphere(const Vector& center, float radius, const Vector& pole,
 	   const Vector& equator);
@@ -60,7 +60,7 @@ namespace Protracer {
 
     Color color_at(const Vector& normal) const;
 
-    static const float EPS = 0.001f;
+    static constexpr float EPS = 0.001f;
   };
 }
 
