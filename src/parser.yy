@@ -144,7 +144,7 @@ int yyerror(char *s);
   Protracer::Object*      object;
   Protracer::Camera*      camera;
   Protracer::Light*       light;
-  Protracer::Color*       color;
+  Protracer::Color       color;
   SphereOptions*   sphereOptions;
   std::list<Protracer::ObjectModification*>* objectMods;
   Protracer::ObjectModification* objectMod;
@@ -564,8 +564,7 @@ transformations_opt: /* empty */ {
 
 pigment:
 KEY_PIGMENT LBRACE color RBRACE {
-  $$ = new Protracer::ColorPigment(*$3);
-  delete $3;
+  $$ = new Protracer::ColorPigment($3);
 }
 | KEY_PIGMENT LBRACE image RBRACE {
   $$ = new Protracer::BitmapPigment($3);
@@ -658,25 +657,25 @@ KEY_COLOR
 KEY_RED number
 KEY_GREEN number
 KEY_BLUE number {
-  $$ = new Protracer::Color((unsigned char)($3 * Protracer::Color::COMPONENT_MAX), 
-			    (unsigned char)($5 * Protracer::Color::COMPONENT_MAX), 
-			    (unsigned char)($7 * Protracer::Color::COMPONENT_MAX));
+  $$ = Protracer::Color((unsigned char)($3 * Protracer::Color::COMPONENT_MAX), 
+			(unsigned char)($5 * Protracer::Color::COMPONENT_MAX), 
+			(unsigned char)($7 * Protracer::Color::COMPONENT_MAX));
 }
 |
 KEY_COLOR KEY_RGB vector {
-  $$ = new Protracer::Color((unsigned char)($3.get_x() *
-					  Protracer::Color::COMPONENT_MAX),
-			    (unsigned char)($3.get_y() *
-					  Protracer::Color::COMPONENT_MAX),
-			    (unsigned char)($3.get_z() *
-					  Protracer::Color::COMPONENT_MAX));
+  $$ = Protracer::Color((unsigned char)($3.get_x() *
+					Protracer::Color::COMPONENT_MAX),
+			(unsigned char)($3.get_y() *
+					Protracer::Color::COMPONENT_MAX),
+			(unsigned char)($3.get_z() *
+					Protracer::Color::COMPONENT_MAX));
 }
 | NAME {
   if (Protracer::Declaration::is_defined($1)) {
     Protracer::Declaration d = Protracer::Declaration::get_declaration($1);
     
     if (d.get_type() == Protracer::Declaration::COLOR) {
-      $$ = new Protracer::Color(d.get_color());
+      $$ = d.get_color();
     } else {
       error(std::string("Variable ") + $1 + " is not a color value.");
     }
@@ -734,8 +733,7 @@ background:
 	KEY_BACKGROUND LBRACE
 	color
 	RBRACE {
-	  global_background = *$3;
-	  delete $3;
+	  global_background = $3;
 	}
 	;
 
@@ -793,16 +791,13 @@ vector DOT KEY_X {
   $$ = $1.get_z();
 }
 | color DOT KEY_RED {
-  $$ = float($1->get_red()) / Protracer::Color::COMPONENT_MAX;
-  delete $1;
+  $$ = float($1.get_red()) / Protracer::Color::COMPONENT_MAX;
 }
 | color DOT KEY_GREEN {
-  $$ = float($1->get_green()) / Protracer::Color::COMPONENT_MAX;
-  delete $1;
+  $$ = float($1.get_green()) / Protracer::Color::COMPONENT_MAX;
 }
 | color DOT KEY_BLUE {
-  $$ = float($1->get_blue()) / Protracer::Color::COMPONENT_MAX;
-  delete $1;
+  $$ = float($1.get_blue()) / Protracer::Color::COMPONENT_MAX;
 }
 ;
 
@@ -1067,9 +1062,8 @@ DIRECTIVE_DECLARE NAME EQ number SEMICOLON {
   free($2);
 }
 | DIRECTIVE_DECLARE NAME EQ color SEMICOLON {
-  Protracer::Declaration::add_global_declaration(Protracer::Declaration($2, *$4));
+  Protracer::Declaration::add_global_declaration(Protracer::Declaration($2, $4));
   free($2);
-  delete $4;
 }
 | DIRECTIVE_DECLARE NAME EQ finish opt_semicolon {
   Protracer::Declaration::add_global_declaration(Protracer::Declaration($2, *$4));
