@@ -151,7 +151,7 @@ int yyerror(char *s);
   Protracer::Transformation* transformation;
   std::list<Protracer::Transformation*>* transformations;
   std::list<Protracer::Object*>* object_list;
-  Protracer::Finish*      finish;
+  Protracer::Finish      finish;
   Protracer::Pigment*     pigment;
   Protracer::Bitmap*      bitmap;
 
@@ -501,8 +501,7 @@ object_mods: // empty
 };
 
 object_mod: finish {
-  $$ = new Protracer::FinishModification(*$1);
-  delete $1;
+  $$ = new Protracer::FinishModification($1);
 }
 | pigment {
   $$ = new Protracer::PigmentModification($1);
@@ -606,8 +605,8 @@ image:	KEY_IMAGE LBRACE KEY_PPM STRING RBRACE {
 
 
 finish: KEY_FINISH LBRACE opt_diffuse opt_reflection RBRACE {
-  $$ = new Protracer::Finish($3 ? *$3 : Protracer::Finish::DEFAULT_DIFFUSION,
-			     $4 ? *$4 : Protracer::Finish::DEFAULT_REFLECTION);
+  $$ = Protracer::Finish($3 ? *$3 : Protracer::Finish::DEFAULT_DIFFUSION,
+			 $4 ? *$4 : Protracer::Finish::DEFAULT_REFLECTION);
   delete $3;
   delete $4;
 }
@@ -616,12 +615,12 @@ finish: KEY_FINISH LBRACE opt_diffuse opt_reflection RBRACE {
     Protracer::Declaration d = Protracer::Declaration::get_declaration($3);
 
     if (d.get_type() == Protracer::Declaration::FINISH) {
-      $$ = new Protracer::Finish(d.get_finish());
+      $$ = d.get_finish();
       
       if ($4 != 0)
-	$$->set_diffusion(*$4);
+	$$.set_diffusion(*$4);
       if ($5 != 0)
-	$$->set_reflection(*$5);
+	$$.set_reflection(*$5);
     } else {
       error(std::string("Variable ") + $3 + " is not a finish.");
     }
@@ -1066,9 +1065,8 @@ DIRECTIVE_DECLARE NAME EQ number SEMICOLON {
   free($2);
 }
 | DIRECTIVE_DECLARE NAME EQ finish opt_semicolon {
-  Protracer::Declaration::add_global_declaration(Protracer::Declaration($2, *$4));
+  Protracer::Declaration::add_global_declaration(Protracer::Declaration($2, $4));
   free($2);
-  delete $4;
 }
 | DIRECTIVE_DECLARE NAME EQ pigment opt_semicolon {
   Protracer::Declaration::add_global_declaration(Protracer::Declaration($2, $4));
