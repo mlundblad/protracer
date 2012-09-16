@@ -145,7 +145,7 @@ int yyerror(char *s);
   Protracer::Camera*      camera;
   Protracer::Light*       light;
   Protracer::Color       color;
-  SphereOptions*   sphereOptions;
+  SphereOptions   sphereOptions;
   std::list<Protracer::ObjectModification*>* objectMods;
   Protracer::ObjectModification* objectMod;
   Protracer::Transformation* transformation;
@@ -369,30 +369,27 @@ sphere:
 	KEY_SPHERE LBRACE vector COMMA number sphere_opt
 	object_mods
 	RBRACE {
-	  $$ = new Protracer::Sphere($3, $5, $6->pole, $6->equator);
+	  $$ = new Protracer::Sphere($3, $5, $6.pole, $6.equator);
 
 	  std::for_each($7->begin(), $7->end(),
 			Protracer::ObjectModification::Applier($$));
 	  std::for_each($7->begin(), $7->end(),
 			Protracer::ObjectModification::Deleter());
-	  delete $6;
 	  delete $7;
 	}
 	;
 
 sphere_opt:   {
-  $$ = new SphereOptions;
-  $$->pole = Protracer::Vector(Protracer::Sphere::POLE_DEFAULT_X, 
-			       Protracer::Sphere::POLE_DEFAULT_Y,
-			       Protracer::Sphere::POLE_DEFAULT_Z);
-  $$->equator = Protracer::Vector(Protracer::Sphere::EQUATOR_DEFAULT_X,
-				  Protracer::Sphere::EQUATOR_DEFAULT_Y,
-				  Protracer::Sphere::EQUATOR_DEFAULT_Z); }
+  $$.pole = Protracer::Vector(Protracer::Sphere::POLE_DEFAULT_X, 
+			      Protracer::Sphere::POLE_DEFAULT_Y,
+			      Protracer::Sphere::POLE_DEFAULT_Z);
+  $$.equator = Protracer::Vector(Protracer::Sphere::EQUATOR_DEFAULT_X,
+				 Protracer::Sphere::EQUATOR_DEFAULT_Y,
+				 Protracer::Sphere::EQUATOR_DEFAULT_Z); }
   |
     KEY_POLE vector KEY_EQUATOR vector { 
-      $$ = new SphereOptions;
-      $$->pole = $2;
-      $$->equator = $4;
+      $$.pole = $2;
+      $$.equator = $4;
     }
     ;
 
@@ -617,9 +614,9 @@ finish: KEY_FINISH LBRACE opt_diffuse opt_reflection RBRACE {
     if (d.get_type() == Protracer::Declaration::FINISH) {
       $$ = d.get_finish();
       
-      if ($4 != 0)
+      if ($4 != nullptr)
 	$$.set_diffusion(*$4);
-      if ($5 != 0)
+      if ($5 != nullptr)
 	$$.set_reflection(*$5);
     } else {
       error(std::string("Variable ") + $3 + " is not a finish.");
