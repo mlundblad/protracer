@@ -132,7 +132,7 @@ int yyerror(char *s);
   double	value;		        /* for numbers */
   double*       value_opt;      /* for optional numeric values */
   char		*string;	/* for names */
-  std::list<float>* number_list; // for scalar argument lists
+  std::list<float> number_list; // for scalar argument lists
   bool          logical;
   Protracer::Vector	vector;
   Protracer::Sphere*      sphere;
@@ -158,6 +158,7 @@ int yyerror(char *s);
   // this is a bit ugly, but needed to allow non-pointer vector members in
   // the union
   YYSTYPE() {}
+  ~YYSTYPE() {}
   YYSTYPE& operator=(const YYSTYPE& rhs) {
     if (&rhs != this)
       std::memcpy(this, &rhs, sizeof(YYSTYPE));
@@ -817,14 +818,12 @@ KEY_ABS LPAREN number RPAREN { $$ = std::fabs($3); }
 | KEY_LOG LPAREN number RPAREN { $$ = std::log10($3); }
 | KEY_LN LPAREN number RPAREN { $$ = std::log($3); }
 | KEY_MAX LPAREN number COMMA numbers RPAREN {
-  $5->push_front($3);
-  $$ = *std::max_element($5->begin(), $5->end());
-  delete $5;
+  $5.push_front($3);
+  $$ = *std::max_element($5.begin(), $5.end());
 }
 | KEY_MIN LPAREN number COMMA numbers RPAREN {
-  $5->push_front($3);
-  $$ = *std::min_element($5->begin(), $5->end());
-  delete $5;
+  $5.push_front($3);
+  $$ = *std::min_element($5.begin(), $5.end());
 }
 | KEY_MOD LPAREN number COMMA number RPAREN { $$ = std::fmod($3, $5); }
 | KEY_POW LPAREN number COMMA number RPAREN { $$ = std::pow($3, $5); }
@@ -872,10 +871,9 @@ KEY_FALSE { $$ = 0.0; }
 ;
 
 numbers: number {
-  $$ = new std::list<float>;
-  $$->push_back($1);
+  $$.push_back($1);
 }
-| number COMMA numbers { $3->push_front($1); $$ = $3;}
+| number COMMA numbers { $3.push_front($1); $$ = $3;}
 ;
 
 // the rules for vector expression needs to come after the ones for scalar
