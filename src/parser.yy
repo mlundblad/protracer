@@ -150,7 +150,7 @@ int yyerror(char *s);
   Protracer::ObjectModification* objectMod;
   Protracer::Transformation* transformation;
   std::list<Protracer::Transformation*> transformations;
-  std::list<Protracer::Object*>* object_list;
+  std::list<Protracer::Object*> object_list;
   Protracer::Finish      finish;
   Protracer::Pigment*     pigment;
   Protracer::Bitmap*      bitmap;
@@ -455,8 +455,8 @@ union:
   RBRACE {
     $$ = new Protracer::Union;
     
-    for (std::list<Protracer::Object*>::iterator it = $3->begin() ;
-	 it != $3->end() ; it++) {
+    for (std::list<Protracer::Object*>::iterator it = $3.begin() ;
+	 it != $3.end() ; it++) {
       $$->add_object(*it);
     }
 
@@ -464,7 +464,6 @@ union:
 		  Protracer::ObjectModification::Applier($$));
     std::for_each($4.begin(), $4.end(),
 		   Protracer::ObjectModification::Deleter());
-    delete $3;
   };
 
 opt_hole: {
@@ -570,10 +569,10 @@ KEY_PIGMENT LBRACE color RBRACE {
 object_list:
 // empty
 {
-  $$ = new std::list<Protracer::Object*>;
+  $$ = std::list<Protracer::Object*>();
 }
 | object_list object {
-  $1->push_back($2);
+  $1.push_back($2);
   $$ = $1;
 };
 
