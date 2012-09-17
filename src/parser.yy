@@ -131,7 +131,7 @@ int yyerror(char *s);
 %union {
   double	value;		        /* for numbers */
   double*       value_opt;      /* for optional numeric values */
-  char		*string;	/* for names */
+  std::string	string;	/* for names */
   std::list<float> number_list; // for scalar argument lists
   bool          logical;
   Protracer::Vector	vector;
@@ -291,10 +291,8 @@ light: KEY_LIGHT LBRACE vector transformations_opt RBRACE {
     }
   } else {
     std::for_each($4.begin(), $4.end(), Protracer::Transformation::Deleter());
-    error(std::string("Variable ") + $3 + " is undefined.");
+    error("Variable " + $3 + " is undefined.");
   }
-  
-  free($3);
 }
 ;
 
@@ -318,12 +316,12 @@ object: sphere { $$ = $1; }
     } else {
       std::for_each($4.begin(), $4.end(),
 		    Protracer::ObjectModification::Deleter());
-      error(std::string("Variable ") + $3 + std::string(" is not an object."));
+      error("Variable " + $3 + " is not an object.");
     }
   } else {
     std::for_each($4.begin(), $4.end(),
 		  Protracer::ObjectModification::Deleter());
-    error(std::string("Variable ") + $3 + std::string(" is not defined."));
+    error("Variable " + $3 + " is not defined.");
   }
 }
 ;
@@ -512,12 +510,10 @@ transformation_block: NAME {
     if (d.get_type() == Protracer::Declaration::TRANSFORMATION) {
       $$ = d.get_transformation()->copy();
     } else {
-      error(std::string("Variable ") + $1 + std::string(" is not a transform."));
-      free($1);
+      error("Variable " + $1 + " is not a transform.");
     }
   } else {
-    error(std::string("Variable ") + $1 + std::string(" is not defined."));
-    free($1);
+    error("Variable " + $1 + " is not defined.");
   }
 }
 | transformation {
@@ -556,13 +552,11 @@ KEY_PIGMENT LBRACE color RBRACE {
     if (d.get_type() == Protracer::Declaration::PIGMENT) {
       $$ = d.get_pigment()->copy();
     } else {
-      error(std::string("Variable ") + $3 + " is not a pigment value.");
+      error("Variable " + $3 + " is not a pigment value.");
     }
   } else {
-    error(std::string("Variable ") + $3 + " is not defined.");
+    error("Variable " + $3 + " is not defined.");
   }
-
-  free($3);
 }
 ;
 
@@ -603,12 +597,11 @@ finish: KEY_FINISH LBRACE opt_diffuse opt_reflection RBRACE {
       if ($5 != nullptr)
 	$$.set_reflection(*$5);
     } else {
-      error(std::string("Variable ") + $3 + " is not a finish.");
+      error("Variable " + $3 + " is not a finish.");
     }
   } else {
-    error(std::string("Variable ") + $3 + " is not defined.");
+    error("Variable " + $3 + " is not defined.");
   }
-  free($3);
   delete $4;
   delete $5;
 }
@@ -657,12 +650,11 @@ KEY_COLOR KEY_RGB vector {
     if (d.get_type() == Protracer::Declaration::COLOR) {
       $$ = d.get_color();
     } else {
-      error(std::string("Variable ") + $1 + " is not a color value.");
+      error("Variable " + $1 + " is not a color value.");
     }
   } else {
-    error(std::string("Variable ") + $1 + " is undefined.");
+    error("Variable " + $1 + " is undefined.");
   }
-  free($1);
 }
 ;
 
@@ -695,13 +687,11 @@ RBRACE {
 		    Protracer::Transformation::Deleter());
       global_scene->set_camera(global_camera);
     } else {
-      error(std::string("Variable ") + $3 + " is not a camera.");
+      error("Variable " + $3 + " is not a camera.");
     }
   } else {
-    error(std::string("Variable ") + $3 + " is undefined.");
+    error("Variable " + $3 + " is undefined.");
   }
-
-  free($3);
 }
 ;
 
@@ -739,12 +729,11 @@ NUMBER { $$ = $1; }
     if (d.get_type() == Protracer::Declaration::SCALAR) {
       $$ = d.get_scalar();
     } else {
-      error(std::string("Variable ") + $1 +" is not a scalar value.");
+      error("Variable " + $1 +" is not a scalar value.");
     }
   } else {
-    error(std::string("Variable ") + $1 + " is undefined.");
+    error("Variable " + $1 + " is undefined.");
   }
-  free($1);
 }
 ;
 
@@ -828,12 +817,11 @@ KEY_ABS LPAREN number RPAREN { $$ = std::fabs($3); }
     if (d.get_type() == Protracer::Declaration::OBJECT) {
       $$ = d.get_object()->is_inside($5);
     } else {
-      error(std::string("Variable ") + $3 + " is not an object value.");
+      error("Variable " + $3 + " is not an object value.");
     }
   } else {
-    error(std::string("Variable ") + $3 + " is undefined.");
+    error("Variable " + $3 + " is undefined.");
   }
-  free($3);
 }
 ;
 
@@ -948,12 +936,11 @@ number COMMA number RANGLE {
     } else if (d.get_type() == Protracer::Declaration::SCALAR) {
       $$ = Protracer::Vector(d.get_scalar());
     } else {
-      error(std::string("Variable ") + $1 + " is not a vector value.");
+      error("Variable " + $1 + " is not a vector value.");
     }
   } else {
-    error(std::string("Variable ") + $1 + " is undefined.");
+    error("Variable " + $1 + " is undefined.");
   }
-  free($1);
 } 
 | number_promotable_to_vector {
   $$ = Protracer::Vector($1);
@@ -977,12 +964,11 @@ number COMMA number RANGLE {
     if (d.get_type() == Protracer::Declaration::OBJECT) {
       $$ = d.get_object()->get_max_extent();
     } else {
-      error(std::string("Variable ") + $3 + " is not an object value.");
+      error("Variable " + $3 + " is not an object value.");
     }
   } else {
-    error(std::string("Variable ") + $3 + " is undefined.");
+    error("Variable " + $3 + " is undefined.");
   }
-  free($3);
 }
 | KEY_MIN_EXTENT LPAREN NAME RPAREN {
   if (Protracer::Declaration::is_defined($3)) {
@@ -991,12 +977,11 @@ number COMMA number RANGLE {
     if (d.get_type() == Protracer::Declaration::OBJECT) {
       $$ = d.get_object()->get_min_extent();
     } else {
-      error(std::string("Variable ") + $3 + " is not an object value.");
+      error("Variable " + $3 + " is not an object value.");
     }
   } else {
-    error(std::string("Variable ") + $3 + " is undefined.");
+    error("Variable " + $3 + " is undefined.");
   }
-  free($3);
 }
 ;
 
@@ -1028,45 +1013,36 @@ logical: number EQ number { $$ = $1 == $3; }
 declaration:
 DIRECTIVE_DECLARE NAME EQ number SEMICOLON {
   Protracer::Declaration::add_global_declaration(Protracer::Declaration($2, $4));
-  free($2);
 }
 | DIRECTIVE_DECLARE NAME EQ vector SEMICOLON {
   Protracer::Declaration::add_global_declaration(Protracer::Declaration($2, $4));
-  free($2);
 }
 | DIRECTIVE_DECLARE NAME EQ color SEMICOLON {
   Protracer::Declaration::add_global_declaration(Protracer::Declaration($2, $4));
-  free($2);
 }
 | DIRECTIVE_DECLARE NAME EQ finish opt_semicolon {
   Protracer::Declaration::add_global_declaration(Protracer::Declaration($2, $4));
-  free($2);
 }
 | DIRECTIVE_DECLARE NAME EQ pigment opt_semicolon {
   Protracer::Declaration::add_global_declaration(Protracer::Declaration($2, $4));
-  free($2);
 }
 | DIRECTIVE_DECLARE NAME EQ camera opt_semicolon {
   Protracer::Declaration::add_global_declaration(
 			  Protracer::Declaration($2,
 						 global_camera));
-  free($2);
 }
 | DIRECTIVE_DECLARE NAME EQ light opt_semicolon {
   Protracer::Declaration::add_global_declaration(
 			  Protracer::Declaration($2, *$4));
-  free($2);
   delete $4;
 }
 | DIRECTIVE_DECLARE NAME EQ object opt_semicolon {
   Protracer::Declaration::add_global_declaration(Protracer::Declaration($2, $4));
-  free($2);
 }
 | DIRECTIVE_DECLARE NAME EQ KEY_TRANSFORM LBRACE transformations RBRACE 
   opt_semicolon {
   Protracer::Declaration::add_global_declaration(Protracer::Declaration($2,
 				  new Protracer::ComposedTransformation($6)));
-  free($2);
 }
 ;
 
@@ -1079,7 +1055,7 @@ DIRECTIVE_UNDEF NAME {
   if (Protracer::Declaration::is_defined($2)) {
     Protracer::Declaration::remove_global_declaration($2);
   } else {
-    error("variable " + std::string($2) + " is not defined.");
+    error("variable " + $2 + " is not defined.");
   }
 }
 ;
