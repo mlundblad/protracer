@@ -267,8 +267,12 @@ item: object { global_scene->add_object($1); }
 
 light: KEY_LIGHT LBRACE vector transformations_opt RBRACE {
   $$ = new Protracer::Light($3);
-  std::for_each($4->begin(), $4->end(), Protracer::Transformation::Applier($$));
-  std::for_each($4->begin(), $4->end(), Protracer::Transformation::Deleter());
+
+  for (auto transformation : *$4) {
+    transformation->apply($$);
+    delete transformation;
+  }
+
   delete $4;
 }
 | KEY_LIGHT LBRACE NAME transformations_opt RBRACE {
@@ -277,23 +281,30 @@ light: KEY_LIGHT LBRACE vector transformations_opt RBRACE {
     
     if (d.get_type() == Protracer::Declaration::LIGHT) {
       $$ = new Protracer::Light(d.get_light());
-      std::for_each($4->begin(), $4->end(),
-		    Protracer::Transformation::Applier($$));
-      std::for_each($4->begin(), $4->end(),
-		    Protracer::Transformation::Deleter());
+      
+      for (auto transformation : *$4) {
+	transformation->apply($$);
+	delete transformation;
+      }
+
       delete $4;
     } else {
-      std::for_each($4->begin(), $4->end(),
-		    Protracer::Transformation::Deleter());
+      for (auto transformation : *$4) {
+	delete transformation;
+      }
+
       delete $4;
       error(std::string("Variable ") + $3 + " is not a camera.");
     }
   } else {
-    std::for_each($4->begin(), $4->end(), Protracer::Transformation::Deleter());
+    for (auto transformation : *$4) {
+      delete transformation;
+    }
+
     delete $4;
     error(std::string("Variable ") + $3 + " is undefined.");
   }
-  
+
   free($3);
 }
 ;
@@ -311,23 +322,30 @@ object: sphere { $$ = $1; }
     if (d.get_type() == Protracer::Declaration::OBJECT) {
       $$ = d.get_object()->copy();
       
-      std::for_each($4->begin(), $4->end(),
-		    Protracer::ObjectModification::Applier($$));
-      std::for_each($4->begin(), $4->end(),
-		    Protracer::ObjectModification::Deleter());
+      for (auto object_mod : *$4) {
+	object_mod->apply($$);
+	delete object_mod;
+      }
+
       delete $4;
     } else {
-      std::for_each($4->begin(), $4->end(),
-		    Protracer::ObjectModification::Deleter());
+      for (auto object_mod : *$4) {
+	delete object_mod;
+      }
+
       delete $4;
       error(std::string("Variable ") + $3 + std::string(" is not an object."));
     }
   } else {
-    std::for_each($4->begin(), $4->end(),
-		  Protracer::ObjectModification::Deleter());
+    for (auto object_mod : *$4) {
+      delete object_mod;
+    }
+
     delete $4;
     error(std::string("Variable ") + $3 + std::string(" is not defined."));
   }
+
+  free($3);
 }
 ;
 
@@ -338,10 +356,11 @@ plane:
 	RBRACE {
 	  $$ = new Protracer::Plane($3, Protracer::Vector(0, 0, $5));
 
-	  std::for_each($6->begin(), $6->end(),
-			Protracer::ObjectModification::Applier($$));
-	  std::for_each($6->begin(), $6->end(),
-			Protracer::ObjectModification::Deleter());
+	  for (auto object_mod : *$6) {
+	    object_mod->apply($$);
+	    delete object_mod;
+	  }
+
 	  delete $6;
 	}
         ;
@@ -354,10 +373,11 @@ plane:
 	RBRACE {
 	  $$ = new Protracer::Plane($5, $3);
 
-	  std::for_each($6->begin(), $6->end(),
-			Protracer::ObjectModification::Applier($$));
-	  std::for_each($6->begin(), $6->end(),
-			Protracer::ObjectModification::Deleter());
+	  for (auto object_mod : *$6) {
+	    object_mod->apply($$);
+	    delete object_mod;
+	  }
+
 	  delete $6;
 	}
 	;
@@ -368,10 +388,11 @@ sphere:
 	RBRACE {
 	  $$ = new Protracer::Sphere($3, $5, $6.pole, $6.equator);
 
-	  std::for_each($7->begin(), $7->end(),
-			Protracer::ObjectModification::Applier($$));
-	  std::for_each($7->begin(), $7->end(),
-			Protracer::ObjectModification::Deleter());
+	  for (auto object_mod : *$7) {
+	    object_mod->apply($$);
+	    delete object_mod;
+	  }
+
 	  delete $7;
 	}
 	;
@@ -399,10 +420,11 @@ triangle:
 	RBRACE { 
 	  $$ = new Protracer::Triangle($3, $5, $7);
 
-	  std::for_each($8->begin(), $8->end(),
-			Protracer::ObjectModification::Applier($$));
-	  std::for_each($8->begin(), $8->end(),
-			Protracer::ObjectModification::Deleter());
+	  for (auto object_mod : *$8) {
+	    object_mod->apply($$);
+	    delete object_mod;
+	  }
+
 	  delete $8;
 	}
         ;
@@ -418,10 +440,11 @@ triangle:
 	RBRACE {
 	  $$ = new Protracer::Triangle($3, $5, $7, true);
 
-	  std::for_each($8->begin(), $8->end(),
-			Protracer::ObjectModification::Applier($$));
-	  std::for_each($8->begin(), $8->end(),
-			Protracer::ObjectModification::Deleter());
+	  for (auto object_mod : *$8) {
+	    object_mod->apply($$);
+	    delete object_mod;
+	  }
+	    
 	  delete $8;
 	}
 	;
@@ -436,10 +459,11 @@ disc:
     RBRACE {
       $$ = new Protracer::Disc($3, $5, $7, $8);
 
-      std::for_each($9->begin(), $9->end(),
-		    Protracer::ObjectModification::Applier($$));
-      std::for_each($9->begin(), $9->end(),
-		    Protracer::ObjectModification::Deleter());
+      for (auto object_mod : *$9) {
+	object_mod->apply($$);
+	delete object_mod;
+      }
+
       delete $9;
     };
 
@@ -451,10 +475,11 @@ box:
    RBRACE {
      $$ = new Protracer::Box($3, $5);
 
-     std::for_each($6->begin(), $6->end(),
-		   Protracer::ObjectModification::Applier($$));
-     std::for_each($6->begin(), $6->end(),
-		   Protracer::ObjectModification::Deleter());
+     for (auto object_mod : *$6) {
+       object_mod->apply($$);
+       delete object_mod;
+     }
+
      delete $6;
    };
 
@@ -464,18 +489,18 @@ union:
   object_mods
   RBRACE {
     $$ = new Protracer::Union;
-    
-    for (std::list<Protracer::Object*>::iterator it = $3->begin() ;
-	 it != $3->end() ; it++) {
-      $$->add_object(*it);
-    }
+  
+  for (auto object : *$3) {
+    $$->add_object(object);
+  }
 
-    std::for_each($4->begin(), $4->end(),
-		  Protracer::ObjectModification::Applier($$));
-    std::for_each($4->begin(), $4->end(),
-		   Protracer::ObjectModification::Deleter());
-    delete $3;
-  };
+  for (auto object_mod : *$4) {
+    object_mod->apply($$);
+    delete object_mod;
+  }
+  
+  delete $3;
+};
 
 opt_hole: {
   // empty
@@ -691,9 +716,12 @@ RBRACE {
 		      global_parameters.get_world_height(),
 		      global_parameters.get_pixel_width(),
 		      global_parameters.get_pixel_height());
-  std::for_each($9->begin(), $9->end(),
-		Protracer::Transformation::Applier(&global_camera));
-  std::for_each($9->begin(), $9->end(), Protracer::Transformation::Deleter());
+
+  for (auto transformation : *$9) {
+    transformation->apply(&global_camera);
+    delete transformation;
+  }
+
   global_scene->set_camera(global_camera);
   delete $9;
 }
@@ -703,17 +731,27 @@ RBRACE {
     
     if (d.get_type() == Protracer::Declaration::CAMERA) {
       global_camera = d.get_camera();
-      std::for_each($4->begin(), $4->end(),
-		    Protracer::Transformation::Applier(&global_camera));
-      std::for_each($4->begin(), $4->end(),
-		    Protracer::Transformation::Deleter());
+
+      for (auto transformation : *$4) {
+	transformation->apply(&global_camera);
+	delete transformation;
+      }
+
       global_scene->set_camera(global_camera);
       delete $4;
     } else {
+      for (auto transformation : *$4) {
+	delete transformation;
+      }
+
       delete $4;
       error(std::string("Variable ") + $3 + " is not a camera.");
     }
   } else {
+    for (auto transformation : *$4) {
+      delete transformation;
+    }
+
     delete $4;
     error(std::string("Variable ") + $3 + " is undefined.");
   }

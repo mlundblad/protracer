@@ -30,22 +30,6 @@ namespace Protracer {
     virtual void apply(Item* item) const = 0;
     virtual void apply(Object* o) const { apply(static_cast<Item*> (o)); }
     virtual Transformation* copy() const = 0;
-
-    class Applier {
-    public:
-      Applier(Item* item) : item(item) {}
-      
-      void operator() (const Transformation* t) { t->apply(item); }
-      
-    private:
-      Item* item;
-    };
-
-    class Deleter {
-    public:
-      void operator() (Transformation* t) { delete t; }
-    };
-
   };
 }
 
