@@ -799,11 +799,11 @@ vector DOT KEY_X {
 number_function:
 KEY_ABS LPAREN number RPAREN { $$ = std::fabs($3); }
 | KEY_ACOS LPAREN number RPAREN { $$ = std::acos($3); }
-| KEY_ACOSH LPAREN number RPAREN { $$ = acoshf($3); }
+| KEY_ACOSH LPAREN number RPAREN { $$ = std::acosh($3); }
 | KEY_ASIN LPAREN number RPAREN { $$ = std::asin($3); }
 | KEY_ASINH LPAREN number RPAREN { $$ = std::asinhf($3); }
 | KEY_ATAN LPAREN number RPAREN { $$ = std::atan($3); }
-| KEY_ATANH LPAREN number RPAREN { $$ = std::atanhf($3); }
+| KEY_ATANH LPAREN number RPAREN { $$ = std::atanh($3); }
 | KEY_ATAN2 LPAREN number COMMA number RPAREN { $$ = std::atan2($3, $5); }
 | KEY_CEIL LPAREN number RPAREN { $$ = std::ceil($3); } 
 | KEY_COS LPAREN number RPAREN { $$ = std::cos($3); }
