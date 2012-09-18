@@ -23,10 +23,8 @@
  */
 
 #include <vector>
-#include <iostream>
 #include <sstream>
 #include <cmath>
-#include <cstdio>
 
 #include "scene.h"
 #include "vector.h"
