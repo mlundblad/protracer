@@ -60,11 +60,9 @@ namespace Protracer {
   {
     HitCalculation hc;
     float nearest = std::numeric_limits<float>::infinity();
-    Object* hit_object = 0;
+    const Object* hit_object = nullptr;
 
-    for (std::vector<Object*>::const_iterator it = objects.begin() ;
-	 it != objects.end() ; it++) {
-      Object* o = *it;
+    for (const Object* o : objects) {
       HitCalculation hc2 = o->calculate_hit(ray);
 
       if (hc2.is_hit() && hc2.get_distance() <= nearest) {
@@ -97,9 +95,8 @@ namespace Protracer {
     float max_y = -std::numeric_limits<float>::infinity();
     float max_z = -std::numeric_limits<float>::infinity();
 
-    for (std::vector<Object*>::const_iterator it = objects.begin() ;
-	 it != objects.end() ; it++) {
-      const Vector ext = (*it)->get_max_extent();
+    for (const Object* o : objects) {
+      const Vector ext = o->get_max_extent();
 
       if (max_x < ext.get_x())
 	max_x = ext.get_x();
@@ -119,9 +116,8 @@ namespace Protracer {
     float min_y = std::numeric_limits<float>::infinity();
     float min_z = std::numeric_limits<float>::infinity();
 
-    for (std::vector<Object*>::const_iterator it = objects.begin() ;
-	 it != objects.end() ; it++) {
-      const Vector ext = (*it)->get_min_extent();
+    for (const Object* o : objects) {
+      const Vector ext = o->get_min_extent();
 
       if (min_x > ext.get_x())
 	min_x = ext.get_x();
@@ -137,9 +133,8 @@ namespace Protracer {
   bool
   Union::is_inside(const Vector& v) const
   {
-    for (std::vector<Object*>::const_iterator it = objects.begin() ;
-	 it != objects.end() ; it++) {
-      if ((*it)->is_inside(v))
+    for (const Object* o : objects) {
+      if (o->is_inside(v))
 	return true;
     }
 
@@ -149,18 +144,16 @@ namespace Protracer {
   void
   Union::translate(const Vector& v)
   {
-    for (std::vector<Object*>::iterator it = objects.begin() ;
-	 it != objects.end() ; it++) {
-      (*it)->translate(v);
+    for (Object* o : objects) {
+      o->translate(v);
     }
   }
 
   void
   Union::rotate(const Vector& r)
   {
-    for (std::vector<Object*>::iterator it = objects.begin() ;
-	 it != objects.end() ; it++) {
-      (*it)->rotate(r);
+    for (Object* o : objects) {
+      o->rotate(r);
     }
   }
 }
