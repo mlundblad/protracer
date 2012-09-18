@@ -62,7 +62,7 @@ namespace Protracer {
   Box::calculate_hit(const Ray& ray) const
   {
     // calculate hits for each surface
-    HitCalculation hcs[6] = {calculate_hit(ray, front_plane, bottom_front_left,
+    HitCalculation hcs[] = {calculate_hit(ray, front_plane, bottom_front_left,
                                            up, right),
                              calculate_hit(ray, back_plane, bottom_back_left,
                                            up, right),
@@ -79,12 +79,12 @@ namespace Protracer {
     float nearest = std::numeric_limits<float>::infinity();
 
     // collect the nearest hit
-    for (int i = 0 ; i < 6 ; i++) {
-      if (hcs[i].is_hit() && hcs[i].get_distance() < nearest) {
-        nearest = hcs[i].get_distance();
-        hc = hcs[i];
+    for (const HitCalculation& h : hcs) {
+      if (h.is_hit() && h.get_distance() < nearest) {
+        nearest = h.get_distance();
+        hc = h;
       }
-    } 
+    }
 
     return hc;
   }
