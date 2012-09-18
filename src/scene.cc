@@ -31,10 +31,7 @@ namespace Protracer {
 
   Scene::~Scene()
   {
-    for (std::vector<Object*>::iterator it = objects.begin() ;
-	 it != objects.end() ; it++) {
-      Object* o = *it;
-
+    for (Object* o : objects) {
       delete o;
     }
   }
@@ -50,10 +47,7 @@ namespace Protracer {
 
     HitCalculation     nearest_hit;
 
-    for(std::vector<Object*>::const_iterator it = objects.begin() ;
-	it != objects.end() ; it++) {
-      Object* o = *it;
-
+    for (const Object* o : objects) {
       HitCalculation hc = o->calculate_hit(ray);
 
       if (hc.is_hit()) {
@@ -79,19 +73,13 @@ namespace Protracer {
 			   nearest_hit.get_normal());
      } else {
       /* iterate over light sources */
-      for (std::vector<Light>::const_iterator it = lights.begin() ;
-	   it != lights.end() ; it++) {
-	const Light& l = *it;
-	
+      for (const Light& l : lights) {
 	Ray light_ray = Ray(hit_point + EPS * nearest_hit.get_normal(),
 			       l.get_position() -
 			       (hit_point + EPS * nearest_hit.get_normal()));
 	bool is_lit = true;
 
-	for (std::vector<Object*>::const_iterator it = objects.begin() ;
-	     it != objects.end() && is_lit ; it++) {
-	  Object* o = *it;
-	  
+        for (const Object* o : objects) {
 	  HitCalculation hc = o->calculate_hit(light_ray);
 	  
 	  if (hc.is_hit()) {
