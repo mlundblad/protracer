@@ -1,0 +1,37 @@
+
+background { color rgb <0.27,0.27,0.27> }
+
+camera {
+	location <-30,50,100>
+	sky <1,0,0>
+	look_at <-10,10,114>
+}
+
+
+light_source {
+	<10,0,50>
+}
+
+light_source {
+	<-20,70,50>
+}
+
+disc {
+     <0,-5,116>, <0, 1, -1>, 10, 2
+     pigment {
+     	     color rgb <0,0.20,0.80>
+     }
+     finish { diffuse 1 reflection 0.8 }
+}
+
+plane {
+	<-1,0,2>, 150
+	pigment {
+		color rgb <0.82,0.62,0.08>
+	}
+}
+
+
+
+
+

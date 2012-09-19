@@ -1,0 +1,30 @@
+#declare Sphere = sphere { 0, 3
+	 	  	   pigment { color rgb <0.6, 0.23, 0.23> }}
+#declare Triangle = triangle { 0, 10 * x + z, 10 * y
+	 	    	       pigment { color rgb <1, 1, 0> }}
+
+// declare a simple transformation moving an object 10 units right
+#declare Move10 = transform { translate 10 * x }
+
+// declare a composed transformation rotating an object 45 degrees 
+// counter-clockwise around the z-axis, moving it 10 units down
+// and finally rotate it 30 degrees clockwise around the x-axis
+#declare MoveAndRotate = transform { rotate <0,0,45>
+	 	       	 	     translate -10 * y
+	 			     rotate <-30,0,0> }
+
+background { color rgb <0.27, 0.27, 0.27> }
+
+camera {
+	location -50 * z
+	sky y
+	look_at z
+}
+
+light_source { -100 * z + 30 * x + 30 * y}
+
+object { Sphere }
+object { Sphere transform { Move10 } }
+object { Sphere translate -10 * x }
+object { Triangle translate 10 * y }
+object { Triangle transform { MoveAndRotate } }

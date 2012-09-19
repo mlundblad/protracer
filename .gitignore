@@ -17,10 +17,12 @@ Makefile.in
 *.tar.bz2
 *.tar.xz
 *.exe
+*.anjuta
 
 aclocal.m4
 autom4te.cache
 autoregen.sh
+autoscan.log
 config.guess
 config.h
 config.h.in
@@ -39,8 +41,8 @@ stamp-h.in
 stamp-h1
 ylwrap
 
-src/Baseparse.c
-src/Baseparse.h
-src/Baselex.c
-src/Baselex.h
+src/parser.cc
+src/parser.h
+src/lexer.cc
+src/lexer.h
 src/protracer

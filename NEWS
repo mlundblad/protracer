@@ -1,3 +1,81 @@
+version 2.7 "September" (2012-09-12)
+	* Enhanced scene description language:
+	  * Support declaring vectors using only two components,
+	    assuming z = 0.
+	  * Added support for declaring union objects (grouping several
+	    sub-objects together).
+	* Print an error message if the input file could not be read.
+
+version 2.6 "Trace outside the box" (2012-08-28)
+	* Enhanced scene description language:
+	  * Support new geometric object "box".
+	  * Added support for the function "inside" to determine if a point
+	    (vector) is located inside an object.
+
+version 2.5 "May-tracer" (2012-05-06)
+	* Bugfix: Fix rotation of discs working properly.
+	* Enhanced scene description language:
+	  * Added support for the functions max_extents and min_extents
+	    to get the bounding box coordinates (as vectors) of a declared
+	    object.
+
+version 2.4 "Springtracer" (2012-04-23)
+	* Enhanced scene description language:
+	  * Added numerical constants "image_width" and "image_height"
+	    set to the image width and height (in pixels).
+	  * Add support for moving and rotating light sources and cameras
+	    with the "translate" and "rotate" keywords.
+
+version 2.3 "Friday the 13th"(2012-04-13)
+	* If started interactively (i.e. not reading input from a pipe), print the
+	  usage help if no input file is given.
+	* Enhance scene description language:
+	  * Support the function "vaxis_rotate" to rotate a given vector around
+	    another vector describing an axis by a specified amount in degrees
+	    and the function "vrotate" to rotate a vector around each of the
+	    axis (x, y, and z) by the amount specified by the second vector
+	    argument.
+	  * Support moving objects with the "translate" keyword.
+	  * Support rotating objects with the "rotate" keyword.
+	  * Support declaring and using transformation variables.
+
+version 2.2 "March" (2012-03-19)
+	* Enhance scene description language:
+	  * Support declaring variables hold scalar values, vectors, colors,
+	    pigments, finishes, cameras, light sources, and objects.
+	  * Support modifying the pigment and finish of an object
+	    (for intantiating an object from a declared variable).
+	  * Support arithmetic and logical operators on vector expressions.
+
+version 2.1 "Two Candles" (2011-12-04)
+	* Enhance scene description language:
+	  * Support specifying floating point literal values in scientific
+	    notation.
+	  * Support basic arithmetic operators (+-*/) for floating point
+	    expressions.
+	  * Support the following built-in functions for floating point values:
+	    abs, acos, asin, asinh, atan, atanh, ceil, cos, cosh, degrees, div,
+	    exp, floor, int, ln, log, max, min, mod, pow, radians, select, sin,
+	    sinh, tan, tanh.
+	  * Support floating point constants: false, no, off (=0),
+	    on, true, yes (=1) and pi.
+	  * Support logical operators =,!=,<,<=,>,>=,& (and) ,| (or),! (not).
+	  * Support the conditional ternary operator (expr ? val1 : val2)
+	    for floating point and vector values.
+	  * Support the basic arithmetic operators +,- for vector expressions.
+	  * Support the following built-in functions for vector values:
+	    vcross, vdot, vlength, vnormalize.
+	  * Support built-in vector constants x,y, and z for unit vectors in the
+	    respective dimensions.
+	  * Support casting a floating point value to a vector
+	    (with all elements set to that value, for example 0 to specify
+	    origo).
+	* Support the new geometric object "disc" (only using single-color
+	  pigment for now).
+
+version 2.0 (2011-10-26)
+	* Re-written in C++.
+
 version 1.0 (2011-07-01)
 	* Switch to using automake for building.
 	* Fix building on Windows.

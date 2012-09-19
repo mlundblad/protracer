@@ -1,0 +1,14 @@
+// camera located at origo
+camera { location 0 sky y look_at z }
+
+// light source
+light_source { -100 * z }
+
+// define a disc located in the "inward" direction
+#declare Disc = disc { 100 * z, z, 10 pigment { color rgb <0.6, 0.23, 0.23> }}
+
+// place two spheres based on the disc's bounding box
+sphere { <0, max_extent(Disc).y + 10, 100>, 10 pigment { color rgb <1, 0, 0> }}
+sphere { <0, min_extent(Disc).y - 10, 100>, 10 pigment { color rgb <0, 1, 0> }}
+
+object { Disc }

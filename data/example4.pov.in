@@ -1,0 +1,40 @@
+
+#declare Radius = 9;
+#declare Background = color rgb <0.27,0.27,0.27>; 
+#declare Camera_location = <-30,50,100>;
+#declare Disc_finish = finish { diffuse 0.8 reflection 0 }
+#declare Blueish = pigment { color rgb <0,0.20,0.80> }
+#declare Disc = disc { <0,-5,116>, y - z, Radius, 2 }
+#declare Light = light_source {
+	<10,0,50>
+}
+
+
+
+background { Background }
+
+camera {
+	location Camera_location
+	sky x
+	look_at <-10,10,114>
+}
+
+
+light_source { Light }
+
+light_source {
+	<-20,70,50>
+}
+
+object { Disc pigment { Blueish } finish { Disc_finish }  } 
+
+plane {
+	<-1,0,2>, 150
+	pigment {
+		color rgb <0.82,0.62,0.08>
+	}
+}
+
+
+
+

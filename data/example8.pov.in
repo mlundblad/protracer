@@ -1,0 +1,15 @@
+// camera located at origo
+camera { location 0 sky y look_at z }
+
+// light source
+light_source { -100 * z }
+
+// define a box located in the "inward" direction
+#declare Box = box { -10 * x - 10 * y - 10 * z,
+	       	    10 * x + 10 * y + 10 * z
+		    pigment { color rgb <0.6, 0.23, 0.23> }}
+
+object { Box translate z * 100 }
+object { Box rotate y * 45 translate z * 100 + x * 30 }
+object { Box rotate y * 45 rotate x * 30 translate z * 100 - x * 30 }
+

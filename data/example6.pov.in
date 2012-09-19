@@ -1,0 +1,24 @@
+#declare Sphere = sphere { 0, 3
+	 	  	   pigment { color rgb <0.6, 0.23, 0.23> }}
+
+// place a template light far to the right
+#declare Light = light_source { 100 * x }
+
+background { color rgb <0.27, 0.27, 0.27> }
+
+camera {
+	location -50 * z
+	sky y
+	look_at z
+}
+
+// place lights 60 degrees apart illuminating the scene
+light_source { Light }
+light_source { Light rotate 60 * y }
+light_source { Light rotate 120 * y }
+light_source { Light rotate 180 * y }
+
+object { Sphere }
+object { Sphere translate 10 * x }
+object { Sphere translate -10 * x }
+
