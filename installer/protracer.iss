@@ -9,7 +9,7 @@ AppName={#APPNAME}
 AppVersion={#APPVERS}
 AppVerName={#APPNAME} {#APPVERS}
 OutputBaseFileName={#APPNAME}-{#APPVERS}-setup
-DefaultDirName={pf}\{#APPNAME} {#APPVERS}
+DefaultDirName={pf}\{#APPNAME}
 DefaultGroupName={#APPNAME}
 ;PrivilegesRequired=admin
 AppCopyright=Copyright © 1999 - 2012 Marcus Lundblad
@@ -81,7 +81,7 @@ Name: Malay; MessagesFile: compiler:Malaysian-2-5.1.0.isl
 Source: website.url; DestDir: {app}
 Source: ..\ChangeLog; DestDir: {app}
 Source: ..\src\{#APPNAME}.exe; DestDir: {app}; Flags: ignoreversion
-Source: {MINGW}\mingwm10.dll; DestDir: {app}; Flags: ignoreversion
+Source: {#MINGW}\mingwm10.dll; DestDir: {app}; Flags: ignoreversion
 
 [Tasks]
 Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
