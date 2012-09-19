@@ -23,18 +23,16 @@ namespace Protracer {
 
   ComposedTransformation::~ComposedTransformation()
   {
-    for (std::list<Transformation*>::iterator it = transformations.begin() ;
-	 it != transformations.end() ; it++) {
-      delete *it;
+    for (Transformation* t : transformations) {
+      delete t;
     }
   }
 
   void
   ComposedTransformation::apply(Item* item) const
   {
-    for (std::list<Transformation*>::const_iterator it = transformations.begin() ;
-	 it != transformations.end() ; it++) {
-      (*it)->apply(item);
+    for (const Transformation* t : transformations) {
+      t->apply(item);
     }
   }
 
@@ -43,9 +41,8 @@ namespace Protracer {
   {
     std::list<Transformation*> trans;
 
-    for (std::list<Transformation*>::const_iterator it = transformations.begin() ;
-	 it != transformations.end() ; it++) {
-      trans.push_back((*it)->copy());
+    for (const Transformation* t : transformations) {
+      trans.push_back(t->copy());
     }
 
     return new ComposedTransformation(trans);

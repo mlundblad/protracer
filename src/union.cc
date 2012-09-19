@@ -25,9 +25,8 @@ namespace Protracer {
 
   Union::~Union()
   {
-    for (std::vector<Object*>::iterator it = objects.begin() ;
-	 it != objects.end() ; it++) {
-      delete *it;
+    for (Object* o : objects) {
+      delete o;
     }
   }
 
@@ -42,9 +41,8 @@ namespace Protracer {
   {
     Union* result = new Union;
     
-    for (std::vector<Object*>::const_iterator it = objects.begin() ;
-	 it != objects.end() ; it++) {
-      result->add_object((*it)->copy());
+    for (const Object* o : objects) {
+      result->add_object(o->copy());
     }
     
     if (has_custom_pigment())
