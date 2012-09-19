@@ -9,18 +9,18 @@ AppName={#APPNAME}
 AppVersion={#APPVERS}
 AppVerName={#APPNAME} {#APPVERS}
 OutputBaseFileName={#APPNAME}-{#APPVERS}-setup
-DefaultDirName={pf}\{#APPNAME} {#APPVERS}
+DefaultDirName={pf}\{#APPNAME}
 DefaultGroupName={#APPNAME}
 ;PrivilegesRequired=admin
 AppCopyright=Copyright © 1999 - 2012 Marcus Lundblad
 AppPublisher=Marcus Lundblad
 AppPublisherURL=https://github.com/mlundblad/protracer
 OutputDir=.
-LicenseFile=..\LICENCE
+;LicenseFile=..\LICENCE
 RestartIfNeededByRun=false
 UsePreviousUserInfo=false
 ChangesAssociations=true
-WizardImageFile=installer-image.bmp
+;WizardImageFile=installer-image.bmp
 Compression=lzma/ultra
 SolidCompression=yes
 ;AlwaysRestart=yes
@@ -79,9 +79,9 @@ Name: Malay; MessagesFile: compiler:Malaysian-2-5.1.0.isl
 
 [Files]
 Source: website.url; DestDir: {app}
-Source: ..\ChangeLog.txt; DestDir: {app}
+Source: ..\ChangeLog; DestDir: {app}
 Source: ..\src\{#APPNAME}.exe; DestDir: {app}; Flags: ignoreversion
-Source: {MINGW}\mingwm10.dll; DestDir: {app}; Flags: ignoreversion
+Source: {#MINGW}\mingwm10.dll; DestDir: {app}; Flags: ignoreversion
 
 [Tasks]
 Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}; Flags: unchecked
@@ -96,10 +96,8 @@ Name: {commondesktop}\{#APPNAME} {#APPVERS}; Filename: {app}\{#APPNAME}.exe; Tas
 [Run]
 Filename: {app}\{#APPNAME}.exe; Description: {cm:LaunchProgram,{#APPNAME}}; Flags: nowait postinstall skipifsilent unchecked
 
-[Registry]
-Root: HKLM; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment";
-    ValueType: expandsz; ValueName: "Path"; ValueData: "{olddata};{app};
-    Check: NeedsAddPath({app})
+;[Registry]
+;Root: HKLM; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; ValueType: expandsz; ValueName: "Path"; ValueData: "{olddata};{app};"; Check: NeedsAddPath({app})
 
 [Code]
 function NeedsAddPath(Param: string): boolean;
