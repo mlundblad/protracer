@@ -5,6 +5,6 @@ do
 	filename=$(basename "$f")
 	extension="${filename##*.}"
 	filename="${filename%.*}"
-	echo "../src/protracer.exe --output=$filename.ppm $f"
-	../src/protracer --output="$filename.ppm" "../data/$f"
+	echo "../src/protracer --output=$filename.ppm $f"
+	../src/protracer --output="$filename.ppm" "$f"
 done
