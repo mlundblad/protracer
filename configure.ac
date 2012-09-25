@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.59])
-AC_INIT([protracer], [2.8], [ml@update.uu.se])
+AC_INIT([protracer], [2.9devel], [ml@update.uu.se])
 AC_CONFIG_SRCDIR([src])
 AC_CONFIG_HEADERS([config.h])
 
