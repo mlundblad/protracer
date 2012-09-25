@@ -1,3 +1,6 @@
+version 2.8 "Oktoberfest" (2012-09-25)
+	* Added test script.
+
 version 2.7 "September" (2012-09-12)
 	* Enhanced scene description language:
 	  * Support declaring vectors using only two components,
