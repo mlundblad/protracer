@@ -30,9 +30,9 @@ Test script:
 Protracer comes with a test script.
 To run the test script you would first need to run "make" from the source
 directory.
-Then run the test script from the "test" directory:
+Then run the test script from the "tests" directory:
 
-cd test
+cd tests
 ./tests.sh
 
 This will produce PPM image files for all the examples included with the source.
