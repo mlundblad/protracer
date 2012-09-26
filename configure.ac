@@ -17,6 +17,9 @@ AC_PROG_LEX
 AC_LANG([C++])
 AX_CXX_COMPILE_STDCXX_11
 
+# TODO: check for pthreads support...
+CXXFLAGS="$CXXFLAGS -pthread"
+
 # Checks for libraries.
 # FIXME: Replace `main' with a function in `-lfl':
 AC_CHECK_LIB([fl], [main])

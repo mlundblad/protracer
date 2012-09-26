@@ -25,6 +25,7 @@
 
 #include <iostream>
 #include <vector>
+#include <thread>
 
 #include "config.h"
 #include "bitmap.h"
@@ -64,19 +65,26 @@ parse(FILE *input, Protracer::Scene& scene, const Protracer::Parameters& params)
 }
 
 void
-trace(const Protracer::Scene& scene, Protracer::Bitmap& bitmap, int xpix, int ypix,
+trace(const Protracer::Scene* scene, Protracer::Bitmap* bitmap,
+      int thread_id, int num_threads, int xpix, int ypix,
       int reflectionDepth, bool no_shadow_no_reflection, bool quiet)
 {
-  int x,y;
+  int y;
+  Protracer::Bitmap& bm = *bitmap;
   
-  for (y = 0 ; y < ypix ; y++ ) {
-    for (x = 0 ; x < xpix ; x++ ) {
-      bitmap(x, y) = scene.color_of_pixel(x, y, reflectionDepth,
-                                          no_shadow_no_reflection);
+  std::cerr << "Running thread #" << thread_id << std::endl;
+
+  for (y = thread_id ; y < ypix ; y += num_threads) {
+    for (int x = 0 ; x < xpix ; x++ ) {
+      bm(x, y) = scene->color_of_pixel(x, y, reflectionDepth,
+                                       no_shadow_no_reflection);
     }
-    if (!quiet)
+
+    if (!quiet && thread_id == 0)
       std::cerr << (int)((float)y/(float)ypix * 100) << "%\r";
   }
+
+  std::cerr << "Thread #" << thread_id << " finished." << std::endl;
 }
 
 static void usage()
@@ -112,6 +120,10 @@ static void usage()
 	    << "print version information" << std::endl
             << "   -q, --quiet                               "
 	    << "don't print a progress meter" << std::endl
+            << "   -t, --threads                             "
+            << "number of threads to run" << std::endl
+            << "                                             "
+            << "(defaults to the number of CPU cores)" << std::endl
             << std::endl
             << "If input is redirected (piped) to the program "
             << "no input file is required to be"
@@ -146,6 +158,7 @@ int main(int argc, char **argv)
     long        errflg = 0;
     long        reflection_depth = 5;
     bool        quiet = false;
+    int num_threads = 0;
 
     Protracer::PPMFile     ppm_out;
     std::string out_file;
@@ -164,10 +177,11 @@ int main(int argc, char **argv)
 	{"help", no_argument, 0, '?'},
 	{"version", no_argument, 0, 'v'},
 	{"quiet", no_argument, 0, 'q'},
+        {"threads", required_argument, 0, 't'},
 	{0, 0, 0, 0}
       };
 
-    while ((c = getopt_long(argc, argv, "qnr:z:x:y:w:h:e:o:", long_options,
+    while ((c = getopt_long(argc, argv, "qnr:z:x:y:w:h:e:o:t:", long_options,
 			    &opt_ind) ) != EOF ) {
       switch (c) {
 	    case 'n':
@@ -233,6 +247,12 @@ int main(int argc, char **argv)
 	    case 'q':
 	        quiet = true;
 		break;
+            case 't':
+              if (!optarg)
+                usage_and_exit();
+
+              num_threads = atoi(optarg);
+              break;
 	}
     }
     
@@ -289,8 +309,32 @@ int main(int argc, char **argv)
       /* Start the tracing */      
       Protracer::Bitmap result = Protracer::Bitmap(xpix, ypix);
       
-      trace(scene, result, xpix, ypix, reflection_depth,
-            no_shadow_no_reflection, quiet);
+      // if number of threads wasn't manually set, try to base on
+      // number of physical cores
+      if (num_threads == 0) {
+        num_threads = std::thread::hardware_concurrency();
+        if (num_threads == 0) {
+          num_threads = 1;
+        }
+
+        if (!quiet) {
+          std::cerr << "Using " << num_threads << " threads." << std::endl;
+        }
+      }
+
+      std::vector<std::thread> threads;
+
+      for (int thread_id = 0 ; thread_id < num_threads ; thread_id++) {
+        std::cerr << "Creating thread " << thread_id << std::endl;
+        threads.emplace_back(trace, &scene, &result, 
+                             thread_id, num_threads,xpix, ypix,
+                             reflection_depth,
+                             no_shadow_no_reflection, quiet);
+      }
+
+      for (std::thread& thread : threads) {
+        thread.join();
+      }
 
       if (!quiet)
         std::cerr << "100%- done!" << std::endl;
