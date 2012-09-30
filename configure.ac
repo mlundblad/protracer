@@ -18,7 +18,15 @@ AC_LANG([C++])
 AX_CXX_COMPILE_STDCXX_11
 
 # TODO: check for pthreads support...
-AC_CHECK_LIB([pthread], [pthread_create])
+
+AC_ARG_ENABLE([threads],
+    AS_HELP_STRING([--disable-threads], [Disable threads (default: enabled)]))
+
+AS_IF([test "x$enable_threads" != "xno"], [
+  AC_CHECK_LIB([pthread], [pthread_create], [enable_threads=yes
+					     AC_DEFINE(USE_THREADS, 1, [Use multitrheading])],
+					     enable_threads=no)
+])
 
 # Checks for libraries.
 # FIXME: Replace `main' with a function in `-lfl':
@@ -36,3 +44,9 @@ AC_CONFIG_FILES([Makefile
 		data/Makefile
 		src/Makefile])
 AC_OUTPUT
+
+echo "
+
+Configuration:
+	Thread support: $enable_threads
+"
