@@ -20,12 +20,14 @@ AX_CXX_COMPILE_STDCXX_11
 # TODO: check for pthreads support...
 
 AC_ARG_ENABLE([threads],
-    AS_HELP_STRING([--disable-threads], [Disable threads (default: enabled)]))
+    AS_HELP_STRING([--disable-threads], [Disable threads (default: enabled)]),
+    ,
+    enable_threads=yes)
 
 AS_IF([test "x$enable_threads" != "xno"], [
   AC_CHECK_LIB([pthread], [pthread_create],
-	       [AC_SUBST(AM_CXXFLAGS,-pthread),
-		AC_DEFINE(USE_THREADS, 1, [Use multitrheading])],
+	       [AC_SUBST(AM_CXXFLAGS,-pthread)
+		AC_DEFINE(USE_THREADS, 1, [Use multithreading])],
 		[enable_threads=no])
 ])
 
