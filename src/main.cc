@@ -17,6 +17,10 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <stdlib.h>
 #include <getopt.h>
 #include <unistd.h>
@@ -25,9 +29,10 @@
 
 #include <iostream>
 #include <vector>
+#ifdef USE_THREADS
 #include <thread>
+#endif
 
-#include "config.h"
 #include "bitmap.h"
 #include "ppm_file.h"
 #include "scene.h"
@@ -120,11 +125,13 @@ static void usage()
 	    << "print version information" << std::endl
             << "   -q, --quiet                               "
 	    << "don't print a progress meter" << std::endl
+#ifdef USE_THREADS
             << "   -t, --threads                             "
             << "number of threads to run" << std::endl
             << "                                             "
             << "(defaults to the number of CPU cores)" << std::endl
             << std::endl
+#endif
             << "If input is redirected (piped) to the program "
             << "no input file is required to be"
             << std::endl
@@ -158,7 +165,12 @@ int main(int argc, char **argv)
     long        errflg = 0;
     long        reflection_depth = 5;
     bool        quiet = false;
+    std::string opts = "qnr:z:x:y:w:h:e:o:";
+#ifdef USE_THREADS
     int num_threads = 0;
+    
+    opts += "t:";
+#endif
 
     Protracer::PPMFile     ppm_out;
     std::string out_file;
@@ -177,11 +189,13 @@ int main(int argc, char **argv)
 	{"help", no_argument, 0, '?'},
 	{"version", no_argument, 0, 'v'},
 	{"quiet", no_argument, 0, 'q'},
+#ifdef USE_THREADS
         {"threads", required_argument, 0, 't'},
+#endif
 	{0, 0, 0, 0}
       };
 
-    while ((c = getopt_long(argc, argv, "qnr:z:x:y:w:h:e:o:t:", long_options,
+    while ((c = getopt_long(argc, argv, opts.c_str(), long_options,
 			    &opt_ind) ) != EOF ) {
       switch (c) {
 	    case 'n':
@@ -247,12 +261,14 @@ int main(int argc, char **argv)
 	    case 'q':
 	        quiet = true;
 		break;
+#ifdef USE_THREADS
             case 't':
               if (!optarg)
                 usage_and_exit();
 
               num_threads = atoi(optarg);
               break;
+#endif
 	}
     }
     
@@ -308,7 +324,8 @@ int main(int argc, char **argv)
 
       /* Start the tracing */      
       Protracer::Bitmap result = Protracer::Bitmap(xpix, ypix);
-      
+    
+#ifdef USE_THREADS  
       // if number of threads wasn't manually set, try to base on
       // number of physical cores
       if (num_threads == 0) {
@@ -335,6 +352,10 @@ int main(int argc, char **argv)
       for (std::thread& thread : threads) {
         thread.join();
       }
+#else
+      trace(&scene, &result, 0, 1, xpix, ypix, reflection_depth,
+            no_shadow_no_reflection, quiet);
+#endif //USE_THREADS
 
       if (!quiet)
         std::cerr << "100%- done!" << std::endl;
