@@ -339,18 +339,24 @@ int main(int argc, char **argv)
         }
       }
 
-      std::vector<std::thread> threads;
-
-      for (int thread_id = 0 ; thread_id < num_threads ; thread_id++) {
-        std::cerr << "Creating thread " << thread_id << std::endl;
-        threads.emplace_back(trace, &scene, &result, 
-                             thread_id, num_threads,xpix, ypix,
-                             reflection_depth,
-                             no_shadow_no_reflection, quiet);
-      }
-
-      for (std::thread& thread : threads) {
-        thread.join();
+      if (num_threads == 1) {
+        // don't bother to create a thread when running single-threaded...
+        trace(&scene, &result, 0, 1, xpix, ypix, reflection_depth,
+              no_shadow_no_reflection, quiet);
+      } else {
+        std::vector<std::thread> threads;
+        
+        for (int thread_id = 0 ; thread_id < num_threads ; thread_id++) {
+          std::cerr << "Creating thread " << thread_id << std::endl;
+          threads.emplace_back(trace, &scene, &result, 
+                               thread_id, num_threads,xpix, ypix,
+                               reflection_depth,
+                               no_shadow_no_reflection, quiet);
+        }
+        
+        for (std::thread& thread : threads) {
+          thread.join();
+        }
       }
 #else
       trace(&scene, &result, 0, 1, xpix, ypix, reflection_depth,
