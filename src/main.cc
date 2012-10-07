@@ -267,6 +267,13 @@ int main(int argc, char **argv)
                 usage_and_exit();
 
               num_threads = atoi(optarg);
+
+              if (num_threads < 1) {
+                std::cerr << "Illegal value for number of threads: "
+                          << optarg << std::endl;
+                usage_and_exit();
+              }
+
               break;
 #endif
 	}
