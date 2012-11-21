@@ -1,3 +1,7 @@
+version 3.0 (20xx-xx-xx)
+        * Requires a C++11 compiler (such as g++ 4.7.x).
+	* Support for multithreading (compile-time option).
+
 version 2.8 "Oktoberfest" (2012-09-25)
 	* Added test script.
 
