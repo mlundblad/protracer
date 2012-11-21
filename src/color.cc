@@ -17,36 +17,17 @@
  *
  */
 
-#include "bitmap.h"
-
-#include <Magick++/Image.h>
+#include "color.h"
 
 namespace Protracer {
-  Bitmap::Bitmap(const std::string& path)
+  Color::Color(const Magick::Color& c)
   {
-    Magick::Image image(path);
-
-    width = image.columns();
-    height = image.rows();
-    pixels = new Color[width * height];
-
-    for (int x = 0 ; x < width ; x++) {
-      for (int y = 0 ; y < height ; y++) {
-        pixels[x + y * width] = Color(image.pixelColor(x, y));
-      }
-    }
-  }
-
-  Bitmap::Bitmap(unsigned int width, unsigned int height)
-  {
-    this->width = width;
-    this->height = height;
-    this->pixels = new Color[width * height];
-  }
-
-  Bitmap::~Bitmap()
-  {
-    delete [] pixels;
+    red = Magick::Color::scaleQuantumToDouble(c.redQuantum()) *
+      COMPONENT_MAX;
+    green = Magick::Color::scaleQuantumToDouble(c.greenQuantum()) *
+      COMPONENT_MAX;
+    blue = Magick::Color::scaleQuantumToDouble(c.blueQuantum()) *
+      COMPONENT_MAX;
   }
 
 }

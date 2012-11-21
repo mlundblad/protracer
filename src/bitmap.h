@@ -20,12 +20,15 @@
 #ifndef BITMAP_H
 #define BITMAP_H
 
+#include <string>
+
 #include "color.h"
 
 namespace Protracer {
   
   class Bitmap {
   public:
+    Bitmap(const std::string& path);
     Bitmap(unsigned int width, unsigned int height);
     ~Bitmap();
 

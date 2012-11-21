@@ -39,7 +39,6 @@
 #include "finish.h"
 #include "pigment.h"
 #include "bitmap.h"
-#include "ppm_file.h"
 
 #include "parameters.h"
 #include "declaration.h"
@@ -56,10 +55,6 @@
   Protracer::Parameters global_parameters;
   Protracer::Color      global_background;
   Protracer::Camera     global_camera;
-  Protracer::PPMFile    global_image_file;
-
-
-
 
 extern char *yytext;
 extern int linecount;
@@ -104,7 +99,6 @@ int yyerror(char *s);
 #include "bitmap_pigment.h"
 #include "color_pigment.h"
 #include "bitmap.h"
-#include "ppm_file.h"
 
 #include "parameters.h"
 
@@ -116,7 +110,6 @@ int yyerror(char *s);
   extern Protracer::Parameters global_parameters;
   extern Protracer::Color      global_background;
   extern Protracer::Camera     global_camera;
-  extern Protracer::PPMFile    global_image_file;
 
   struct SphereOptions {
     Protracer::Vector pole;
@@ -616,11 +609,8 @@ object_list:
 
                 
 image:	KEY_IMAGE LBRACE KEY_PPM STRING RBRACE {
-          global_image_file.open_in($4);
-	  $$ = global_image_file.read_bitmap();
-	  global_image_file.close();
-	}
-	;
+  $$ = new Protracer::Bitmap($4);
+};
 
 
 finish: KEY_FINISH LBRACE opt_diffuse opt_reflection RBRACE {
