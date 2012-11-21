@@ -36,6 +36,9 @@ AC_CHECK_LIB([fl], [main])
 # FIXME: Replace `main' with a function in `-lm':
 AC_CHECK_LIB([m], [main])
 
+# check for Magick++
+PKG_CHECK_MODULES(MAGICK, Magick++)
+
 # Checks for header files.
 AC_CHECK_HEADERS([stdlib.h string.h])
 
