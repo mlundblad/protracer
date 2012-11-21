@@ -1,5 +1,8 @@
 bin_PROGRAMS=protracer
 
+AM_CPPFLAGS=$(PROTRACER_CFLAGS)
+protracer_LDADD=$(PROTRACER_LIBS)
+
 protracer_SOURCES=bitmap.cc \
 	bitmap.h \
 	bitmap_pigment.cc \
