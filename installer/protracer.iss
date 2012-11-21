@@ -1,5 +1,5 @@
 #define APPNAME="protracer"
-#define APPVERS="2.9devel"
+#define APPVERS="3.0devel"
 #define LOGO="logo.png"
 #define MINGW="C:\MinGW\bin"
 
