@@ -171,7 +171,8 @@ int yyerror(char *s);
 %token KEY_RED KEY_GREEN KEY_BLUE
 %token KEY_LOCATION KEY_LOOK KEY_BACKGROUND
 %token KEY_CAMERA KEY_RGB KEY_SKY KEY_LIGHT
-%token KEY_PLANE KEY_PLANEPNT KEY_IMAGE KEY_PPM
+%token KEY_PLANE KEY_PLANEPNT KEY_IMAGE
+%token KEY_GIF KEY_IFF KEY_JPEG KEY_PGM KEY_PNG KEY_PPM KEY_TIFF KEY_TGA KEY_SYS
 %token KEY_OBJECT
 %token KEY_POLE KEY_EQUATOR KEY_DISC KEY_BOX KEY_UNION
 %token KEY_X KEY_Y KEY_Z
@@ -608,10 +609,15 @@ object_list:
 };
 
                 
-image:	KEY_IMAGE LBRACE KEY_PPM STRING RBRACE {
+image:	KEY_IMAGE LBRACE bitmap_type STRING RBRACE {
   $$ = new Protracer::Bitmap($4);
 };
 
+// bitmap type is currently ignored
+bitmap_type:
+// empty
+| KEY_PPM | KEY_PGM | KEY_PNG | KEY_JPEG | KEY_GIF | KEY_TGA
+| KEY_IFF | KEY_SYS;
 
 finish: KEY_FINISH LBRACE opt_diffuse opt_reflection RBRACE {
   $$ = Protracer::Finish($3 ? *$3 : Protracer::Finish::DEFAULT_DIFFUSION,
