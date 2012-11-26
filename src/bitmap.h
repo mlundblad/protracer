@@ -30,25 +30,27 @@ namespace Protracer {
   public:
     Bitmap(const std::string& path);
     Bitmap(unsigned int width, unsigned int height);
+    Bitmap(const Bitmap& bm);
     ~Bitmap();
 
     unsigned int get_width() const { return width; }
     unsigned int get_height() const { return height; }
 
-    const Color& operator() (unsigned int x, unsigned int y) const
+    void write(const std::string& path, const std::string& type = "");
+
+    const Color operator() (unsigned int x, unsigned int y) const
     {
-      return pixels[x + y * width];
+      return Color(pixels[(x + y * width) * 3],
+                   pixels[(x + y * width) * 3 + 1],
+                   pixels[(x + y * width) * 3 + 2]);
     }
 
-    Color& operator() (unsigned int x, unsigned int y)
-    {
-      return pixels[x + y * width];
-    }
+    void set_pixel(unsigned int x, unsigned int y, const Color& c);
 
   private:
     unsigned int width;
     unsigned int height;
-    Color* pixels;
+    unsigned char* pixels;
   };
 
 }

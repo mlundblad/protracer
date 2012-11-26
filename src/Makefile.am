@@ -45,8 +45,6 @@ protracer_SOURCES=bitmap.cc \
 	plane.h \
 	planar_object.cc \
 	planar_object.h \
-	ppm_file.cc \
-	ppm_file.h \
 	ray.h \
 	rotation.cc \
 	rotation.h \

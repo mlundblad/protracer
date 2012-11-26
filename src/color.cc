@@ -30,4 +30,14 @@ namespace Protracer {
       COMPONENT_MAX;
   }
 
+  Color::operator Magick::Color() const
+  {
+    return Magick::Color(Magick::Color::scaleDoubleToQuantum(double(red) /
+							     COMPONENT_MAX),
+			 Magick::Color::scaleDoubleToQuantum(double(green) /
+							     COMPONENT_MAX),
+			 Magick::Color::scaleDoubleToQuantum(double(blue) /
+							     COMPONENT_MAX));
+  }
+
 }

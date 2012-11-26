@@ -53,6 +53,8 @@ namespace Protracer {
       blue = c.get_blue();
     }
 
+    operator Magick::Color() const;
+
     unsigned char get_red() const { return red; }
     unsigned char get_green() const { return green; }
     unsigned char get_blue() const { return blue; }

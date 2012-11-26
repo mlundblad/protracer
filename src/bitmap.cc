@@ -21,6 +21,9 @@
 
 #include <Magick++/Image.h>
 
+#include <iostream>
+#include <cstring>
+
 namespace Protracer {
   Bitmap::Bitmap(const std::string& path)
   {
@@ -28,11 +31,14 @@ namespace Protracer {
 
     width = image.columns();
     height = image.rows();
-    pixels = new Color[width * height];
+    pixels = new unsigned char[width * height * 3];
 
     for (int x = 0 ; x < width ; x++) {
       for (int y = 0 ; y < height ; y++) {
-        pixels[x + y * width] = Color(image.pixelColor(x, y));
+        const Color c = image.pixelColor(x, y);
+        pixels[(x + y * width) * 3] = c.get_red();
+        pixels[(x + y * width) * 3 + 1] = c.get_green();
+        pixels[(x + y * width) * 3 + 2] = c.get_blue();        
       }
     }
   }
@@ -41,12 +47,44 @@ namespace Protracer {
   {
     this->width = width;
     this->height = height;
-    this->pixels = new Color[width * height];
+    this->pixels = new unsigned char[width * height * 3];
+  }
+
+  Bitmap::Bitmap(const Bitmap& bm)
+  {
+    if (this != &bm) {
+      int size = bm.width * bm.height * 3;
+
+      width = bm.width;
+      height = bm.height;
+      pixels = new unsigned char[size];
+      std::memcpy(pixels, bm.pixels, size);
+    }
   }
 
   Bitmap::~Bitmap()
   {
     delete [] pixels;
+  }
+
+  void
+  Bitmap::write(const std::string& path, const std::string& type)
+  {
+    Magick::Image image(width, height, "RGB", Magick::CharPixel, pixels);
+
+    if (type != "") {
+      image.magick(type);
+    }
+
+    image.write(path);
+  }
+
+  void
+  Bitmap::set_pixel(unsigned int x, unsigned int y, const Color& c)
+  {
+    pixels[(x + y * width) * 3] = c.get_red();
+    pixels[(x + y * width) * 3 + 1] = c.get_green();
+    pixels[(x + y * width) * 3 + 2] = c.get_blue();
   }
 
 }

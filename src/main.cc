@@ -34,7 +34,6 @@
 #endif
 
 #include "bitmap.h"
-#include "ppm_file.h"
 #include "scene.h"
 #include "object.h"
 #include "parameters.h"
@@ -81,8 +80,8 @@ trace(const Protracer::Scene* scene, Protracer::Bitmap* bitmap,
 
   for (y = thread_id ; y < ypix ; y += num_threads) {
     for (int x = 0 ; x < xpix ; x++ ) {
-      bm(x, y) = scene->color_of_pixel(x, y, reflectionDepth,
-                                       no_shadow_no_reflection);
+      bm.set_pixel(x, y, scene->color_of_pixel(x, y, reflectionDepth,
+                                               no_shadow_no_reflection));
     }
 
     if (!quiet && thread_id == 0)
@@ -165,14 +164,15 @@ int main(int argc, char **argv)
     long        errflg = 0;
     long        reflection_depth = 5;
     bool        quiet = false;
-    std::string opts = "qnr:z:x:y:w:h:e:o:";
+    std::string out_format = "";
+
+    std::string opts = "qnr:z:x:y:w:h:e:o:f:";
 #ifdef USE_THREADS
     int num_threads = 0;
     
     opts += "t:";
 #endif
 
-    Protracer::PPMFile     ppm_out;
     std::string out_file;
     FILE        *in_file;
 
@@ -186,6 +186,7 @@ int main(int argc, char **argv)
 	{"width", required_argument, 0, 'w'},
 	{"height", required_argument, 0, 'h'},
 	{"output-file", required_argument, 0, 'o'},
+        {"output-format", required_argument, 0, 'f'},
 	{"help", no_argument, 0, '?'},
 	{"version", no_argument, 0, 'v'},
 	{"quiet", no_argument, 0, 'q'},
@@ -251,6 +252,12 @@ int main(int argc, char **argv)
 
 	        out_file = optarg;
 		break;
+            case 'f':
+              if (!optarg)
+                usage_and_exit();
+
+              out_format = optarg;
+              break;
 	    case '?':
 		errflg++;
 		break;
@@ -373,12 +380,7 @@ int main(int argc, char **argv)
       if (!quiet)
         std::cerr << "100%- done!" << std::endl;
       
-      if (out_file != "")
-	ppm_out.open_out(out_file, Protracer::PPMFile::PPM_BINARY);
-      else
-	ppm_out.open_stdout(Protracer::PPMFile::PPM_BINARY);
-      
-      ppm_out.write_bitmap(result);
+      result.write(out_file == "" ? "-" : out_file, out_format);
     } catch (Protracer::Exception* e) {
       std::cerr << "Error occured: " << e->what() << std::endl;
       return -1;
