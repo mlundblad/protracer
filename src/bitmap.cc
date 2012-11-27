@@ -71,12 +71,9 @@ namespace Protracer {
   Bitmap::write(const std::string& path, const std::string& type)
   {
     Magick::Image image(width, height, "RGB", Magick::CharPixel, pixels);
+    std::string spec = type != "" ? type + ":" + path : path;
 
-    if (type != "") {
-      image.magick(type);
-    }
-
-    image.write(path);
+    image.write(spec);
   }
 
   void

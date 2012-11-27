@@ -118,6 +118,11 @@ static void usage()
 	    << "set picture height" << std::endl
             << "   -o, --output=FILE                         "
 	    << "set output file" << std::endl
+            << "   -f, --output-format=FORMAT" << std::endl
+            << "set output format, understands format strings" << std::endl
+            << "like the ImageMagick library (like PNG, JPG) " << std::endl
+            << "default is deduce format from file name" << std::endl
+            << "default when writing to stdout is PNG." << std::endl
             << "       --help                                "
 	    << "print this help" << std::endl
             << "       --version                             "
@@ -380,6 +385,12 @@ int main(int argc, char **argv)
       if (!quiet)
         std::cerr << "100%- done!" << std::endl;
       
+      // if format is not specified and output is stdout
+      // default to PNG
+      if (out_format == "" && out_file == "") {
+        out_format = "PNG";
+      }
+
       result.write(out_file == "" ? "-" : out_file, out_format);
     } catch (Protracer::Exception* e) {
       std::cerr << "Error occured: " << e->what() << std::endl;
