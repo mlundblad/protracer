@@ -35,10 +35,17 @@ namespace Protracer {
 
     for (int x = 0 ; x < width ; x++) {
       for (int y = 0 ; y < height ; y++) {
-        const Color c = image.pixelColor(x, y);
-        pixels[(x + y * width) * 3] = c.get_red();
-        pixels[(x + y * width) * 3 + 1] = c.get_green();
-        pixels[(x + y * width) * 3 + 2] = c.get_blue();        
+        const Magick::Color& c = image.pixelColor(x, y);
+
+        pixels[(x + y * width) * 3] =
+          Magick::Color::scaleQuantumToDouble(c.redQuantum()) *
+          Color::COMPONENT_MAX;;
+        pixels[(x + y * width) * 3 + 1] =
+          Magick::Color::scaleQuantumToDouble(c.greenQuantum()) *
+          Color::COMPONENT_MAX;;
+        pixels[(x + y * width) * 3 + 2] =
+          Magick::Color::scaleQuantumToDouble(c.blueQuantum()) *
+          Color::COMPONENT_MAX;;        
       }
     }
   }
@@ -79,9 +86,10 @@ namespace Protracer {
   void
   Bitmap::set_pixel(unsigned int x, unsigned int y, const Color& c)
   {
-    pixels[(x + y * width) * 3] = c.get_red();
-    pixels[(x + y * width) * 3 + 1] = c.get_green();
-    pixels[(x + y * width) * 3 + 2] = c.get_blue();
+    unsigned int offset = (x + y * width) * 3;
+    pixels[offset] = c.get_red();
+    pixels[offset + 1] = c.get_green();
+    pixels[offset + 2] = c.get_blue();
   }
 
 }
