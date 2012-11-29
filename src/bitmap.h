@@ -36,7 +36,7 @@ namespace Protracer {
     unsigned int get_width() const { return width; }
     unsigned int get_height() const { return height; }
 
-    void write(const std::string& path, const std::string& type = "");
+    void write(const std::string& path, const std::string& type = "") const;
 
     const Color operator() (unsigned int x, unsigned int y) const
     {
@@ -46,6 +46,8 @@ namespace Protracer {
     }
 
     void set_pixel(unsigned int x, unsigned int y, const Color& c);
+    
+    static bool can_write_format(const std::string& format);
 
   private:
     unsigned int width;

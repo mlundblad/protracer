@@ -20,6 +20,7 @@
 #include "bitmap.h"
 
 #include <Magick++/Image.h>
+#include <Magick++/CoderInfo.h>
 
 #include <iostream>
 #include <cstring>
@@ -75,7 +76,7 @@ namespace Protracer {
   }
 
   void
-  Bitmap::write(const std::string& path, const std::string& type)
+  Bitmap::write(const std::string& path, const std::string& type) const
   {
     Magick::Image image(width, height, "RGB", Magick::CharPixel, pixels);
     std::string spec = type != "" ? type + ":" + path : path;
@@ -92,4 +93,15 @@ namespace Protracer {
     pixels[offset + 2] = c.get_blue();
   }
 
+  bool
+  Bitmap::can_write_format(const std::string& format)
+  {
+    try {
+      Magick::CoderInfo info(format);
+    
+      return info.isWritable();
+    } catch (Magick::ErrorOption e) {
+      return false;
+    }
+  }
 }

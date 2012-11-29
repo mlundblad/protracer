@@ -262,6 +262,14 @@ int main(int argc, char **argv)
                 usage_and_exit();
 
               out_format = optarg;
+
+              // check if format is supported
+              if (!Protracer::Bitmap::can_write_format(out_format)) {
+                std::cerr << "Unsupported output format: "
+                          << out_format << std::endl;
+                exit(-1);
+              }
+
               break;
 	    case '?':
 		errflg++;
