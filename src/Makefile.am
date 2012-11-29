@@ -11,7 +11,6 @@ protracer_SOURCES=bitmap.cc \
 	box.h \
 	camera.cc \
 	camera.h \
-	color.cc \
 	color.h \
 	color_pigment.h \
 	composed_transformation.cc \
