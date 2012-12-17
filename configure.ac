@@ -47,7 +47,8 @@ AC_CHECK_FUNCS([sqrt strdup strtol])
 
 AC_CONFIG_FILES([Makefile
 		data/Makefile
-		src/Makefile])
+		src/Makefile
+		win32/Makefile])
 AC_OUTPUT
 
 echo "

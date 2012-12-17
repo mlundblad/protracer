@@ -1,7 +1,7 @@
 examplesdir = $(pkgdatadir)/examples
 examples_DATA = example1.pov example2.pov example3.pov example4.pov\
 	example5.pov example6.pov example7.pov example8.pov example9.pov\
-	sky.ppm
+	sky.png
 
 CLEANFILES=example1.pov example2.pov example3.pov example4.pov example5.pov\
 	example6.pov example7.pov example8.pov example9.pov
@@ -40,4 +40,4 @@ example9.pov: example9.pov.in Makefile
 
 EXTRA_DIST = example1.pov.in example2.pov.in example3.pov.in example4.pov.in \
 	example5.pov.in example6.pov.in example7.pov.in example8.pov.in\
-	example9.pov.in sky.ppm
+	example9.pov.in sky.png
