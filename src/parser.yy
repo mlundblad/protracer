@@ -359,23 +359,6 @@ plane:
 	}
         ;
 
-/* This is not POVray syntax, but is an easier way to specify a plane. */
-plane:
-	KEY_PLANEPNT LBRACE
-	vector COMMA vector
-	object_mods
-	RBRACE {
-	  $$ = new Protracer::Plane($5, $3);
-
-	  for (auto object_mod : *$6) {
-	    object_mod->apply($$);
-	    delete object_mod;
-	  }
-
-	  delete $6;
-	}
-	;
-
 sphere:
 	KEY_SPHERE LBRACE vector COMMA number sphere_opt
 	object_mods
