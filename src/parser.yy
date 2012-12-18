@@ -405,26 +405,6 @@ triangle:
 	  delete $8;
 	}
         ;
-
-/* Again, this is not POVray, but provides an alternative way of
-   specifying a triangle. */
-triangle:
-	KEY_TRIANGLEPNT LBRACE
-	vector COMMA
-	vector COMMA
-	vector
-	object_mods
-	RBRACE {
-	  $$ = new Protracer::Triangle($3, $5, $7, true);
-
-	  for (auto object_mod : *$8) {
-	    object_mod->apply($$);
-	    delete object_mod;
-	  }
-	    
-	  delete $8;
-	}
-	;
 	
 disc:
     KEY_DISC LBRACE 

@@ -32,8 +32,7 @@ namespace Protracer {
   public:
     // if relative is true, c1 and c2 are taken to be vectors relative c0
     // forming two of the triangle's vertices
-    Triangle(const Vector& c0, const Vector& c1, const Vector& c2,
-	     bool relative = false);
+    Triangle(const Vector& c0, const Vector& c1, const Vector& c2);
     
     Triangle* copy() const;
 

@@ -21,12 +21,9 @@
 
 namespace Protracer {
 
-  Triangle::Triangle(const Vector& c0, const Vector& c1, const Vector& c2,
-	   bool relative) :
-    va(relative ? c1 : c1 - c0),
-    vb(relative ? c2 : c2 - c0),
-    PlanarObject(Vector((relative ? c1 : c1 - c0) * (relative ? c2 : c2 - c0)).normal(),
-                 c0)
+  Triangle::Triangle(const Vector& c0, const Vector& c1, const Vector& c2) 
+    : va(c1 - c0), vb(c2 - c0),
+      PlanarObject(Vector((c1 - c0) * (c2 - c0)).normal(), c0)
   {
     t0 = c0;
     aa = va.dot(va);
@@ -38,7 +35,7 @@ namespace Protracer {
   Triangle*
   Triangle::copy() const
   {
-    Triangle* triangle = new Triangle(t0, va, vb, true); 
+    Triangle* triangle = new Triangle(t0, va + t0, vb + t0); 
 
     if (has_custom_finish())
       triangle->set_pigment(get_pigment().copy());
