@@ -1,4 +1,4 @@
-version 3.0 (20xx-xx-xx)
+version 3.0 "The X-mas Tracer" (2012-12-19)
 	* Support for multithreading (compile-time option).
 	* Add support for using multiple image formats for textures
 	  and as output format (those supported by ImageMagick).
