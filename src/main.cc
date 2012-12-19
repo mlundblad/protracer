@@ -76,8 +76,6 @@ trace(const Protracer::Scene* scene, Protracer::Bitmap* bitmap,
   int y;
   Protracer::Bitmap& bm = *bitmap;
   
-  std::cerr << "Running thread #" << thread_id << std::endl;
-
   for (y = thread_id ; y < ypix ; y += num_threads) {
     for (int x = 0 ; x < xpix ; x++ ) {
       bm.set_pixel(x, y, scene->color_of_pixel(x, y, reflectionDepth,
@@ -87,8 +85,6 @@ trace(const Protracer::Scene* scene, Protracer::Bitmap* bitmap,
     if (!quiet && thread_id == 0)
       std::cerr << (int)((float)y/(float)ypix * 100) << "%\r";
   }
-
-  std::cerr << "Thread #" << thread_id << " finished." << std::endl;
 }
 
 static void usage()
@@ -374,7 +370,6 @@ int main(int argc, char **argv)
         std::vector<std::thread> threads;
         
         for (int thread_id = 0 ; thread_id < num_threads ; thread_id++) {
-          std::cerr << "Creating thread " << thread_id << std::endl;
           threads.emplace_back(trace, &scene, &result, 
                                thread_id, num_threads,xpix, ypix,
                                reflection_depth,
