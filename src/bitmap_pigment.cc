@@ -37,14 +37,7 @@ namespace Protracer {
   BitmapPigment*
   BitmapPigment::copy() const
   {
-    Bitmap* bm = new Bitmap(bitmap->get_width(), bitmap->get_height());
-
-    for (int x = 0 ; x < bitmap->get_width() ; x++) {
-      for (int y = 0 ; y < bitmap->get_height() ; y++) {
-        (*bm)(x, y) = (*bitmap)(x, y);
-      }
-    }
-
+    Bitmap* bm = new Bitmap(*bitmap);
     return new BitmapPigment(bm);
   }
 

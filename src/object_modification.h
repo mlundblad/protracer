@@ -28,22 +28,6 @@ namespace Protracer {
   class ObjectModification {
   public:
     virtual void apply(Object* object) const = 0;
-
-    // implement an std::for_each functor
-    class Applier {
-    public:
-      Applier(Object* object) : object(object) {}
-
-      void operator() (const ObjectModification* om) { om->apply(object); }
-
-    private:
-      Object* object;
-    };
-
-    class Deleter {
-    public:
-      void operator() (ObjectModification* om) { delete om; }
-    };
   };
 }  
 

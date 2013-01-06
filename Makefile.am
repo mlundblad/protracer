@@ -1,4 +1,4 @@
-SUBDIRS = data src
+SUBDIRS = data src win32
 
 EXTRA_DIST = \
 	COPYING \

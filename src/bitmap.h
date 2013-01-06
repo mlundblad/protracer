@@ -20,32 +20,39 @@
 #ifndef BITMAP_H
 #define BITMAP_H
 
+#include <string>
+
 #include "color.h"
 
 namespace Protracer {
   
   class Bitmap {
   public:
+    Bitmap(const std::string& path);
     Bitmap(unsigned int width, unsigned int height);
+    Bitmap(const Bitmap& bm);
     ~Bitmap();
 
     unsigned int get_width() const { return width; }
     unsigned int get_height() const { return height; }
 
-    const Color& operator() (unsigned int x, unsigned int y) const
+    void write(const std::string& path, const std::string& type = "") const;
+
+    const Color operator() (unsigned int x, unsigned int y) const
     {
-      return pixels[x + y * width];
+      return Color(pixels[(x + y * width) * 3],
+                   pixels[(x + y * width) * 3 + 1],
+                   pixels[(x + y * width) * 3 + 2]);
     }
 
-    Color& operator() (unsigned int x, unsigned int y)
-    {
-      return pixels[x + y * width];
-    }
+    void set_pixel(unsigned int x, unsigned int y, const Color& c);
+    
+    static bool can_write_format(const std::string& format);
 
   private:
     unsigned int width;
     unsigned int height;
-    Color* pixels;
+    unsigned char* pixels;
   };
 
 }

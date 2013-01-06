@@ -17,6 +17,10 @@
  *
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <stdlib.h>
 #include <getopt.h>
 #include <unistd.h>
@@ -25,10 +29,11 @@
 
 #include <iostream>
 #include <vector>
+#ifdef USE_THREADS
+#include <thread>
+#endif
 
-#include "config.h"
 #include "bitmap.h"
-#include "ppm_file.h"
 #include "scene.h"
 #include "object.h"
 #include "parameters.h"
@@ -64,17 +69,20 @@ parse(FILE *input, Protracer::Scene& scene, const Protracer::Parameters& params)
 }
 
 void
-trace(const Protracer::Scene& scene, Protracer::Bitmap& bitmap, int xpix, int ypix,
+trace(const Protracer::Scene* scene, Protracer::Bitmap* bitmap,
+      int thread_id, int num_threads, int xpix, int ypix,
       int reflectionDepth, bool no_shadow_no_reflection, bool quiet)
 {
-  int x,y;
+  int y;
+  Protracer::Bitmap& bm = *bitmap;
   
-  for (y = 0 ; y < ypix ; y++ ) {
-    for (x = 0 ; x < xpix ; x++ ) {
-      bitmap(x, y) = scene.color_of_pixel(x, y, reflectionDepth,
-                                          no_shadow_no_reflection);
+  for (y = thread_id ; y < ypix ; y += num_threads) {
+    for (int x = 0 ; x < xpix ; x++ ) {
+      bm.set_pixel(x, y, scene->color_of_pixel(x, y, reflectionDepth,
+                                               no_shadow_no_reflection));
     }
-    if (!quiet)
+
+    if (!quiet && thread_id == 0)
       std::cerr << (int)((float)y/(float)ypix * 100) << "%\r";
   }
 }
@@ -106,13 +114,24 @@ static void usage()
 	    << "set picture height" << std::endl
             << "   -o, --output=FILE                         "
 	    << "set output file" << std::endl
+            << "   -f, --output-format=FORMAT" << std::endl
+            << "set output format, understands format strings" << std::endl
+            << "like the ImageMagick library (like PNG, JPG) " << std::endl
+            << "default is deduce format from file name" << std::endl
+            << "default when writing to stdout is PNG." << std::endl
             << "       --help                                "
 	    << "print this help" << std::endl
             << "       --version                             "
 	    << "print version information" << std::endl
             << "   -q, --quiet                               "
 	    << "don't print a progress meter" << std::endl
+#ifdef USE_THREADS
+            << "   -t, --threads                             "
+            << "number of threads to run" << std::endl
+            << "                                             "
+            << "(defaults to the number of CPU cores)" << std::endl
             << std::endl
+#endif
             << "If input is redirected (piped) to the program "
             << "no input file is required to be"
             << std::endl
@@ -146,8 +165,15 @@ int main(int argc, char **argv)
     long        errflg = 0;
     long        reflection_depth = 5;
     bool        quiet = false;
+    std::string out_format = "";
 
-    Protracer::PPMFile     ppm_out;
+    std::string opts = "qnr:z:x:y:w:h:e:o:f:";
+#ifdef USE_THREADS
+    int num_threads = 0;
+    
+    opts += "t:";
+#endif
+
     std::string out_file;
     FILE        *in_file;
 
@@ -161,13 +187,17 @@ int main(int argc, char **argv)
 	{"width", required_argument, 0, 'w'},
 	{"height", required_argument, 0, 'h'},
 	{"output-file", required_argument, 0, 'o'},
+        {"output-format", required_argument, 0, 'f'},
 	{"help", no_argument, 0, '?'},
 	{"version", no_argument, 0, 'v'},
 	{"quiet", no_argument, 0, 'q'},
+#ifdef USE_THREADS
+        {"threads", required_argument, 0, 't'},
+#endif
 	{0, 0, 0, 0}
       };
 
-    while ((c = getopt_long(argc, argv, "qnr:z:x:y:w:h:e:o:", long_options,
+    while ((c = getopt_long(argc, argv, opts.c_str(), long_options,
 			    &opt_ind) ) != EOF ) {
       switch (c) {
 	    case 'n':
@@ -223,6 +253,20 @@ int main(int argc, char **argv)
 
 	        out_file = optarg;
 		break;
+            case 'f':
+              if (!optarg)
+                usage_and_exit();
+
+              out_format = optarg;
+
+              // check if format is supported
+              if (!Protracer::Bitmap::can_write_format(out_format)) {
+                std::cerr << "Unsupported output format: "
+                          << out_format << std::endl;
+                exit(-1);
+              }
+
+              break;
 	    case '?':
 		errflg++;
 		break;
@@ -233,6 +277,21 @@ int main(int argc, char **argv)
 	    case 'q':
 	        quiet = true;
 		break;
+#ifdef USE_THREADS
+            case 't':
+              if (!optarg)
+                usage_and_exit();
+
+              num_threads = atoi(optarg);
+
+              if (num_threads < 1) {
+                std::cerr << "Illegal value for number of threads: "
+                          << optarg << std::endl;
+                usage_and_exit();
+              }
+
+              break;
+#endif
 	}
     }
     
@@ -288,19 +347,54 @@ int main(int argc, char **argv)
 
       /* Start the tracing */      
       Protracer::Bitmap result = Protracer::Bitmap(xpix, ypix);
-      
-      trace(scene, result, xpix, ypix, reflection_depth,
+    
+#ifdef USE_THREADS  
+      // if number of threads wasn't manually set, try to base on
+      // number of physical cores
+      if (num_threads == 0) {
+        num_threads = std::thread::hardware_concurrency();
+        if (num_threads == 0) {
+          num_threads = 1;
+        }
+
+        if (!quiet) {
+          std::cerr << "Using " << num_threads << " threads." << std::endl;
+        }
+      }
+
+      if (num_threads == 1) {
+        // don't bother to create a thread when running single-threaded...
+        trace(&scene, &result, 0, 1, xpix, ypix, reflection_depth,
+              no_shadow_no_reflection, quiet);
+      } else {
+        std::vector<std::thread> threads;
+        
+        for (int thread_id = 0 ; thread_id < num_threads ; thread_id++) {
+          threads.emplace_back(trace, &scene, &result, 
+                               thread_id, num_threads,xpix, ypix,
+                               reflection_depth,
+                               no_shadow_no_reflection, quiet);
+        }
+        
+        for (std::thread& thread : threads) {
+          thread.join();
+        }
+      }
+#else
+      trace(&scene, &result, 0, 1, xpix, ypix, reflection_depth,
             no_shadow_no_reflection, quiet);
+#endif //USE_THREADS
 
       if (!quiet)
         std::cerr << "100%- done!" << std::endl;
       
-      if (out_file != "")
-	ppm_out.open_out(out_file, Protracer::PPMFile::PPM_BINARY);
-      else
-	ppm_out.open_stdout(Protracer::PPMFile::PPM_BINARY);
-      
-      ppm_out.write_bitmap(result);
+      // if format is not specified and output is stdout
+      // default to PNG
+      if (out_format == "" && out_file == "") {
+        out_format = "PNG";
+      }
+
+      result.write(out_file == "" ? "-" : out_file, out_format);
     } catch (Protracer::Exception* e) {
       std::cerr << "Error occured: " << e->what() << std::endl;
       return -1;

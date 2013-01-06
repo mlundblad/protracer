@@ -18,6 +18,7 @@ Makefile.in
 *.tar.xz
 *.exe
 *.anjuta
+tests/*.png
 
 aclocal.m4
 autom4te.cache

@@ -13,7 +13,7 @@ camera {
 sphere {
 	<0,-5,116>, 12
 	pigment {
-		image_map { ppm "@EXAMPLESDIR@/sky.ppm" }
+		image_map { png "@EXAMPLESDIR@/sky.png" }
 	}
 	finish { diffuse 1 }
 }
@@ -115,7 +115,7 @@ triangle {
 	<5,-60,100>,
 	<0,60,100>
 	pigment {
-		image_map { ppm "@EXAMPLESDIR@/sky.ppm" }
+		image_map { png "@EXAMPLESDIR@/sky.png" }
 	}
 	finish { diffuse 1 reflection 0 }
 }

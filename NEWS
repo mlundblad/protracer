@@ -1,3 +1,15 @@
+version 3.0 "The X-mas Tracer" (2012-12-19)
+	* Support for multithreading (compile-time option).
+	* Add support for using multiple image formats for textures
+	  and as output format (those supported by ImageMagick).
+	* Removed Protracer-specific alternative syntax for specifying
+	  planes and triangles (to be more compatible with Povray.)
+        * Requires a C++11 compiler (such as g++ 4.7.x).
+	* Requires ImageMagick++ (used for reading/writing images).
+
+version 2.8 "Oktoberfest" (2012-09-25)
+	* Added test script.
+
 version 2.7 "September" (2012-09-12)
 	* Enhanced scene description language:
 	  * Support declaring vectors using only two components,

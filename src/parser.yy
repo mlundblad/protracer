@@ -23,11 +23,8 @@
  */
 
 #include <vector>
-#include <iostream>
 #include <sstream>
 #include <cmath>
-#include <cstdio>
-#include <math.h>
 
 #include "scene.h"
 #include "vector.h"
@@ -42,7 +39,6 @@
 #include "finish.h"
 #include "pigment.h"
 #include "bitmap.h"
-#include "ppm_file.h"
 
 #include "parameters.h"
 #include "declaration.h"
@@ -59,10 +55,6 @@
   Protracer::Parameters global_parameters;
   Protracer::Color      global_background;
   Protracer::Camera     global_camera;
-  Protracer::PPMFile    global_image_file;
-
-
-
 
 extern char *yytext;
 extern int linecount;
@@ -76,6 +68,7 @@ int yyerror(char *s);
 %code requires {
 
 #include <stdlib.h>
+#include <cstring>
 #include <vector>
 #include <list>
 #include <algorithm>
@@ -106,7 +99,6 @@ int yyerror(char *s);
 #include "bitmap_pigment.h"
 #include "color_pigment.h"
 #include "bitmap.h"
-#include "ppm_file.h"
 
 #include "parameters.h"
 
@@ -118,17 +110,10 @@ int yyerror(char *s);
   extern Protracer::Parameters global_parameters;
   extern Protracer::Color      global_background;
   extern Protracer::Camera     global_camera;
-  extern Protracer::PPMFile    global_image_file;
 
   struct SphereOptions {
-    ~SphereOptions()
-    {
-      delete pole;
-      delete equator;
-    }
-
-    Protracer::Vector* pole;
-    Protracer::Vector* equator;
+    Protracer::Vector pole;
+    Protracer::Vector equator;
   };
 
 }
@@ -139,7 +124,7 @@ int yyerror(char *s);
   char		*string;	/* for names */
   std::list<float>* number_list; // for scalar argument lists
   bool          logical;
-  Protracer::Vector*	vector;
+  Protracer::Vector	vector;
   Protracer::Sphere*      sphere;
   Protracer::Triangle*    triangle;
   Protracer::Plane*       plane;
@@ -149,16 +134,25 @@ int yyerror(char *s);
   Protracer::Object*      object;
   Protracer::Camera*      camera;
   Protracer::Light*       light;
-  Protracer::Color*       color;
-  SphereOptions*   sphereOptions;
+  Protracer::Color       color;
+  SphereOptions   sphereOptions;
   std::list<Protracer::ObjectModification*>* objectMods;
   Protracer::ObjectModification* objectMod;
   Protracer::Transformation* transformation;
   std::list<Protracer::Transformation*>* transformations;
   std::list<Protracer::Object*>* object_list;
-  Protracer::Finish*      finish;
+  Protracer::Finish      finish;
   Protracer::Pigment*     pigment;
   Protracer::Bitmap*      bitmap;
+
+  // this is a bit ugly, but needed to allow non-pointer vector members in
+  // the union
+  YYSTYPE() {}
+  YYSTYPE& operator=(const YYSTYPE& rhs) {
+    if (&rhs != this)
+      std::memcpy(this, &rhs, sizeof(YYSTYPE));
+    return *this;
+  }
 };
 
 %start scene
@@ -177,7 +171,8 @@ int yyerror(char *s);
 %token KEY_RED KEY_GREEN KEY_BLUE
 %token KEY_LOCATION KEY_LOOK KEY_BACKGROUND
 %token KEY_CAMERA KEY_RGB KEY_SKY KEY_LIGHT
-%token KEY_PLANE KEY_PLANEPNT KEY_IMAGE KEY_PPM
+%token KEY_PLANE KEY_PLANEPNT KEY_IMAGE
+%token KEY_GIF KEY_IFF KEY_JPEG KEY_PGM KEY_PNG KEY_PPM KEY_TIFF KEY_TGA KEY_SYS
 %token KEY_OBJECT
 %token KEY_POLE KEY_EQUATOR KEY_DISC KEY_BOX KEY_UNION
 %token KEY_X KEY_Y KEY_Z
@@ -265,10 +260,13 @@ item: object { global_scene->add_object($1); }
 ;
 
 light: KEY_LIGHT LBRACE vector transformations_opt RBRACE {
-  $$ = new Protracer::Light(*$3);
-  std::for_each($4->begin(), $4->end(), Protracer::Transformation::Applier($$));
-  std::for_each($4->begin(), $4->end(), Protracer::Transformation::Deleter());
-  delete $3;
+  $$ = new Protracer::Light($3);
+
+  for (auto transformation : *$4) {
+    transformation->apply($$);
+    delete transformation;
+  }
+
   delete $4;
 }
 | KEY_LIGHT LBRACE NAME transformations_opt RBRACE {
@@ -277,23 +275,30 @@ light: KEY_LIGHT LBRACE vector transformations_opt RBRACE {
     
     if (d.get_type() == Protracer::Declaration::LIGHT) {
       $$ = new Protracer::Light(d.get_light());
-      std::for_each($4->begin(), $4->end(),
-		    Protracer::Transformation::Applier($$));
-      std::for_each($4->begin(), $4->end(),
-		    Protracer::Transformation::Deleter());
+      
+      for (auto transformation : *$4) {
+	transformation->apply($$);
+	delete transformation;
+      }
+
       delete $4;
     } else {
-      std::for_each($4->begin(), $4->end(),
-		    Protracer::Transformation::Deleter());
+      for (auto transformation : *$4) {
+	delete transformation;
+      }
+
       delete $4;
       error(std::string("Variable ") + $3 + " is not a camera.");
     }
   } else {
-    std::for_each($4->begin(), $4->end(), Protracer::Transformation::Deleter());
+    for (auto transformation : *$4) {
+      delete transformation;
+    }
+
     delete $4;
     error(std::string("Variable ") + $3 + " is undefined.");
   }
-  
+
   free($3);
 }
 ;
@@ -311,23 +316,30 @@ object: sphere { $$ = $1; }
     if (d.get_type() == Protracer::Declaration::OBJECT) {
       $$ = d.get_object()->copy();
       
-      std::for_each($4->begin(), $4->end(),
-		    Protracer::ObjectModification::Applier($$));
-      std::for_each($4->begin(), $4->end(),
-		    Protracer::ObjectModification::Deleter());
+      for (auto object_mod : *$4) {
+	object_mod->apply($$);
+	delete object_mod;
+      }
+
       delete $4;
     } else {
-      std::for_each($4->begin(), $4->end(),
-		    Protracer::ObjectModification::Deleter());
+      for (auto object_mod : *$4) {
+	delete object_mod;
+      }
+
       delete $4;
       error(std::string("Variable ") + $3 + std::string(" is not an object."));
     }
   } else {
-    std::for_each($4->begin(), $4->end(),
-		  Protracer::ObjectModification::Deleter());
+    for (auto object_mod : *$4) {
+      delete object_mod;
+    }
+
     delete $4;
     error(std::string("Variable ") + $3 + std::string(" is not defined."));
   }
+
+  free($3);
 }
 ;
 
@@ -336,64 +348,43 @@ plane:
 	vector COMMA number
 	object_mods
 	RBRACE {
-	  $$ = new Protracer::Plane(*$3, Protracer::Vector(0, 0, $5));
+	  $$ = new Protracer::Plane($3, Protracer::Vector(0, 0, $5));
 
-	  std::for_each($6->begin(), $6->end(),
-			Protracer::ObjectModification::Applier($$));
-	  std::for_each($6->begin(), $6->end(),
-			Protracer::ObjectModification::Deleter());
-	  delete $3;
+	  for (auto object_mod : *$6) {
+	    object_mod->apply($$);
+	    delete object_mod;
+	  }
+
 	  delete $6;
 	}
         ;
-
-/* This is not POVray syntax, but is an easier way to specify a plane. */
-plane:
-	KEY_PLANEPNT LBRACE
-	vector COMMA vector
-	object_mods
-	RBRACE {
-	  $$ = new Protracer::Plane(*$5, *$3);
-
-	  std::for_each($6->begin(), $6->end(),
-			Protracer::ObjectModification::Applier($$));
-	  std::for_each($6->begin(), $6->end(),
-			Protracer::ObjectModification::Deleter());
-	  delete $3;
-	  delete $5;
-	  delete $6;
-	}
-	;
 
 sphere:
 	KEY_SPHERE LBRACE vector COMMA number sphere_opt
 	object_mods
 	RBRACE {
-	  $$ = new Protracer::Sphere(*$3, $5, *($6->pole), *($6->equator));
+	  $$ = new Protracer::Sphere($3, $5, $6.pole, $6.equator);
 
-	  std::for_each($7->begin(), $7->end(),
-			Protracer::ObjectModification::Applier($$));
-	  std::for_each($7->begin(), $7->end(),
-			Protracer::ObjectModification::Deleter());
-	  delete $3;
-	  delete $6;
+	  for (auto object_mod : *$7) {
+	    object_mod->apply($$);
+	    delete object_mod;
+	  }
+
 	  delete $7;
 	}
 	;
 
 sphere_opt:   {
-  $$ = new SphereOptions;
-  $$->pole = new Protracer::Vector(Protracer::Sphere::POLE_DEFAULT_X, 
-				   Protracer::Sphere::POLE_DEFAULT_Y,
-				   Protracer::Sphere::POLE_DEFAULT_Z);
-  $$->equator = new Protracer::Vector(Protracer::Sphere::EQUATOR_DEFAULT_X,
-				      Protracer::Sphere::EQUATOR_DEFAULT_Y,
-				      Protracer::Sphere::EQUATOR_DEFAULT_Z); }
-  |            
+  $$.pole = Protracer::Vector(Protracer::Sphere::POLE_DEFAULT_X, 
+			      Protracer::Sphere::POLE_DEFAULT_Y,
+			      Protracer::Sphere::POLE_DEFAULT_Z);
+  $$.equator = Protracer::Vector(Protracer::Sphere::EQUATOR_DEFAULT_X,
+				 Protracer::Sphere::EQUATOR_DEFAULT_Y,
+				 Protracer::Sphere::EQUATOR_DEFAULT_Z); }
+  |
     KEY_POLE vector KEY_EQUATOR vector { 
-      $$ = new SphereOptions;
-      $$->pole = $2;
-      $$->equator = $4;
+      $$.pole = $2;
+      $$.equator = $4;
     }
     ;
 
@@ -404,40 +395,16 @@ triangle:
 	vector
 	object_mods
 	RBRACE { 
-	  $$ = new Protracer::Triangle(*$3, *$5, *$7);
+	  $$ = new Protracer::Triangle($3, $5, $7);
 
-	  std::for_each($8->begin(), $8->end(),
-			Protracer::ObjectModification::Applier($$));
-	  std::for_each($8->begin(), $8->end(),
-			Protracer::ObjectModification::Deleter());
-	  delete $3;
-	  delete $5;
-	  delete $7;
+	  for (auto object_mod : *$8) {
+	    object_mod->apply($$);
+	    delete object_mod;
+	  }
+
 	  delete $8;
 	}
         ;
-
-/* Again, this is not POVray, but provides an alternative way of
-   specifying a triangle. */
-triangle:
-	KEY_TRIANGLEPNT LBRACE
-	vector COMMA
-	vector COMMA
-	vector
-	object_mods
-	RBRACE {
-	  $$ = new Protracer::Triangle(*$3, *$5, *$7, true);
-
-	  std::for_each($8->begin(), $8->end(),
-			Protracer::ObjectModification::Applier($$));
-	  std::for_each($8->begin(), $8->end(),
-			Protracer::ObjectModification::Deleter());
-	  delete $3;
-	  delete $5;
-	  delete $7;
-	  delete $8;
-	}
-	;
 	
 disc:
     KEY_DISC LBRACE 
@@ -447,14 +414,13 @@ disc:
     opt_hole
     object_mods
     RBRACE {
-      $$ = new Protracer::Disc(*$3, *$5, $7, $8);
+      $$ = new Protracer::Disc($3, $5, $7, $8);
 
-      std::for_each($9->begin(), $9->end(),
-		    Protracer::ObjectModification::Applier($$));
-      std::for_each($9->begin(), $9->end(),
-		    Protracer::ObjectModification::Deleter());
-      delete $3;
-      delete $5;
+      for (auto object_mod : *$9) {
+	object_mod->apply($$);
+	delete object_mod;
+      }
+
       delete $9;
     };
 
@@ -464,14 +430,13 @@ box:
    vector
    object_mods
    RBRACE {
-     $$ = new Protracer::Box(*$3, *$5);
+     $$ = new Protracer::Box($3, $5);
 
-     std::for_each($6->begin(), $6->end(),
-		   Protracer::ObjectModification::Applier($$));
-     std::for_each($6->begin(), $6->end(),
-		   Protracer::ObjectModification::Deleter());
-     delete $3;
-     delete $5;
+     for (auto object_mod : *$6) {
+       object_mod->apply($$);
+       delete object_mod;
+     }
+
      delete $6;
    };
 
@@ -481,18 +446,18 @@ union:
   object_mods
   RBRACE {
     $$ = new Protracer::Union;
-    
-    for (std::list<Protracer::Object*>::iterator it = $3->begin() ;
-	 it != $3->end() ; it++) {
-      $$->add_object(*it);
-    }
+  
+  for (auto object : *$3) {
+    $$->add_object(object);
+  }
 
-    std::for_each($4->begin(), $4->end(),
-		  Protracer::ObjectModification::Applier($$));
-    std::for_each($4->begin(), $4->end(),
-		   Protracer::ObjectModification::Deleter());
-    delete $3;
-  };
+  for (auto object_mod : *$4) {
+    object_mod->apply($$);
+    delete object_mod;
+  }
+  
+  delete $3;
+};
 
 opt_hole: {
   // empty
@@ -512,8 +477,7 @@ object_mods: // empty
 };
 
 object_mod: finish {
-  $$ = new Protracer::FinishModification(*$1);
-  delete $1;
+  $$ = new Protracer::FinishModification($1);
 }
 | pigment {
   $$ = new Protracer::PigmentModification($1);
@@ -524,12 +488,10 @@ object_mod: finish {
 ;
 
 transformation: KEY_TRANSLATE vector {
-  $$ = new Protracer::Translation(*$2);
-  delete $2;
+  $$ = new Protracer::Translation($2);
 }
 | KEY_ROTATE vector {
-  $$ = new Protracer::Rotation((M_PI / 180) * *$2);
-  delete $2;
+  $$ = new Protracer::Rotation((M_PI / 180) * $2);
 }
 | KEY_TRANSFORM LBRACE transformations RBRACE {
   $$ = new Protracer::ComposedTransformation(*$3);
@@ -577,8 +539,7 @@ transformations_opt: /* empty */ {
 
 pigment:
 KEY_PIGMENT LBRACE color RBRACE {
-  $$ = new Protracer::ColorPigment(*$3);
-  delete $3;
+  $$ = new Protracer::ColorPigment($3);
 }
 | KEY_PIGMENT LBRACE image RBRACE {
   $$ = new Protracer::BitmapPigment($3);
@@ -611,17 +572,19 @@ object_list:
 };
 
                 
-image:	KEY_IMAGE LBRACE KEY_PPM STRING RBRACE {
-          global_image_file.open_in($4);
-	  $$ = global_image_file.read_bitmap();
-	  global_image_file.close();
-	}
-	;
+image:	KEY_IMAGE LBRACE bitmap_type STRING RBRACE {
+  $$ = new Protracer::Bitmap($4);
+};
 
+// bitmap type is currently ignored
+bitmap_type:
+// empty
+| KEY_PPM | KEY_PGM | KEY_PNG | KEY_JPEG | KEY_GIF | KEY_TGA
+| KEY_IFF | KEY_SYS;
 
 finish: KEY_FINISH LBRACE opt_diffuse opt_reflection RBRACE {
-  $$ = new Protracer::Finish($3 ? *$3 : Protracer::Finish::DEFAULT_DIFFUSION,
-			     $4 ? *$4 : Protracer::Finish::DEFAULT_REFLECTION);
+  $$ = Protracer::Finish($3 ? *$3 : Protracer::Finish::DEFAULT_DIFFUSION,
+			 $4 ? *$4 : Protracer::Finish::DEFAULT_REFLECTION);
   delete $3;
   delete $4;
 }
@@ -630,12 +593,12 @@ finish: KEY_FINISH LBRACE opt_diffuse opt_reflection RBRACE {
     Protracer::Declaration d = Protracer::Declaration::get_declaration($3);
 
     if (d.get_type() == Protracer::Declaration::FINISH) {
-      $$ = new Protracer::Finish(d.get_finish());
+      $$ = d.get_finish();
       
-      if ($4 != 0)
-	$$->set_diffusion(*$4);
-      if ($5 != 0)
-	$$->set_reflection(*$5);
+      if ($4 != nullptr)
+	$$.set_diffusion(*$4);
+      if ($5 != nullptr)
+	$$.set_reflection(*$5);
     } else {
       error(std::string("Variable ") + $3 + " is not a finish.");
     }
@@ -671,26 +634,25 @@ KEY_COLOR
 KEY_RED number
 KEY_GREEN number
 KEY_BLUE number {
-  $$ = new Protracer::Color((unsigned char)($3 * Protracer::Color::COMPONENT_MAX), 
-			    (unsigned char)($5 * Protracer::Color::COMPONENT_MAX), 
-			    (unsigned char)($7 * Protracer::Color::COMPONENT_MAX));
+  $$ = Protracer::Color((unsigned char)($3 * Protracer::Color::COMPONENT_MAX), 
+			(unsigned char)($5 * Protracer::Color::COMPONENT_MAX), 
+			(unsigned char)($7 * Protracer::Color::COMPONENT_MAX));
 }
 |
 KEY_COLOR KEY_RGB vector {
-  $$ = new Protracer::Color((unsigned char)($3->get_x() *
-					  Protracer::Color::COMPONENT_MAX),
-			    (unsigned char)($3->get_y() *
-					  Protracer::Color::COMPONENT_MAX),
-			    (unsigned char)($3->get_z() *
-					  Protracer::Color::COMPONENT_MAX));
-  delete $3;
+  $$ = Protracer::Color((unsigned char)($3.get_x() *
+					Protracer::Color::COMPONENT_MAX),
+			(unsigned char)($3.get_y() *
+					Protracer::Color::COMPONENT_MAX),
+			(unsigned char)($3.get_z() *
+					Protracer::Color::COMPONENT_MAX));
 }
 | NAME {
   if (Protracer::Declaration::is_defined($1)) {
     Protracer::Declaration d = Protracer::Declaration::get_declaration($1);
     
     if (d.get_type() == Protracer::Declaration::COLOR) {
-      $$ = new Protracer::Color(d.get_color());
+      $$ = d.get_color();
     } else {
       error(std::string("Variable ") + $1 + " is not a color value.");
     }
@@ -707,19 +669,19 @@ KEY_LOOK vector
 transformations_opt
 RBRACE {
   global_camera =
-    Protracer::Camera(*$4, *$8, *$6,
+    Protracer::Camera($4, $8, $6,
 		      global_parameters.get_zoom(),
 		      global_parameters.get_world_width(),
 		      global_parameters.get_world_height(),
 		      global_parameters.get_pixel_width(),
 		      global_parameters.get_pixel_height());
-  std::for_each($9->begin(), $9->end(),
-		Protracer::Transformation::Applier(&global_camera));
-  std::for_each($9->begin(), $9->end(), Protracer::Transformation::Deleter());
+
+  for (auto transformation : *$9) {
+    transformation->apply(&global_camera);
+    delete transformation;
+  }
+
   global_scene->set_camera(global_camera);
-  delete $4;
-  delete $6;
-  delete $8;
   delete $9;
 }
 | KEY_CAMERA LBRACE NAME transformations_opt RBRACE {
@@ -728,17 +690,27 @@ RBRACE {
     
     if (d.get_type() == Protracer::Declaration::CAMERA) {
       global_camera = d.get_camera();
-      std::for_each($4->begin(), $4->end(),
-		    Protracer::Transformation::Applier(&global_camera));
-      std::for_each($4->begin(), $4->end(),
-		    Protracer::Transformation::Deleter());
+
+      for (auto transformation : *$4) {
+	transformation->apply(&global_camera);
+	delete transformation;
+      }
+
       global_scene->set_camera(global_camera);
       delete $4;
     } else {
+      for (auto transformation : *$4) {
+	delete transformation;
+      }
+
       delete $4;
       error(std::string("Variable ") + $3 + " is not a camera.");
     }
   } else {
+    for (auto transformation : *$4) {
+      delete transformation;
+    }
+
     delete $4;
     error(std::string("Variable ") + $3 + " is undefined.");
   }
@@ -751,8 +723,7 @@ background:
 	KEY_BACKGROUND LBRACE
 	color
 	RBRACE {
-	  global_background = *$3;
-	  delete $3;
+	  global_background = $3;
 	}
 	;
 
@@ -801,48 +772,42 @@ NUMBER { $$ = $1; }
 
 number_dot:
 vector DOT KEY_X {
-  $$ = $1->get_x();
-  delete $1;
+  $$ = $1.get_x();
 }
 | vector DOT KEY_Y {
-  $$ = $1->get_y();
-  delete $1;
+  $$ = $1.get_y();
 }
 | vector DOT KEY_Z {
-  $$ = $1->get_z();
-  delete $1;
+  $$ = $1.get_z();
 }
 | color DOT KEY_RED {
-  $$ = float($1->get_red()) / Protracer::Color::COMPONENT_MAX;
-  delete $1;
+  $$ = float($1.get_red()) / Protracer::Color::COMPONENT_MAX;
 }
 | color DOT KEY_GREEN {
-  $$ = float($1->get_green()) / Protracer::Color::COMPONENT_MAX;
-  delete $1;
+  $$ = float($1.get_green()) / Protracer::Color::COMPONENT_MAX;
 }
 | color DOT KEY_BLUE {
-  $$ = float($1->get_blue()) / Protracer::Color::COMPONENT_MAX;
-  delete $1;
+  $$ = float($1.get_blue()) / Protracer::Color::COMPONENT_MAX;
 }
 ;
 
 number_function:
 KEY_ABS LPAREN number RPAREN { $$ = std::fabs($3); }
 | KEY_ACOS LPAREN number RPAREN { $$ = std::acos($3); }
-| KEY_ACOSH LPAREN number RPAREN { $$ = acoshf($3); }
+| KEY_ACOSH LPAREN number RPAREN { $$ = std::acosh($3); }
 | KEY_ASIN LPAREN number RPAREN { $$ = std::asin($3); }
-| KEY_ASINH LPAREN number RPAREN { $$ = asinhf($3); }
+| KEY_ASINH LPAREN number RPAREN { $$ = std::asinhf($3); }
 | KEY_ATAN LPAREN number RPAREN { $$ = std::atan($3); }
-| KEY_ATANH LPAREN number RPAREN { $$ = atanhf($3); }
+| KEY_ATANH LPAREN number RPAREN { $$ = std::atanh($3); }
 | KEY_ATAN2 LPAREN number COMMA number RPAREN { $$ = std::atan2($3, $5); }
 | KEY_CEIL LPAREN number RPAREN { $$ = std::ceil($3); } 
 | KEY_COS LPAREN number RPAREN { $$ = std::cos($3); }
 | KEY_COSH LPAREN number RPAREN { $$ = std::cosh($3); }
 | KEY_DEGREES LPAREN number RPAREN { $$ = $3 / M_PI * 180; }
-| KEY_DIV LPAREN number COMMA number RPAREN { $$ = trunc($3 / $5); }
+| KEY_DIV LPAREN number COMMA number RPAREN { $$ = std::trunc($3 / $5); }
 | KEY_EXP LPAREN number RPAREN { $$ = std::exp($3); }
 | KEY_FLOOR LPAREN number RPAREN { $$ = std::floor($3); }
-| KEY_INT LPAREN number RPAREN { $$ = truncf($3); }
+| KEY_INT LPAREN number RPAREN { $$ = std::trunc($3); }
 | KEY_LOG LPAREN number RPAREN { $$ = std::log10($3); }
 | KEY_LN LPAREN number RPAREN { $$ = std::log($3); }
 | KEY_MAX LPAREN number COMMA numbers RPAREN {
@@ -867,29 +832,23 @@ KEY_ABS LPAREN number RPAREN { $$ = std::fabs($3); }
 | KEY_TAN LPAREN number RPAREN { $$ = std::tan($3); }
 | KEY_TANH LPAREN number RPAREN { $$ = std::tanh($3); }
 | KEY_VDOT LPAREN vector COMMA vector RPAREN {
-  $$ = $3->dot(*$5);
-  delete $3;
-  delete $5;
+  $$ = $3.dot($5);
 }
 | KEY_VLENGTH LPAREN vector RPAREN {
-  $$ = $3->length();
-  delete $3;
+  $$ = $3.length();
 }
 | KEY_INSIDE LPAREN NAME COMMA vector RPAREN {
   if (Protracer::Declaration::is_defined($3)) {
     Protracer::Declaration d = Protracer::Declaration::get_declaration($3);
 
     if (d.get_type() == Protracer::Declaration::OBJECT) {
-      $$ = d.get_object()->is_inside(*$5);
+      $$ = d.get_object()->is_inside($5);
     } else {
-      delete $5;
       error(std::string("Variable ") + $3 + " is not an object value.");
     }
   } else {
-    delete $5;
     error(std::string("Variable ") + $3 + " is undefined.");
   }
-  delete $5;
   free($3);
 }
 ;
@@ -918,105 +877,77 @@ numbers: number {
 vector:
 LANGLE number COMMA
 number COMMA number RANGLE {
-  $$ = new Protracer::Vector($2, $4, $6);
+  $$ = Protracer::Vector($2, $4, $6);
 }
 | LANGLE number COMMA number RANGLE {
-  $$ = new Protracer::Vector($2, $4, 0);
+  $$ = Protracer::Vector($2, $4, 0);
 }
 | MINUS vector %prec NEG {
-  $$ = new Protracer::Vector(-(*$2));
-  delete $2;
+  $$ = -$2;
 }
 | PLUS vector %prec POS {
   $$ = $2;
 }
 | vector PLUS vector {
-  $$ = new Protracer::Vector((*$1) + (*$3));
-  delete $1;
-  delete $3;
+  $$ = $1 + $3;
 }
 | vector MINUS vector {
-  $$ = new Protracer::Vector((*$1) - (*$3));
-  delete $1;
-  delete $3;
+  $$ = $1 - $3;
 }
 | vector TIMES vector {
-  $$ = new Protracer::Vector($1->multiply_elements(*$3));
-  delete $1;
-  delete $3;
+  $$ = $1.multiply_elements($3);
 }
 | vector DIVIDED vector {
-  $$ = new Protracer::Vector($1->divide_elements(*$3));
-  delete $1;
-  delete $3;
+  $$ = $1.divide_elements($3);
 }
 | vector EQ vector {
-  $$ = new Protracer::Vector($1->get_x() == $3->get_x(),
-			     $1->get_y() == $3->get_y(),
-			     $1->get_z() == $3->get_z());
-  delete $1;
-  delete $3;
+  $$ = Protracer::Vector($1.get_x() == $3.get_x(),
+			 $1.get_y() == $3.get_y(),
+			 $1.get_z() == $3.get_z());
 }
 | vector NOT_EQ vector {
-  $$ = new Protracer::Vector($1->get_x() != $3->get_x(),
-			     $1->get_y() != $3->get_y(),
-			     $1->get_z() != $3->get_z());
-  delete $1;
-  delete $3;
+  $$ = Protracer::Vector($1.get_x() != $3.get_x(),
+			 $1.get_y() != $3.get_y(),
+			 $1.get_z() != $3.get_z());
 }
 | vector LANGLE vector {
-  $$ = new Protracer::Vector($1->get_x() < $3->get_x(),
-			     $1->get_y() < $3->get_y(),
-			     $1->get_z() < $3->get_z());
-  delete $1;
-  delete $3;
+  $$ = Protracer::Vector($1.get_x() < $3.get_x(),
+			 $1.get_y() < $3.get_y(),
+			 $1.get_z() < $3.get_z());
 }
 | vector RANGLE vector {
-  $$ = new Protracer::Vector($1->get_x() > $3->get_x(),
-			     $1->get_y() > $3->get_y(),
-			     $1->get_z() > $3->get_z());
-  delete $1;
-  delete $3;
+  $$ = Protracer::Vector($1.get_x() > $3.get_x(),
+			 $1.get_y() > $3.get_y(),
+			 $1.get_z() > $3.get_z());
 }
 | vector LT_EQ vector {
-  $$ = new Protracer::Vector($1->get_x() <= $3->get_x(),
-			     $1->get_y() <= $3->get_y(),
-			     $1->get_z() <= $3->get_z());
-  delete $1;
-  delete $3;
+  $$ = Protracer::Vector($1.get_x() <= $3.get_x(),
+			 $1.get_y() <= $3.get_y(),
+			 $1.get_z() <= $3.get_z());
 }
 | vector GT_EQ vector {
-  $$ = new Protracer::Vector($1->get_x() >= $3->get_x(),
-			     $1->get_y() >= $3->get_y(),
-			     $1->get_z() >= $3->get_z());
-  delete $1;
-  delete $3;
+  $$ = Protracer::Vector($1.get_x() >= $3.get_x(),
+			 $1.get_y() >= $3.get_y(),
+			 $1.get_z() >= $3.get_z());
 }
 | vector AND vector {
-  $$ = new Protracer::Vector($1->get_x() && $3->get_x(),
-			     $1->get_y() && $3->get_y(),
-			     $1->get_z() && $3->get_z());
-  delete $1;
-  delete $3;
+  $$ = Protracer::Vector($1.get_x() && $3.get_x(),
+			     $1.get_y() && $3.get_y(),
+			     $1.get_z() && $3.get_z());
 }
 | vector OR vector {
-  $$ = new Protracer::Vector($1->get_x() || $3->get_x(),
-			     $1->get_y() || $3->get_y(),
-			     $1->get_z() || $3->get_z());
-  delete $1;
-  delete $3;
+  $$ = Protracer::Vector($1.get_x() || $3.get_x(),
+			 $1.get_y() || $3.get_y(),
+			 $1.get_z() || $3.get_z());
 }
 | NOT vector {
-  $$ = new Protracer::Vector(!$2->get_x(), !$2->get_y(), !$2->get_z());
-  delete $2;
+  $$ = Protracer::Vector(!$2.get_x(), !$2.get_y(), !$2.get_z());
 }
 | vector QUESTION vector COLON vector {
-  if ($1->get_x() == 0.0 && $1->get_y() == 0.0 && $1->get_z() == 0.0) {
+  if ($1.get_x() == 0.0 && $1.get_y() == 0.0 && $1.get_z() == 0.0) {
     $$ = $5;
-    delete $3;
   } else {
     $$ = $3;
-    delete $5;
   }
 }
 | LPAREN vector RPAREN {
@@ -1030,9 +961,9 @@ number COMMA number RANGLE {
     Protracer::Declaration d = Protracer::Declaration::get_declaration($1);
 
     if (d.get_type() == Protracer::Declaration::VECTOR) {
-      $$ = new Protracer::Vector(d.get_vector());
+      $$ = d.get_vector();
     } else if (d.get_type() == Protracer::Declaration::SCALAR) {
-      $$ = new Protracer::Vector(d.get_scalar());
+      $$ = Protracer::Vector(d.get_scalar());
     } else {
       error(std::string("Variable ") + $1 + " is not a vector value.");
     }
@@ -1042,33 +973,26 @@ number COMMA number RANGLE {
   free($1);
 } 
 | number_promotable_to_vector {
-  $$ = new Protracer::Vector($1);
+  $$ = Protracer::Vector($1);
 }
 | KEY_VCROSS LPAREN vector COMMA vector RPAREN {
-  $$ = new Protracer::Vector(*$3 * *$5);
-  delete $3;
-  delete $5;
+  $$ = $3 * $5;
 }
 | KEY_VNORMALIZE LPAREN vector RPAREN {
-  $$ = new Protracer::Vector($3->normal());
-  delete $3;
+  $$ = $3.normal();
 }
 | KEY_VAXIS_ROTATE LPAREN vector COMMA vector COMMA number RPAREN {
-  $$ = new Protracer::Vector($3->rotate(*$5, $7 * M_PI / 180));
-  delete $3;
-  delete $5;
+  $$ = $3.rotate($5, $7 * M_PI / 180);
 }
 | KEY_VROTATE LPAREN vector COMMA vector RPAREN {
-  $$ = new Protracer::Vector($3->rotate(M_PI / 180 * *$5));
-  delete $3;
-  delete $5;
+  $$ = $3.rotate(M_PI / 180 * $5);
 }
 | KEY_MAX_EXTENT LPAREN NAME RPAREN {
   if (Protracer::Declaration::is_defined($3)) {
     Protracer::Declaration d = Protracer::Declaration::get_declaration($3);
 
     if (d.get_type() == Protracer::Declaration::OBJECT) {
-      $$ = new Protracer::Vector(d.get_object()->get_max_extent());
+      $$ = d.get_object()->get_max_extent();
     } else {
       error(std::string("Variable ") + $3 + " is not an object value.");
     }
@@ -1082,7 +1006,7 @@ number COMMA number RANGLE {
     Protracer::Declaration d = Protracer::Declaration::get_declaration($3);
 
     if (d.get_type() == Protracer::Declaration::OBJECT) {
-      $$ = new Protracer::Vector(d.get_object()->get_min_extent());
+      $$ = d.get_object()->get_min_extent();
     } else {
       error(std::string("Variable ") + $3 + " is not an object value.");
     }
@@ -1095,13 +1019,13 @@ number COMMA number RANGLE {
 
 vector_builtin:
 KEY_X {
-  $$ = new Protracer::Vector(Protracer::Vector::unit_x());
+  $$ = Protracer::Vector::unit_x();
 }
 | KEY_Y {
-  $$ = new Protracer::Vector(Protracer::Vector::unit_y());
+  $$ = Protracer::Vector::unit_y();
   }
 | KEY_Z {
-  $$ = new Protracer::Vector(Protracer::Vector::unit_z());
+  $$ = Protracer::Vector::unit_z();
   };
 
 logical: number EQ number { $$ = $1 == $3; }
@@ -1124,19 +1048,16 @@ DIRECTIVE_DECLARE NAME EQ number SEMICOLON {
   free($2);
 }
 | DIRECTIVE_DECLARE NAME EQ vector SEMICOLON {
-  Protracer::Declaration::add_global_declaration(Protracer::Declaration($2, *$4));
+  Protracer::Declaration::add_global_declaration(Protracer::Declaration($2, $4));
   free($2);
-  delete $4;
 }
 | DIRECTIVE_DECLARE NAME EQ color SEMICOLON {
-  Protracer::Declaration::add_global_declaration(Protracer::Declaration($2, *$4));
+  Protracer::Declaration::add_global_declaration(Protracer::Declaration($2, $4));
   free($2);
-  delete $4;
 }
 | DIRECTIVE_DECLARE NAME EQ finish opt_semicolon {
-  Protracer::Declaration::add_global_declaration(Protracer::Declaration($2, *$4));
+  Protracer::Declaration::add_global_declaration(Protracer::Declaration($2, $4));
   free($2);
-  delete $4;
 }
 | DIRECTIVE_DECLARE NAME EQ pigment opt_semicolon {
   Protracer::Declaration::add_global_declaration(Protracer::Declaration($2, $4));

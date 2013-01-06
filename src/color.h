@@ -20,6 +20,8 @@
 #ifndef COLOR_H
 #define COLOR_H
 
+#include <Magick++/Color.h>
+
 namespace Protracer {
   
   // CRTP base class for color expressions
@@ -40,6 +42,7 @@ namespace Protracer {
     Color() : red(0), green(0), blue(0) {}
     Color(unsigned char red, unsigned char green, unsigned char blue) :
       red(red), green(green), blue(blue) {}
+    Color(const Magick::Color& c);
 
     template <typename E>
     Color(const ColorExpression<E>& expr) {
@@ -49,6 +52,8 @@ namespace Protracer {
       green = c.get_green();
       blue = c.get_blue();
     }
+
+    operator Magick::Color() const;
 
     unsigned char get_red() const { return red; }
     unsigned char get_green() const { return green; }

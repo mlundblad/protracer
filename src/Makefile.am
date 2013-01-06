@@ -1,5 +1,8 @@
 bin_PROGRAMS=protracer
 
+AM_CPPFLAGS=$(PROTRACER_CFLAGS)
+protracer_LDADD=$(PROTRACER_LIBS)
+
 protracer_SOURCES=bitmap.cc \
 	bitmap.h \
 	bitmap_pigment.cc \
@@ -41,8 +44,6 @@ protracer_SOURCES=bitmap.cc \
 	plane.h \
 	planar_object.cc \
 	planar_object.h \
-	ppm_file.cc \
-	ppm_file.h \
 	ray.h \
 	rotation.cc \
 	rotation.h \
