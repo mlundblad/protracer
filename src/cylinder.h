@@ -21,24 +21,31 @@
 #define CYLINDER_H
 
 #include "object.h"
+#include "disc.h"
 
 namespace Protracer {
 
   class Cylinder : public Object {
   public:
     Cylinder(const Vector& base_point, const Vector& cap_point, float radius,
-	     Pigment* pigment, const Finish& finish) :
-      Object(pigment, finish), base_point(base_point), cap_point(cap_point),
-      radius(radius) {}
+             bool open);
+
+    virtual HitCalculation calculate_hit(const Ray& ray) const;
 
     virtual void translate(const Vector& v);
     virtual void rotate(const Vector& r);
+
+    virtual Vector get_max_extent() const;
+    virtual Vector get_min_extent() const;
 
   private:
     Vector base_point;
     Vector cap_point;
     float radius;
     bool open;
+
+    Disc base_disc;
+    Disc cap_disc;
   };
 
 }

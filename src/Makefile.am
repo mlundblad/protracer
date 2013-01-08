@@ -16,6 +16,8 @@ protracer_SOURCES=bitmap.cc \
 	composed_transformation.cc \
 	composed_transformation.h \
 	constants.h \
+	cylinder.cc \
+	cylinder.h \
 	declaration.cc \
 	declaration.h \
 	disc.h \

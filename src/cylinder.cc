@@ -18,8 +18,11 @@
  */
 
 #include <cmath>
+#include <algorithm>
+#include <limits>
 
 #include "cylinder.h"
+#include "constants.h"
 
 namespace Protracer {
   
@@ -35,6 +38,9 @@ namespace Protracer {
   HitCalculation
   Cylinder::calculate_hit(const Ray& ray) const
   {
+    // candidate hit results
+    HitCalculation results[3];
+
     // ray: P(t) = o + t * v;
     Vector o = ray.get_origin();
     Vector v = ray.get_direction();
@@ -49,9 +55,74 @@ namespace Protracer {
     float c = aoxab.dot(aoxab) - radius * radius * ab2;
 
     // solve second order equation : a*t^2 + b*t + c = 0
-    float t1 = (-b + std::sqrt(b * b - 4 * a * c)) / (2 * a);
-    float t2 = (-b - std::sqrt(b * b - 4 * a * c)) / (2 * a);
-    float t = t1 < t2 ? t1 : t2;
+    float delta = b * b - 4 * a * c;
+
+    if (delta >= 0.0) {
+      float sqrt_delta = std::sqrt(delta);
+      float t1 = (-b + sqrt_delta) / (2 * a);
+      float t2 = (-b - sqrt_delta) / (2 * a);
+      float tmin = std::min(t1, t2);
+      float tmax = std::max(t1, t2);
+
+      Vector near = o + tmin * v;
+      Vector far = o + tmax * v;
+
+      // check if each hit point lies within the cylinder
+      // shoot a ray at each cap disc
+      Ray near_base_ray(near + EPS * v, base_point - cap_point);
+      HitCalculation near_base_hit = base_disc.calculate_hit(near_base_ray);
+      Ray near_cap_ray(near + EPS * v, cap_point - base_point);
+      HitCalculation near_cap_hit = cap_disc.calculate_hit(near_cap_ray);
+
+      if (near_base_hit.is_hit() && near_cap_hit.is_hit()) {
+	// the nearest intersection is the candidate hit for
+	// the cylinder part (still need to check also the cap discs
+	// if the cylinder is non-open
+	
+	// calculate the hit point normal using one of the cap discs
+	float d = near_base_hit.get_distance();
+	Vector disc_hit = near + d * Vector(base_point - cap_point).normal();
+	results[0] = HitCalculation(true, tmin, disc_hit - base_point,
+				    get_pigment().get_color(), get_finish());
+      } else {
+	// determine if the far-away hit point lies on the cylinder
+	Ray far_base_ray(far - EPS * v, base_point - cap_point);
+	HitCalculation far_base_hit = base_disc.calculate_hit(far_base_ray);
+	Ray far_cap_ray(far - EPS * v, cap_point - base_point);
+	HitCalculation far_cap_hit = cap_disc.calculate_hit(far_cap_ray);
+	
+	if (far_base_hit.is_hit() && far_cap_hit.is_hit()) {
+	  float d = far_base_hit.get_distance();
+	  Vector disc_hit = far + d * Vector(base_point - cap_point).normal();
+	  // the hit point normal is negated compared to the above case
+	  // for the nearest hit
+	  results[0] = HitCalculation(true, tmax, base_point - disc_hit,
+				    get_pigment().get_color(), get_finish());
+	  
+	}
+      }
+    }
+
+    // calculate hits on the cap discs
+    if (!open) {
+      results[1] = base_disc.calculate_hit(ray);
+      results[2] = cap_disc.calculate_hit(ray);
+    }
+    
+    HitCalculation nearest_hit;
+    float nearest = std::numeric_limits<float>::infinity();
+    
+    for (auto h : results) {
+      if (h.is_hit()) {
+	float d = h.get_distance();
+	if (d < nearest) {
+	  nearest_hit = h;
+	  nearest = d;
+	}
+      }
+    }
+
+    return nearest_hit;
   }
 
 
