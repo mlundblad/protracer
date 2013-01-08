@@ -172,4 +172,13 @@ namespace Protracer {
 		  min_base.get_z() : min_cap.get_z());
   }
 
+  bool
+  Cylinder::is_inside(const Vector& v) const
+  {
+    HitCalculation base_hit =
+      base_disc.calculate_hit(Ray(v, base_point - cap_point));
+    HitCalculation cap_hit =
+      cap_disc.calculate_hit(Ray(v, cap_point - base_point));
+  }
+  
 }
