@@ -179,6 +179,8 @@ namespace Protracer {
       base_disc.calculate_hit(Ray(v, base_point - cap_point));
     HitCalculation cap_hit =
       cap_disc.calculate_hit(Ray(v, cap_point - base_point));
+
+    return base_hit.is_hit() && cap_hit.is_hit();
   }
   
 }
