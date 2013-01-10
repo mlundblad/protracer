@@ -29,6 +29,7 @@ namespace Protracer {
   public:
     Cylinder(const Vector& base_point, const Vector& cap_point, float radius,
              bool open);
+    virtual Cylinder* copy() const;
 
     virtual HitCalculation calculate_hit(const Ray& ray) const;
 

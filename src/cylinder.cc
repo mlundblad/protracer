@@ -20,6 +20,7 @@
 #include <cmath>
 #include <algorithm>
 #include <limits>
+#include <iostream>
 
 #include "cylinder.h"
 #include "constants.h"
@@ -34,6 +35,18 @@ namespace Protracer {
   {
   }
 
+  Cylinder*
+  Cylinder::copy() const
+  {
+    Cylinder* cylinder = new Cylinder(base_point, cap_point, radius, open);
+
+    if (has_custom_pigment())
+      cylinder->set_pigment(get_pigment().copy());
+    if (has_custom_finish())
+      cylinder->set_finish(get_finish());
+
+    return cylinder;
+  }
 
   HitCalculation
   Cylinder::calculate_hit(const Ray& ray) const
@@ -67,38 +80,70 @@ namespace Protracer {
       Vector near = o + tmin * v;
       Vector far = o + tmax * v;
 
+      if (v.get_x() == 0  && v.get_y() == 0) {
+	std::cerr << "shooting straight" << std::endl;
+	std::cerr << "z: " << v.get_z() << std::endl;
+	std::cerr << "coeffs: " << "a: " << a << ", b: " << b
+		  << ", c: " << c << std::endl;
+	std::cerr << "delta: " << delta << std::endl;
+      
+	std::cerr << "near: " << near << std::endl;
+	std::cerr << "far: " << far << std::endl;
+	std::cerr << "origin: " << o << std::endl;
+	std::cerr << "tmin: " << tmin << std::endl;
+	std::cerr << "tmax: " << tmax << std::endl;
+      }
+
+
       // check if each hit point lies within the cylinder
       // shoot a ray at each cap disc
-      Ray near_base_ray(near + EPS * v, base_point - cap_point);
-      HitCalculation near_base_hit = base_disc.calculate_hit(near_base_ray);
-      Ray near_cap_ray(near + EPS * v, cap_point - base_point);
-      HitCalculation near_cap_hit = cap_disc.calculate_hit(near_cap_ray);
-
-      if (near_base_hit.is_hit() && near_cap_hit.is_hit()) {
-	// the nearest intersection is the candidate hit for
-	// the cylinder part (still need to check also the cap discs
-	// if the cylinder is non-open
+      if (tmin > 0) {
+	Ray near_base_ray(near + EPS * v, base_point - cap_point);
+	HitCalculation near_base_hit = base_disc.calculate_hit(near_base_ray);
+	Ray near_cap_ray(near + EPS * v, cap_point - base_point);
+	HitCalculation near_cap_hit = cap_disc.calculate_hit(near_cap_ray);
 	
-	// calculate the hit point normal using one of the cap discs
-	float d = near_base_hit.get_distance();
-	Vector disc_hit = near + d * Vector(base_point - cap_point).normal();
-	results[0] = HitCalculation(true, tmin, disc_hit - base_point,
-				    get_pigment().get_color(), get_finish());
-      } else {
-	// determine if the far-away hit point lies on the cylinder
-	Ray far_base_ray(far - EPS * v, base_point - cap_point);
-	HitCalculation far_base_hit = base_disc.calculate_hit(far_base_ray);
-	Ray far_cap_ray(far - EPS * v, cap_point - base_point);
-	HitCalculation far_cap_hit = cap_disc.calculate_hit(far_cap_ray);
+	if (v.get_x() == 0 && v.get_y() == 0) {
+	  std::cerr << "near->base: " << near_base_ray.get_direction()
+		    << std::endl;
+	  std::cerr << "near->cap: " << near_cap_ray.get_direction()
+		    << std::endl;
+	}
 	
-	if (far_base_hit.is_hit() && far_cap_hit.is_hit()) {
-	  float d = far_base_hit.get_distance();
-	  Vector disc_hit = far + d * Vector(base_point - cap_point).normal();
-	  // the hit point normal is negated compared to the above case
-	  // for the nearest hit
-	  results[0] = HitCalculation(true, tmax, base_point - disc_hit,
-				    get_pigment().get_color(), get_finish());
+	if (near_base_hit.is_hit() && near_cap_hit.is_hit()) {
+	  // the nearest intersection is the candidate hit for
+	  // the cylinder part (still need to check also the cap discs
+	  // if the cylinder is non-open
 	  
+	  if (v.get_x() == 0 && v.get_y() == 0) {
+	    std::cerr << "near point hit both caps" << std::endl;
+	  }
+	  
+	  // calculate the hit point normal using one of the cap discs
+	  float d = near_base_hit.get_distance();
+	  Vector disc_hit = near + d * Vector(base_point - cap_point).normal();
+	  results[0] = HitCalculation(true, tmin, disc_hit - base_point,
+				      get_pigment().get_color(), get_finish());
+	  if (v.get_x() == 0 && v.get_y() == 0) {
+	    std::cerr << "hit normal:" << results[0].get_normal() << std::endl;
+	  }
+	  
+	} else if (tmax > 0) {
+	  // determine if the far-away hit point lies on the cylinder
+	  Ray far_base_ray(far - EPS * v, base_point - cap_point);
+	  HitCalculation far_base_hit = base_disc.calculate_hit(far_base_ray);
+	  Ray far_cap_ray(far - EPS * v, cap_point - base_point);
+	  HitCalculation far_cap_hit = cap_disc.calculate_hit(far_cap_ray);
+	  
+	  if (far_base_hit.is_hit() && far_cap_hit.is_hit()) {
+	    float d = far_base_hit.get_distance();
+	    Vector disc_hit = far + d * Vector(base_point - cap_point).normal();
+	    // the hit point normal is negated compared to the above case
+	    // for the nearest hit
+	    results[0] = HitCalculation(true, tmax, base_point - disc_hit,
+					get_pigment().get_color(), get_finish());
+	    
+	  }
 	}
       }
     }
@@ -120,6 +165,14 @@ namespace Protracer {
 	  nearest = d;
 	}
       }
+    }
+
+    if (v.get_x() == 0 && v.get_y() == 0) {
+      std::cerr << "hit: normal: " << nearest_hit.get_normal() << std::endl;
+      std::cerr << "hit: dist: " << nearest_hit.get_distance() << std::endl;
+      std::cerr << "reflection: " << get_finish().get_reflection() << std::endl;
+      std::cerr << "diffuse: " << get_finish().get_diffusion() << std::endl;
+      std::cerr << "col: " << int(nearest_hit.get_color().get_blue()) << std::endl;
     }
 
     return nearest_hit;

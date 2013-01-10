@@ -80,6 +80,7 @@ int yyerror(char *s);
 #include "triangle.h"
 #include "disc.h"
 #include "box.h"
+#include "cylinder.h"
 #include "union.h"
 #include "camera.h"
 #include "color.h"
@@ -130,6 +131,7 @@ int yyerror(char *s);
   Protracer::Plane*       plane;
   Protracer::Disc*        disc;
   Protracer::Box*         box;
+  Protracer::Cylinder*    cylinder;
   Protracer::Union*       Union;
   Protracer::Object*      object;
   Protracer::Camera*      camera;
@@ -206,6 +208,7 @@ int yyerror(char *s);
 %type <sphere> sphere
 %type <disc> disc
 %type <box> box
+%type <cylinder> cylinder
 %type <Union> union
 %type <vector> vector
 %type <vector> vector_builtin;
@@ -234,6 +237,7 @@ int yyerror(char *s);
 %type <light> light
 %type <color> background
 %type <value> opt_hole
+%type <logical> opt_open
 %type <number_list> numbers
 %type <logical> logical;
 %type <string> declaration;
@@ -309,6 +313,7 @@ object: sphere { $$ = $1; }
 | plane { $$ = $1; }
 | disc { $$ = $1; }
 | box { $$ = $1; }
+| cylinder { $$ = $1; }
 | union { $$ = $1; }
 | KEY_OBJECT LBRACE NAME object_mods RBRACE {
   if (Protracer::Declaration::is_defined($3)) {
@@ -440,6 +445,33 @@ box:
 
      delete $6;
    };
+
+cylinder:
+  KEY_CYLINDER LBRACE
+  vector COMMA
+  vector COMMA
+  number
+  opt_open
+  object_mods
+  RBRACE {
+    $$ = new Protracer::Cylinder($3, $5, $7, $8);
+
+    for (auto object_mod : *$9) {
+      object_mod->apply($$);
+      delete object_mod;
+    }
+
+    delete $9;
+  };
+
+opt_open:
+// empty
+{
+  $$ = false;
+} |
+KEY_OPEN {
+  $$ = true;
+};
 
 union:
   KEY_UNION LBRACE
