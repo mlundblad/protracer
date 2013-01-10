@@ -19,6 +19,7 @@
 
 #include "vector.h"
 #include <cmath>
+#include <ostream>
 
 namespace Protracer {
   
@@ -88,4 +89,10 @@ namespace Protracer {
     return *this;
   }
 
+  std::ostream&
+  operator<<(std::ostream& os, const Vector& v)
+  {
+    os << "<" << v.get_x() << "," << v.get_y() << "," << v.get_z() << ">";
+    return os;
+  }
 }

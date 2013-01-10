@@ -21,6 +21,7 @@
 #define VECTOR_H
 
 #include <math.h>
+#include <ostream>
 
 namespace Protracer {
 
@@ -92,6 +93,8 @@ namespace Protracer {
     float y;
     float z;
   };
+
+  std::ostream& operator<<(std::ostream& os, const Vector& v);
 
   template <typename E1, typename E2>
   class VectorCross : public VectorExpression<VectorCross<E1, E2> > {
