@@ -172,12 +172,9 @@ namespace Protracer {
     Vector max_base = base_disc.get_max_extent();
     Vector max_cap = cap_disc.get_max_extent();
 
-    return Vector(max_base.get_x() > max_cap.get_x() ?
-		  max_base.get_x() : max_cap.get_x(),
-		  max_base.get_y() > max_cap.get_y() ?
-		  max_base.get_y() : max_cap.get_y(),
-		  max_base.get_z() > max_cap.get_z() ?
-		  max_base.get_z() : max_cap.get_z());
+    return Vector(std::max(max_base.get_x(), max_cap.get_x()),
+		  std::max(max_base.get_y(), max_cap.get_y()),
+		  std::max(max_base.get_z(), max_cap.get_z()));
   }
 
   Vector
@@ -186,12 +183,9 @@ namespace Protracer {
     Vector min_base = base_disc.get_min_extent();
     Vector min_cap = cap_disc.get_min_extent();
 
-    return Vector(min_base.get_x() < min_cap.get_x() ?
-		  min_base.get_x() : min_cap.get_x(),
-		  min_base.get_y() < min_cap.get_y() ?
-		  min_base.get_y() : min_cap.get_y(),
-		  min_base.get_z() < min_cap.get_z() ?
-		  min_base.get_z() : min_cap.get_z());
+    return Vector(std::min(min_base.get_x(), min_cap.get_x()),
+		  std::min(min_base.get_y(), min_cap.get_y()),
+		  std::min(min_base.get_z(), min_cap.get_z()));
   }
 
   bool
