@@ -96,7 +96,6 @@ pgm             return KEY_PGM;
 pi              return KEY_PI;
 pigment		return KEY_PIGMENT;
 plane		return KEY_PLANE;
-plane_point	return KEY_PLANEPNT;
 png             return KEY_PNG;
 pole		return KEY_POLE;
 pow             return KEY_POW;
