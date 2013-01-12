@@ -20,11 +20,16 @@
 #ifndef UTIL_H
 #define UTIL_H
 
+#include <cmath>
+
 #include "vector.h"
 
 namespace Protracer {
   namespace Util {
     float shade_factor(const Vector& l0, const Vector& ri, const Vector& rn);
+
+    template <typename T>
+    T sgn(T t) { return t == 0 ? 0 : t / std::abs(t); }
   }
 }
 

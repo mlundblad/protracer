@@ -20,10 +20,10 @@
 #include <cmath>
 #include <algorithm>
 #include <limits>
-#include <iostream>
 
 #include "cylinder.h"
 #include "constants.h"
+#include "util.h"
 
 namespace Protracer {
   
@@ -62,38 +62,24 @@ namespace Protracer {
     Vector ao = o - base_point;
     Vector aoxab = ao * ab;
     Vector vxab = v * ab;
-    float ab2 = ab.dot(ab);
-    float a = vxab.dot(vxab);
-    float b = 2 * vxab.dot(aoxab);
-    float c = aoxab.dot(aoxab) - radius * radius * ab2;
+    double ab2 = ab.dot(ab);
+    double a = vxab.dot(vxab);
+    double b = 2 * vxab.dot(aoxab);
+    double c = aoxab.dot(aoxab) - radius * radius * ab2;
 
     // solve second order equation : a*t^2 + b*t + c = 0
     double delta = b * b - 4 * a * c;
 
     if (delta >= 0.0) {
-      float sqrt_delta = std::sqrt(delta);
-      float t1 = (-b + sqrt_delta) / (2 * a);
-      float t2 = (-b - sqrt_delta) / (2 * a);
+      double sqrt_delta = std::sqrt(delta);
+      double q = -1.0 / 2 * (b + Util::sgn(b) * sqrt_delta);
+      float t1 = q / a;
+      float t2 = c / q;
       float tmin = std::min(t1, t2);
       float tmax = std::max(t1, t2);
 
       Vector near = o + tmin * v;
       Vector far = o + tmax * v;
-
-      if (v.get_x() == 0  && v.get_y() == 0) {
-	std::cerr << "shooting straight" << std::endl;
-	std::cerr << "z: " << v.get_z() << std::endl;
-	std::cerr << "coeffs: " << "a: " << a << ", b: " << b
-		  << ", c: " << c << std::endl;
-	std::cerr << "delta: " << delta << std::endl;
-      
-	std::cerr << "near: " << near << std::endl;
-	std::cerr << "far: " << far << std::endl;
-	std::cerr << "origin: " << o << std::endl;
-	std::cerr << "tmin: " << tmin << std::endl;
-	std::cerr << "tmax: " << tmax << std::endl;
-      }
-
 
       // check if each hit point lies within the cylinder
       // shoot a ray at each cap disc
@@ -105,21 +91,10 @@ namespace Protracer {
 	Ray near_cap_ray(near + EPS * v, cap_point - base_point);
 	HitCalculation near_cap_hit = cap_disc.calculate_hit(near_cap_ray);
 	
-	if (v.get_x() == 0 && v.get_y() == 0) {
-	  std::cerr << "near->base: " << near_base_ray.get_direction()
-		    << std::endl;
-	  std::cerr << "near->cap: " << near_cap_ray.get_direction()
-		    << std::endl;
-	}
-	
 	if (near_base_hit.is_hit() && near_cap_hit.is_hit()) {
 	  // the nearest intersection is the candidate hit for
 	  // the cylinder part (still need to check also the cap discs
 	  // if the cylinder is non-open
-	  
-	  if (v.get_x() == 0 && v.get_y() == 0) {
-	    std::cerr << "near point hit both caps" << std::endl;
-	  }
 	  
 	  // calculate the hit point normal using one of the cap discs
 	  float d = near_base_hit.get_distance();
@@ -128,10 +103,6 @@ namespace Protracer {
 	    near + d * Vector(base_point - cap_point).normal() - EPS * v;
 	  results[0] = HitCalculation(true, tmin, disc_hit - base_point,
 				      get_pigment().get_color(), get_finish());
-	  if (v.get_x() == 0 && v.get_y() == 0) {
-	    std::cerr << "hit normal:" << results[0].get_normal() << std::endl;
-	  }
-	  
 	} else if (tmax > 0) {
 	  // determine if the far-away hit point lies on the cylinder
 	  Ray far_base_ray(far - EPS * v, base_point - cap_point);
@@ -171,14 +142,6 @@ namespace Protracer {
 	  nearest = d;
 	}
       }
-    }
-
-    if (v.get_x() == 0 && v.get_y() == 0) {
-      std::cerr << "hit: normal: " << nearest_hit.get_normal() << std::endl;
-      std::cerr << "hit: dist: " << nearest_hit.get_distance() << std::endl;
-      std::cerr << "reflection: " << get_finish().get_reflection() << std::endl;
-      std::cerr << "diffuse: " << get_finish().get_diffusion() << std::endl;
-      std::cerr << "col: " << int(nearest_hit.get_color().get_blue()) << std::endl;
     }
 
     return nearest_hit;
