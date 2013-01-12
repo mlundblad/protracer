@@ -32,13 +32,14 @@ namespace Protracer {
     // all planar objects are without an interior volume
     virtual bool is_inside(const Vector& v) const { return false; }
 
+    // override to allow syncing pigment with the spanning plane
+    void set_pigment(Pigment* pigment);
+    void set_finish(const Finish& finish);
+
   protected:
     PlanarObject(const Vector& normal, const Vector& point) :
       span_plane(normal, point) {}
 
-    // override to allow syncing pigment with the spanning plane
-    void set_pigment(Pigment* pigment);
-    void set_finish(const Finish& finish);
 
     Plane span_plane;
   };

@@ -41,6 +41,9 @@ namespace Protracer {
 
     virtual bool is_inside(const Vector& v) const;
 
+    virtual void set_pigment(Pigment* pigment);
+    virtual void set_finish(const Finish& finish);
+
   private:
     Vector base_point;
     Vector cap_point;

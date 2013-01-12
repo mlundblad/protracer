@@ -242,4 +242,21 @@ namespace Protracer {
     return base_hit.is_hit() && cap_hit.is_hit();
   }
   
+  void
+  Cylinder::set_pigment(Pigment* pigment)
+  {
+    if (pigment != &get_pigment()) {
+      base_disc.set_pigment(pigment->copy());
+      cap_disc.set_pigment(pigment->copy());
+      Object::set_pigment(pigment);
+    }
+  }
+
+  void
+  Cylinder::set_finish(const Finish& finish)
+  {
+    base_disc.set_finish(finish);
+    cap_disc.set_finish(finish);
+    Object::set_finish(finish);
+  }
 }
