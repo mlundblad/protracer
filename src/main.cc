@@ -114,11 +114,21 @@ static void usage()
 	    << "set picture height" << std::endl
             << "   -o, --output=FILE                         "
 	    << "set output file" << std::endl
-            << "   -f, --output-format=FORMAT" << std::endl
-            << "set output format, understands format strings" << std::endl
-            << "like the ImageMagick library (like PNG, JPG) " << std::endl
-            << "default is deduce format from file name" << std::endl
-            << "default when writing to stdout is PNG." << std::endl
+            << "   -f, --output-format=FORMAT                "
+            << "set output format, " << std::endl
+            << "                                             understands format"
+            << "strings like"
+            << std::endl
+            << "                                             the ImageMagick library"
+            << std::endl
+            << "                                             (like PNG, JPG)"
+            << std::endl
+            << "                                             default is too deduce format"
+            << std::endl
+            << "                                             from file name." << std::endl
+            << "                                             default when writing to stdout"
+            << std::endl
+            << "                                             is PNG." << std::endl
             << "       --help                                "
 	    << "print this help" << std::endl
             << "       --version                             "
