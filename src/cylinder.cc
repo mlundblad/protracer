@@ -98,6 +98,8 @@ namespace Protracer {
       // check if each hit point lies within the cylinder
       // shoot a ray at each cap disc
       if (tmin > 0) {
+	// compensate for rounding errors by "moving" EPS units in the
+	// ray direction
 	Ray near_base_ray(near + EPS * v, base_point - cap_point);
 	HitCalculation near_base_hit = base_disc.calculate_hit(near_base_ray);
 	Ray near_cap_ray(near + EPS * v, cap_point - base_point);
@@ -121,7 +123,9 @@ namespace Protracer {
 	  
 	  // calculate the hit point normal using one of the cap discs
 	  float d = near_base_hit.get_distance();
-	  Vector disc_hit = near + d * Vector(base_point - cap_point).normal();
+	  // the term - EPS * v compensates for the hit rounding compensation
+	  Vector disc_hit =
+	    near + d * Vector(base_point - cap_point).normal() - EPS * v;
 	  results[0] = HitCalculation(true, tmin, disc_hit - base_point,
 				      get_pigment().get_color(), get_finish());
 	  if (v.get_x() == 0 && v.get_y() == 0) {
@@ -137,11 +141,13 @@ namespace Protracer {
 	  
 	  if (far_base_hit.is_hit() && far_cap_hit.is_hit()) {
 	    float d = far_base_hit.get_distance();
-	    Vector disc_hit = far + d * Vector(base_point - cap_point).normal();
+	    Vector disc_hit =
+	      far + d * Vector(base_point - cap_point).normal() + EPS * v;
 	    // the hit point normal is negated compared to the above case
 	    // for the nearest hit
 	    results[0] = HitCalculation(true, tmax, base_point - disc_hit,
-					get_pigment().get_color(), get_finish());
+					get_pigment().get_color(),
+					get_finish());
 	    
 	  }
 	}
