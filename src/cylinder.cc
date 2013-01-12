@@ -68,7 +68,7 @@ namespace Protracer {
     float c = aoxab.dot(aoxab) - radius * radius * ab2;
 
     // solve second order equation : a*t^2 + b*t + c = 0
-    float delta = b * b - 4 * a * c;
+    double delta = b * b - 4 * a * c;
 
     if (delta >= 0.0) {
       float sqrt_delta = std::sqrt(delta);
