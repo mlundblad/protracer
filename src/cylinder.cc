@@ -30,8 +30,8 @@ namespace Protracer {
   Cylinder::Cylinder(const Vector& base_point, const Vector& cap_point,
 		     float radius, bool open) :
     base_point(base_point), cap_point(cap_point), radius(radius), open(open),
-    base_disc(base_point, cap_point - base_point, radius, 0),
-    cap_disc(cap_point, base_point - cap_point, radius, 0)
+    base_disc(base_point, cap_point - base_point, radius),
+    cap_disc(cap_point, base_point - cap_point, radius)
   {
   }
 
