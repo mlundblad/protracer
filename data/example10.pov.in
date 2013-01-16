@@ -1,0 +1,17 @@
+camera {
+ location 0
+ sky y
+ look_at z
+}
+
+light_source {
+  -z * 100
+}
+
+cylinder {
+  -y/2 * 3 + 12 * z,
+  y/2 * 3 + 6 * z,
+  1
+  pigment { color rgb <0, 0, 1> }
+}
+
