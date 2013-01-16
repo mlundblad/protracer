@@ -18,6 +18,7 @@ Makefile.in
 *.tar.xz
 *.exe
 *.anjuta
+*.iss
 tests/*.png
 
 aclocal.m4
