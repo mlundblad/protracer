@@ -23,33 +23,34 @@
 #include "vector.h"
 
 namespace Protracer {
-  Camera::Camera()
+
+  // default camera located at origo, looking in the positive z-direction
+  // oriented with picture-wise up in the positive y-direction
+  Camera::Camera() :
+    location(0),
+    look_at(0, 0, 1),
+    up(0, 1, 0),
+    zoom(DEFAULT_ZOOM),
+    world_width(DEFAULT_WORLD_WIDTH),
+    world_height(DEFAULT_WORLD_HEIGHT),
+    pixel_width(DEFAULT_PIXEL_WIDTH),
+    pixel_height(DEFAULT_PIXEL_HEIGHT)
   {
-    // default camera located at origo, looking in the positive z-direction
-    // oriented with picture-wise up in the positive y-direction
-    this->location = Vector(0, 0, 0);
-    this->look_at = Vector(0, 0, 1);
-    this->up = Vector(0, 1, 0);
-    this->zoom = DEFAULT_ZOOM;
-    this->world_width = DEFAULT_WORLD_WIDTH;
-    this->world_height = DEFAULT_WORLD_HEIGHT;
-    this->pixel_width = DEFAULT_PIXEL_WIDTH;
-    this->pixel_height = DEFAULT_PIXEL_HEIGHT;
   }
 
   Camera::Camera(const Vector& location, const Vector& look_at,
 		 const Vector& up,
 		 float zoom, float world_width, float world_height,
-		 int pixel_width, int pixel_height)
+		 int pixel_width, int pixel_height) :
+    location(location),
+    look_at(look_at),
+    up(up),
+    zoom(zoom),
+    world_width(world_width),
+    world_height(world_height),
+    pixel_width(pixel_width),
+    pixel_height(pixel_height)
   {
-    this->location = location;
-    this->look_at = look_at;
-    this->up = up;
-    this->zoom = zoom;
-    this->world_width = world_width;
-    this->world_height = world_height;
-    this->pixel_width = pixel_width;
-    this->pixel_height = pixel_height;
   }
 
   void
