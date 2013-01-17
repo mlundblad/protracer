@@ -20,7 +20,7 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
-#include <math.h>
+#include <cmath>
 #include <ostream>
 
 namespace Protracer {
@@ -32,6 +32,13 @@ namespace Protracer {
     float get_x() const { static_cast<const E&>(*this).get_x(); }
     float get_y() const { static_cast<const E&>(*this).get_y(); }
     float get_z() const { static_cast<const E&>(*this).get_z(); }
+
+    float length() const {
+      float x = static_cast<const E&>(*this).get_x();
+      float y = static_cast<const E&>(*this).get_y();
+      float z = static_cast<const E&>(*this).get_x();
+      return std::sqrt(x * x + y * y + z * z);
+    } 
 
     operator E&() { return static_cast<E&>(*this); }
     operator const E&() const { return static_cast<const E&>(*this); }
