@@ -9,9 +9,16 @@ light_source {
 }
 
 cylinder {
-  -y/2 * 3 + 12 * z,
-  y/2 * 3 + 6 * z,
+  -y/2 * 3 - x * 2 + 12 * z,
+  y/2 * 3 - x * 2 + 6 * z,
   1
   pigment { color rgb <0, 0, 1> }
 }
 
+cylinder {
+  -y/2 * 3 + x * 2 + 12 * z,
+  y/2 * 3 + x * 2 + 6 * z,
+  1
+  open
+  pigment { color rgb <0, 0, 1> }
+}
