@@ -33,7 +33,11 @@ namespace Protracer {
     bottom_plane(Plane(Vector::unit_y(), c1)),
     top_plane(Plane(Vector::unit_y(), c2)),
     left_plane(Plane(Vector::unit_x(), c1)),
-    right_plane(Plane(Vector::unit_x(), c2))
+    right_plane(Plane(Vector::unit_x(), c2)),
+    // the side vectors are initially aligned to the coordinate axis
+    up(0, (c2 - c1).get_y(), 0),
+    right((c2 - c1).get_x(), 0, 0),
+    in(0, 0, (c2 - c1).get_z())
   {
     bottom_front_left = c1;
     bottom_back_left = c1 + Vector(0, 0, (c2 - c1).get_z());
@@ -43,11 +47,6 @@ namespace Protracer {
     top_back_left = c1 + Vector(0, (c2 - c1).get_y(), (c2 - c1).get_z());
     top_front_right = c1 + Vector((c2 - c1).get_x(), (c2 - c1).get_y(), 0);
     top_back_right = c2;
-
-    // the side vectors are initially aligned to the coordinate axis
-    up = Vector(0, (c2 - c1).get_y(), 0);
-    right = Vector((c2 - c1).get_x(), 0, 0);
-    in = Vector(0, 0, (c2 - c1).get_z());
 
     rotation = 0;
 
