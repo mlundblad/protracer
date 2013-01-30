@@ -20,6 +20,8 @@
 #ifndef TRIANGLE_H
 #define TRIANGLE_H
 
+#include <tuple>
+
 #include "planar_object.h"
 #include "vector.h"
 #include "hit_calculation.h"
@@ -40,6 +42,14 @@ namespace Protracer {
 
     virtual Vector get_max_extent() const;
     virtual Vector get_min_extent() const;
+
+    Vector get_c0() const { return t0; }
+    Vector get_c1() const { return va + t0; }
+    Vector get_c2() const { return vb + t0; }
+
+  protected:
+    std::tuple<HitCalculation, float, float>
+    calculate_hit_with_coords(const Ray& ray) const;
 
   private:
     Vector t0;

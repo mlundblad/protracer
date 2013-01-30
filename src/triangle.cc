@@ -48,6 +48,12 @@ namespace Protracer {
   HitCalculation
   Triangle::calculate_hit(const Ray& ray) const
   {
+    return std::get<0>(calculate_hit_with_coords(ray));
+  }
+
+  std::tuple<HitCalculation, float, float>
+  Triangle::calculate_hit_with_coords(const Ray& ray) const
+  {
     HitCalculation hc = span_plane.calculate_hit(ray);
 
     if (hc.is_hit()) {
@@ -65,12 +71,12 @@ namespace Protracer {
 	    hc.set_color(pigment.get_color(u, v));
           }
 
-	  return hc;
+	  return std::make_tuple(hc, u, v);
 	}
       }
     }
 
-    return HitCalculation(false);
+    return std::make_tuple(HitCalculation(false), 0, 0);
   }
 
   void
