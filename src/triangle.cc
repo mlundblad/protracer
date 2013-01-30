@@ -19,6 +19,8 @@
 
 #include "triangle.h"
 
+#include <algorithm>
+
 namespace Protracer {
 
   Triangle::Triangle(const Vector& c0, const Vector& c1, const Vector& c2) 
@@ -112,9 +114,9 @@ namespace Protracer {
     float y2 = y0 + vb.get_y();
     float z2 = z0 + vb.get_z();
 
-    return Vector(x0 > x1 ? (x0 > x2 ? x0 : x2) : x1,
-                  y0 > y1 ? (y0 > y2 ? y0 : y2) : y1,
-                  z0 > z1 ? (z0 > z2 ? z0 : z2) : z1);
+    return Vector(std::max(x0, std::max(x1, x2)),
+                  std::max(y0, std::max(y1, y2)),
+                  std::max(z0, std::max(z1, z2)));
   }
 
   Vector
@@ -130,9 +132,9 @@ namespace Protracer {
     float y2 = y0 + vb.get_y();
     float z2 = z0 + vb.get_z();
 
-    return Vector(x0 < x1 ? (x0 < x2 ? x0 : x2) : x1,
-                  y0 < y1 ? (y0 < y2 ? y0 : y2) : y1,
-                  z0 < z1 ? (z0 < z2 ? z0 : z2) : z1);
+    return Vector(std::min(x0, std::min(x1, x2)),
+                  std::min(y0, std::min(y1, y2)),
+                  std::min(z0, std::min(z1, z2)));
   }
 
 }
