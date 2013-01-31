@@ -51,6 +51,8 @@ protracer_SOURCES=bitmap.cc \
 	rotation.h \
 	scene.h \
 	scene.cc \
+	smooth_triangle.cc \
+	smooth_triangle.h \
 	sphere.cc \
 	sphere.h \
 	transformation.h \
