@@ -82,6 +82,7 @@ int yyerror(char *s);
 #include "box.h"
 #include "cylinder.h"
 #include "union.h"
+#include "smooth_triangle.h"
 #include "camera.h"
 #include "color.h"
 #include "object.h"
@@ -132,6 +133,7 @@ int yyerror(char *s);
   Protracer::Disc*        disc;
   Protracer::Box*         box;
   Protracer::Cylinder*    cylinder;
+  Protracer::SmoothTriangle* smooth_triangle;
   Protracer::Union*       Union;
   Protracer::Object*      object;
   Protracer::Camera*      camera;
@@ -177,6 +179,7 @@ int yyerror(char *s);
 %token KEY_GIF KEY_IFF KEY_JPEG KEY_PGM KEY_PNG KEY_PPM KEY_TIFF KEY_TGA KEY_SYS
 %token KEY_OBJECT
 %token KEY_POLE KEY_EQUATOR KEY_DISC KEY_BOX KEY_UNION KEY_CYLINDER
+%token KEY_SMOOTH_TRIANGLE
 %token KEY_OPEN
 %token KEY_X KEY_Y KEY_Z
 %token KEY_ABS KEY_ACOS KEY_ACOSH KEY_ASIN KEY_ASINH KEY_ATAN KEY_ATANH
@@ -205,6 +208,7 @@ int yyerror(char *s);
 %type <object> object
 %type <plane> plane
 %type <triangle> triangle
+%type <smooth_triangle> smooth_triangle
 %type <sphere> sphere
 %type <disc> disc
 %type <box> box
@@ -310,6 +314,7 @@ light: KEY_LIGHT LBRACE vector transformations_opt RBRACE {
 
 object: sphere { $$ = $1; }
 | triangle { $$ = $1; }
+| smooth_triangle { $$ = $1; }
 | plane { $$ = $1; }
 | disc { $$ = $1; }
 | box { $$ = $1; }
@@ -411,6 +416,28 @@ triangle:
 	  delete $8;
 	}
         ;
+
+smooth_triangle:
+	KEY_SMOOTH_TRIANGLE LBRACE
+	vector COMMA
+	vector COMMA
+	vector COMMA
+	vector COMMA
+	vector COMMA
+	vector
+	object_mods
+	RBRACE { 
+	  $$ = new Protracer::SmoothTriangle($3, $5, $7, $9, $11, $13);
+
+	  for (auto object_mod : *$14) {
+	    object_mod->apply($$);
+	    delete object_mod;
+	  }
+
+	  delete $14;
+	}
+        ;
+
 	
 disc:
     KEY_DISC LBRACE 

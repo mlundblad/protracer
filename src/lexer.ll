@@ -109,6 +109,7 @@ select          return KEY_SELECT;
 sin             return KEY_SIN;
 sinh            return KEY_SINH;
 sky		return KEY_SKY;
+smooth_triangle return KEY_SMOOTH_TRIANGLE;
 sphere		return KEY_SPHERE;
 sys             return KEY_SYS;
 tan             return KEY_TAN;
