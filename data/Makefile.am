@@ -6,7 +6,7 @@ examples_DATA = example1.pov example2.pov example3.pov example4.pov\
 CLEANFILES=example1.pov example2.pov example3.pov example4.pov example5.pov\
 	example6.pov example7.pov example8.pov example9.pov example10.pov
 DISTCLEANFILES=example1.pov example2.pov example3.pov example4.pov example5.pov\
-	example6.pov example7.pov example8.pov example9.pov
+	example6.pov example7.pov example8.pov example9.pov example10.pov
 
 edit = sed \
 	-e 's|@EXAMPLESDIR[@]|$(examplesdir)|g'
