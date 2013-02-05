@@ -1,0 +1,17 @@
+camera {
+ location 0
+ sky y
+ look_at z
+}
+
+light_source {
+  -z * 10 + x * 4 + y * 4
+}
+
+smooth_triangle {
+  y + 5 * z, -z + y,
+  x - y + 5 * z, -z + x - y,
+  -x - y + 5 * z, -z - x - y		
+  pigment { color rgb <0, 0, 1> }
+}
+
