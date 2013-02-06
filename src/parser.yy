@@ -27,29 +27,9 @@
 #include <cmath>
 
 #include "scene.h"
-#include "vector.h"
-#include "plane.h"
-#include "sphere.h"
-#include "triangle.h"
-#include "camera.h"
-#include "color.h"
-#include "object.h"
-#include "light.h"
-
-#include "finish.h"
-#include "pigment.h"
-#include "bitmap.h"
 
 #include "parameters.h"
 #include "declaration.h"
-
-#include "object_modification.h"
-#include "finish_modification.h"
-#include "pigment_modification.h"
-#include "transformation.h"
-#include "translation.h"
-#include "rotation.h"
-#include "composed_transformation.h"
 
   Protracer::Scene*      global_scene;
   Protracer::Parameters global_parameters;
