@@ -1,4 +1,4 @@
-version 3.2 (2013-xx-xx)
+version 3.2 "Phong's normals" (2013-02-06)
 	* Add support for Phong-shaded triangles.
 
 version 3.1 "Pipe Dream" (2013-01-17)
