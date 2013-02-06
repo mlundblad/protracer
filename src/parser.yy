@@ -127,14 +127,6 @@ int yyerror(char *s);
   std::list<float>* number_list; // for scalar argument lists
   bool          logical;
   Protracer::Vector	vector;
-  Protracer::Sphere*      sphere;
-  Protracer::Triangle*    triangle;
-  Protracer::Plane*       plane;
-  Protracer::Disc*        disc;
-  Protracer::Box*         box;
-  Protracer::Cylinder*    cylinder;
-  Protracer::SmoothTriangle* smooth_triangle;
-  Protracer::Union*       Union;
   Protracer::Object*      object;
   Protracer::Camera*      camera;
   Protracer::Light*       light;
@@ -206,14 +198,14 @@ int yyerror(char *s);
 %type <objectList> scene
 %type <object> item
 %type <object> object
-%type <plane> plane
-%type <triangle> triangle
-%type <smooth_triangle> smooth_triangle
-%type <sphere> sphere
-%type <disc> disc
-%type <box> box
-%type <cylinder> cylinder
-%type <Union> union
+%type <object> plane
+%type <object> triangle
+%type <object> smooth_triangle
+%type <object> sphere
+%type <object> disc
+%type <object> box
+%type <object> cylinder
+%type <object> union
 %type <vector> vector
 %type <vector> vector_builtin;
 %type <value> number
@@ -508,7 +500,7 @@ union:
     $$ = new Protracer::Union;
   
   for (auto object : *$3) {
-    $$->add_object(object);
+    dynamic_cast<Protracer::Union*>($$)->add_object(object);
   }
 
   for (auto object_mod : *$4) {
