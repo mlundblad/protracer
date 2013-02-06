@@ -24,7 +24,7 @@ namespace Protracer {
   SmoothTriangle::SmoothTriangle(const Vector& c0, const Vector& n0,
 				 const Vector& c1, const Vector& n1,
 				 const Vector& c2, const Vector& n2) :
-    Triangle(c0, c1, c2), n0(n0), n1(n1), n2(n2)
+    Triangle(c0, c1, c2), n0(n0.normal()), n1(n1.normal()), n2(n2.normal())
   {
   }
 
@@ -60,7 +60,7 @@ namespace Protracer {
       if (v == 1.0) {
 	// special case: avoid divide by 0
 	return HitCalculation(true, hc.get_distance(),
-			      n2.normal(), hc.get_color(), hc.get_finish());
+			      n2, hc.get_color(), hc.get_finish());
       }
 
       float u1 = u / (1.0 - v);
@@ -68,7 +68,7 @@ namespace Protracer {
       Vector nb = (1.0 - v) * n1 + v * n2;
       Vector n = (1.0 - u1) * na + u1 * nb;
 
-      return HitCalculation(true, hc.get_distance(), n.normal(), hc.get_color(),
+      return HitCalculation(true, hc.get_distance(), n, hc.get_color(),
 			    hc.get_finish());
     }
 
