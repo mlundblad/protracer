@@ -68,6 +68,8 @@ namespace Protracer {
     float get_z() const { return z; }
 
     Vector& operator=(const Vector& u);
+    Vector& operator+=(const Vector& u);
+    Vector& operator-=(const Vector& u);
 
     float dot(const Vector& u) const { return x * u.x + y * u.y + z * u.z; }
 
@@ -91,9 +93,6 @@ namespace Protracer {
     // rotate vector around each of the axis (x, y, z) in turn by the amount
     // (in radians) expressed by the rotation vector
     Vector rotate(const Vector& rot) const;
-
-    Vector& operator+=(const Vector& v);
-    Vector& operator-=(const Vector& v);
 
   private:
     float x;

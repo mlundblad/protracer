@@ -20,7 +20,10 @@
 #ifndef COLOR_H
 #define COLOR_H
 
+#include "vector.h"
+
 #include <Magick++/Color.h>
+#include <algorithm>
 
 namespace Protracer {
   
@@ -42,8 +45,6 @@ namespace Protracer {
     Color() : red(0), green(0), blue(0) {}
     Color(unsigned char red, unsigned char green, unsigned char blue) :
       red(red), green(green), blue(blue) {}
-    Color(const Magick::Color& c);
-
     template <typename E>
     Color(const ColorExpression<E>& expr) {
       const E& c = expr;
@@ -53,13 +54,21 @@ namespace Protracer {
       blue = c.get_blue();
     }
 
-    operator Magick::Color() const;
-
     unsigned char get_red() const { return red; }
     unsigned char get_green() const { return green; }
     unsigned char get_blue() const { return blue; }
 
+    Color& operator+=(const Color& c) {
+      red = std::min(int(red) + int(c.red), int(COMPONENT_MAX));
+      green = std::min(int(green) + int(c.green), int(COMPONENT_MAX));
+      blue = std::min(int(blue) + int(c.blue), int(COMPONENT_MAX));
+      return *this;
+    }
+
     static const unsigned char COMPONENT_MAX = 255;
+    static Color white() {
+      return Color(COMPONENT_MAX, COMPONENT_MAX, COMPONENT_MAX);
+    }
 
   private:
     unsigned char red;
@@ -103,6 +112,27 @@ namespace Protracer {
 	Color::COMPONENT_MAX : c1.get_blue() + c2.get_blue(); }
   };
     
+  template <typename E1>
+  class ColorScale : public ColorExpression<ColorScale<E1>> {
+    const E1& c;
+    const Vector& v;
+  public:
+    ColorScale(const ColorExpression<E1>& c, const Vector& v) :
+      c(c), v(v) {}
+
+    unsigned char get_red() const {
+      return std::min(int(c.get_red() * v.get_x()), int(Color::COMPONENT_MAX));
+    }
+
+    unsigned char get_green() const {
+      return std::min(int(c.get_green() * v.get_y()), int(Color::COMPONENT_MAX));
+    }
+
+    unsigned char get_blue() const {
+      return std::min(int(c.get_blue() * v.get_z()), int(Color::COMPONENT_MAX));
+    }
+  };
+
   template <typename E>
   const ColorShade<E>
   operator*(const ColorExpression<E>& c, float s)
@@ -122,6 +152,13 @@ namespace Protracer {
   operator+(const ColorExpression<E1>& c1, const ColorExpression<E2>& c2)
   {
     return ColorCombine<E1, E2>(c1, c2);
+  }
+
+  template<typename E>
+  const ColorScale<E>
+  operator*(const ColorExpression<E>& c, const Vector& v)
+  {
+    return ColorScale<E>(c, v);
   }
 
 }

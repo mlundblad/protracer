@@ -20,9 +20,14 @@
 #include "light.h"
 
 namespace Protracer {
-  Light::Light(const Vector& position)
+  Light::Light(const Vector& position) :
+    position(position), color(Color::white())
   {
-    this->position = position;
+  }
+
+  Light::Light(const Vector& position, const Color& color) :
+    position(position), color(color)
+  {
   }
 
   void

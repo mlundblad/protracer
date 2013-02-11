@@ -41,8 +41,7 @@ namespace Protracer {
 			    bool no_shadow_no_reflection) const
   {
     float least_distance = std::numeric_limits<float>::infinity();
-    float shade = 0.0;
-
+    Vector shade;
     Color       col;
 
     HitCalculation     nearest_hit;
@@ -90,14 +89,18 @@ namespace Protracer {
 	}
 
 	if (is_lit) {
-	  shade += 
-	    Util::shade_factor(l.get_position(),
-			       hit_point, 
-			       nearest_hit.get_normal());
+          float factor = Util::shade_factor(l.get_position(),
+                                            hit_point, 
+                                            nearest_hit.get_normal());
+          shade += Vector(float(l.get_color().get_red()) /
+                          Color::COMPONENT_MAX * factor,
+                          float(l.get_color().get_green()) /
+                          Color::COMPONENT_MAX * factor,
+                          float(l.get_color().get_blue()) /
+                          Color::COMPONENT_MAX * factor);
 	}
       }
-
-      
+    
       /* Base case: don't take reflection into acount, 
 	 but shade the accumulated light from light sources */
       if (refl_depth == 0) {
@@ -114,7 +117,7 @@ namespace Protracer {
 	refl_depth--;
 	col = color_at_hit_point(x, y, refl_ray, refl_depth,
 				 no_shadow_no_reflection);
-	
+
 	return col * nearest_hit.get_finish().get_reflection() +
 	  nearest_hit.get_color() * shade *
 	  nearest_hit.get_finish().get_diffusion();

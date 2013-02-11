@@ -22,19 +22,23 @@
 
 #include "item.h"
 #include "vector.h"
+#include "color.h"
 
 namespace Protracer {
   class Light : public Item {
   public:
     Light(const Vector& position);
+    Light(const Vector& position, const Color& color);
     
     const Vector& get_position() const { return position; }
+    const Color& get_color() const { return color; }
 
     virtual void translate(const Vector& v);
     virtual void rotate(const Vector& v);
 
   private:
     Vector position;
+    Color color;
   };
 
 }
