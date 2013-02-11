@@ -195,6 +195,7 @@ int yyerror(char *s);
 %type <value> number_promotable_to_vector
 %type <camera> camera
 %type <color> color
+%type <color> color_opt
 %type <sphereOptions> sphere_opt
 %type <objectMods> object_mods
 %type <objectMod> object_mod
@@ -240,15 +241,15 @@ item: object { global_scene->add_object($1); }
 } 
 ;
 
-light: KEY_LIGHT LBRACE vector transformations_opt RBRACE {
-  $$ = new Protracer::Light($3);
+light: KEY_LIGHT LBRACE vector color_opt transformations_opt RBRACE {
+  $$ = new Protracer::Light($3, $4);
 
-  for (auto transformation : *$4) {
+  for (auto transformation : *$5) {
     transformation->apply($$);
     delete transformation;
   }
 
-  delete $4;
+  delete $5;
 }
 | KEY_LIGHT LBRACE NAME transformations_opt RBRACE {
   if (Protracer::Declaration::is_defined($3)) {
@@ -283,6 +284,14 @@ light: KEY_LIGHT LBRACE vector transformations_opt RBRACE {
   free($3);
 }
 ;
+
+color_opt: {
+  // empty
+  $$ = Protracer::Color::white();
+}
+| color {
+  $$ = $1;
+  };
 
 object: sphere { $$ = $1; }
 | triangle { $$ = $1; }
