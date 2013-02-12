@@ -1,0 +1,25 @@
+
+camera {
+  location 0
+  sky y
+  look_at z
+}
+
+sphere {
+  z * 10, 4
+  pigment { 
+     color rgb <0.6, 0.6, 0.23>
+  }
+}
+
+light_source {
+  -z * 10 + x * 10
+  color rgb <1.0, 0, 0>
+}
+
+light_source {
+  -z * 10 - x * 10
+  color rgb <1.0, 1.0, 1.0>
+}
+
+
