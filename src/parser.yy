@@ -670,22 +670,25 @@ reflection:
 KEY_REFLECTION number { $$ = $2; }
 	;
 
-color:
-KEY_COLOR
-KEY_RED number
-KEY_GREEN number
-KEY_BLUE number {
+color: KEY_COLOR KEY_RED number KEY_GREEN number KEY_BLUE number {
   $$ = Protracer::Color((unsigned char)($3 * Protracer::Color::COMPONENT_MAX), 
 			(unsigned char)($5 * Protracer::Color::COMPONENT_MAX), 
 			(unsigned char)($7 * Protracer::Color::COMPONENT_MAX));
 }
-|
-KEY_COLOR KEY_RGB vector {
+| KEY_COLOR KEY_RGB vector {
   $$ = Protracer::Color((unsigned char)($3.get_x() *
 					Protracer::Color::COMPONENT_MAX),
 			(unsigned char)($3.get_y() *
 					Protracer::Color::COMPONENT_MAX),
 			(unsigned char)($3.get_z() *
+					Protracer::Color::COMPONENT_MAX));
+}
+| KEY_RGB vector {
+  $$ = Protracer::Color((unsigned char)($2.get_x() *
+					Protracer::Color::COMPONENT_MAX),
+			(unsigned char)($2.get_y() *
+					Protracer::Color::COMPONENT_MAX),
+			(unsigned char)($2.get_z() *
 					Protracer::Color::COMPONENT_MAX));
 }
 | NAME {
