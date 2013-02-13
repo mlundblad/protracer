@@ -83,12 +83,15 @@ namespace Protracer {
   public:
     ColorShade(const ColorExpression<E>& c, float s) : c(c), s(s) {}
     
-    unsigned char get_red() const { return float(c.get_red()) * s >
-	Color::COMPONENT_MAX ? Color::COMPONENT_MAX : float(c.get_red()) * s; }
-    unsigned char get_green() const { return float(c.get_green()) * s >
-	Color::COMPONENT_MAX ? Color::COMPONENT_MAX : float(c.get_green()) * s; }
-    unsigned char get_blue() const { return float(c.get_blue()) * s >
-	Color::COMPONENT_MAX ? Color::COMPONENT_MAX : float(c.get_blue()) * s; }
+    unsigned char get_red() const {
+      return std::min(float(c.get_red()) * s, float(Color::COMPONENT_MAX));
+    }
+    unsigned char get_green() const {
+      return std::min(float(c.get_green()) * s, float(Color::COMPONENT_MAX));
+    }
+    unsigned char get_blue() const {
+      return std::min(float(c.get_blue()) * s, float(Color::COMPONENT_MAX));
+    }
   };
 
   template <typename E1, typename E2>
@@ -100,16 +103,19 @@ namespace Protracer {
       c1(c1), c2(c2) {}
 
     unsigned char get_red() const {
-      return int(c1.get_red()) + int(c2.get_red()) > Color::COMPONENT_MAX ?
-	Color::COMPONENT_MAX : c1.get_red() + c2.get_red(); }
+      return std::min(int(c1.get_red()) + int(c2.get_red()),
+                      int(Color::COMPONENT_MAX));
+    }
     
     unsigned char get_green() const {
-      return int(c1.get_green()) + int(c2.get_green()) > Color::COMPONENT_MAX ?
-	Color::COMPONENT_MAX : c1.get_green() + c2.get_green(); }
+      return std::min(int(c1.get_green()) + int(c2.get_green()),
+                      int(Color::COMPONENT_MAX));
+    }
     
     unsigned char get_blue() const {
-      return int(c1.get_blue()) + int(c2.get_blue()) > Color::COMPONENT_MAX ?
-	Color::COMPONENT_MAX : c1.get_blue() + c2.get_blue(); }
+      return std::min(int(c1.get_blue()) + int(c2.get_blue()),
+                      int(Color::COMPONENT_MAX));
+    }
   };
     
   template <typename E1>
