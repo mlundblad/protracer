@@ -44,4 +44,13 @@ namespace Protracer {
       this->custom_pigment = true;
     }
   }
+
+  void
+  Object::copy_modifications(const Object* object)
+  {
+    if (object->has_custom_pigment())
+      set_pigment(object->get_pigment().copy());
+    if (object->has_custom_finish())
+      set_finish(object->get_finish());
+  }
 }

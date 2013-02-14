@@ -37,11 +37,7 @@ namespace Protracer {
   {
     Sphere* sphere = new Sphere(center, radius, pole, equator);
 
-    if (has_custom_pigment())
-      sphere->set_pigment(get_pigment().copy());
-    if (has_custom_finish())
-      sphere->set_finish(get_finish());
-
+    sphere->copy_modifications(this);
     return sphere;
   }
 

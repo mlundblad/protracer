@@ -39,11 +39,7 @@ namespace Protracer {
   {
     Triangle* triangle = new Triangle(t0, va + t0, vb + t0); 
 
-    if (has_custom_finish())
-      triangle->set_pigment(get_pigment().copy());
-    if (has_custom_pigment())
-      triangle->set_finish(get_finish());
-
+    triangle->copy_modifications(this);
     return triangle;
   }
 

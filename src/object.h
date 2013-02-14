@@ -56,6 +56,9 @@ namespace Protracer {
     // determine if a vector is located inside an object
     virtual bool is_inside(const Vector& v) const = 0;
 
+  protected:
+    void copy_modifications(const Object* object);
+
   private:
     Finish finish;
     Pigment* pigment;

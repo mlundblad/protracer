@@ -34,11 +34,7 @@ namespace Protracer {
     SmoothTriangle* triangle =
       new SmoothTriangle(get_c0(), n0, get_c1(), n1, get_c2(), n2);
 
-    if (has_custom_finish())
-      triangle->set_pigment(get_pigment().copy());
-    if (has_custom_pigment())
-      triangle->set_finish(get_finish());
-
+    triangle->copy_modifications(this);
     return triangle;
   }
 

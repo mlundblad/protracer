@@ -44,12 +44,8 @@ namespace Protracer {
     for (const Object* o : objects) {
       result->add_object(o->copy());
     }
-    
-    if (has_custom_pigment())
-      result->set_pigment(get_pigment().copy());
-    if (has_custom_finish())
-      result->set_finish(get_finish());
 
+    result->copy_modifications(this);
     return result;
   }
 

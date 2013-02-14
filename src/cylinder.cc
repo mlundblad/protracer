@@ -40,11 +40,7 @@ namespace Protracer {
   {
     Cylinder* cylinder = new Cylinder(base_point, cap_point, radius, open);
 
-    if (has_custom_pigment())
-      cylinder->set_pigment(get_pigment().copy());
-    if (has_custom_finish())
-      cylinder->set_finish(get_finish());
-
+    cylinder->copy_modifications(this);
     return cylinder;
   }
 
