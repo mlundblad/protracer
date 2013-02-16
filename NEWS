@@ -1,6 +1,7 @@
 version 3.3 (2013-xx-xx)
 	* Add support for specifying color to light sources.
 	* Allow leaving out the "color" keyword when specifying colors.
+	* Bugfix: correctly apply texture when cloning triangle objects.
 
 version 3.2 "Phong's normals" (2013-02-06)
 	* Add support for Phong-shaded triangles.
