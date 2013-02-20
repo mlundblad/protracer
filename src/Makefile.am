@@ -15,6 +15,8 @@ protracer_SOURCES=bitmap.cc \
 	color_pigment.h \
 	composed_transformation.cc \
 	composed_transformation.h \
+	constant_fog.cc \
+	constant_fog.h \
 	constants.h \
 	cylinder.cc \
 	cylinder.h \
@@ -27,6 +29,7 @@ protracer_SOURCES=bitmap.cc \
 	finish.h \
 	finish_modification.cc \
 	finish_modification.h \
+	fog.h \
 	hit_calculation.h \
 	item.h \
 	lexer.ll \

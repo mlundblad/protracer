@@ -53,6 +53,8 @@ namespace Protracer {
       green = c.get_green();
       blue = c.get_blue();
     }
+    Color(const Vector& v) :
+    red(v.get_x()), green(v.get_y()), blue(v.get_z()) {}
 
     unsigned char get_red() const { return red; }
     unsigned char get_green() const { return green; }

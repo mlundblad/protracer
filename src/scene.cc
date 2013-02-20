@@ -29,10 +29,16 @@
 
 namespace Protracer {
 
+  Scene::Scene() : num_fogs(0) {}
+
   Scene::~Scene()
   {
     for (Object* o : objects) {
       delete o;
+    }
+
+    for (Fog* f : fogs) {
+      delete f;
     }
   }
 
@@ -42,8 +48,6 @@ namespace Protracer {
   {
     float least_distance = std::numeric_limits<float>::infinity();
     Vector shade;
-    Color       col;
-
     HitCalculation     nearest_hit;
 
     for (const Object* o : objects) {
@@ -101,27 +105,50 @@ namespace Protracer {
 	}
       }
     
+      Color hit_col;
       /* Base case: don't take reflection into acount, 
 	 but shade the accumulated light from light sources */
       if (refl_depth == 0) {
-	return nearest_hit.get_color() *
+	hit_col = nearest_hit.get_color() *
 	  shade * nearest_hit.get_finish().get_diffusion();
       } else {
 	/* calculate reflected ray */
 	/* move EPS in the normal direction, to avoid rounding errors */
-	Ray refl_ray = Ray(hit_point + EPS * nearest_hit.get_normal(),
-			   ray.get_direction() -
-			   2 * nearest_hit.get_normal().dot(ray.get_direction())
-			   * nearest_hit.get_normal());
+	Ray refl_ray(hit_point + EPS * nearest_hit.get_normal(),
+                     ray.get_direction() -
+                     2 * nearest_hit.get_normal().dot(ray.get_direction())
+                     * nearest_hit.get_normal());
 	
-	refl_depth--;
-	col = color_at_hit_point(x, y, refl_ray, refl_depth,
+	Color refl_col = color_at_hit_point(x, y, refl_ray, refl_depth - 1,
 				 no_shadow_no_reflection);
 
-	return col * nearest_hit.get_finish().get_reflection() +
+	hit_col = refl_col * nearest_hit.get_finish().get_reflection() +
 	  nearest_hit.get_color() * shade *
 	  nearest_hit.get_finish().get_diffusion();
-      } 
+      }
+
+      if (num_fogs == 0) {
+        return hit_col;
+      } else {
+        Color result_col;
+        Vector acc;
+        Vector hc(hit_col.get_red(),
+                  hit_col.get_green(),
+                  hit_col.get_blue());
+
+        for (Fog* fog : fogs) {
+          Vector fc(fog->get_color().get_red(),
+                    fog->get_color().get_green(),
+                    fog->get_color().get_blue());
+          float c =
+            fog->calculate_contribution(ray, nearest_hit.get_distance());
+          acc += hc * (1 - c) + fc * c;
+        }
+
+        acc *= 1.0f / num_fogs;
+
+        return Color(acc);
+      }
     }
    }
 
@@ -155,6 +182,13 @@ namespace Protracer {
   Scene::add_light(const Light& light)
   {
     lights.push_back(light);
+  }
+
+  void
+  Scene::add_fog(Fog* fog)
+  {
+    num_fogs++;
+    fogs.push_back(fog);
   }
 
   void

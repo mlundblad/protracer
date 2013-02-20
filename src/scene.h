@@ -27,10 +27,12 @@
 #include "vector.h"
 #include "object.h"
 #include "light.h"
+#include "fog.h"
 
 namespace Protracer {
   class Scene {
   public:
+    Scene();
     virtual ~Scene();
 
     // getters
@@ -47,12 +49,15 @@ namespace Protracer {
 
     void add_object(Object* object);
     void add_light(const Light& light);
+    void add_fog(Fog* fog);
     void set_camera(const Camera& camera);
     void set_background(const Color& color);
 
   private:
     std::vector<Object*> objects;
     std::vector<Light>  lights;
+    std::vector<Fog*> fogs;
+    unsigned int num_fogs;
     Camera      camera;
     Color       background;
     Vector      c_corner;

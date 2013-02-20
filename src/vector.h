@@ -70,6 +70,7 @@ namespace Protracer {
     Vector& operator=(const Vector& u);
     Vector& operator+=(const Vector& u);
     Vector& operator-=(const Vector& u);
+    Vector& operator*=(float s);
 
     float dot(const Vector& u) const { return x * u.x + y * u.y + z * u.z; }
 

@@ -89,6 +89,15 @@ namespace Protracer {
     return *this;
   }
 
+  Vector&
+  Vector::operator*=(float s)
+  {
+    x *= s;
+    y *= s;
+    z *= s;
+    return *this;
+  }
+
   std::ostream&
   operator<<(std::ostream& os, const Vector& v)
   {
