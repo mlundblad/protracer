@@ -49,6 +49,7 @@ namespace Protracer {
     float least_distance = std::numeric_limits<float>::infinity();
     Vector shade;
     HitCalculation     nearest_hit;
+    Color hit_col;
 
     for (const Object* o : objects) {
       HitCalculation hc = o->calculate_hit(ray);
@@ -61,94 +62,104 @@ namespace Protracer {
       }
     }
 
-    if (least_distance == std::numeric_limits<float>::infinity())
-        return background;
-
-    /* leastDistance is the distance to the nearest object hit */
-    Vector hit_point = ray.get_origin() + least_distance * ray.get_direction();
-
-    if (no_shadow_no_reflection) {
-      // Simulate the camera as a light source 
+    if (least_distance == std::numeric_limits<float>::infinity()) {
+      hit_col = background;
+    } else {
+      /* leastDistance is the distance to the nearest object hit */
+      Vector hit_point =
+        ray.get_origin() + least_distance * ray.get_direction();
       
-      return nearest_hit.get_color() * 
-	Util::shade_factor(ray.get_origin(),
-			   hit_point,
-			   nearest_hit.get_normal());
-     } else {
-      /* iterate over light sources */
-      for (const Light& l : lights) {
-	Ray light_ray = Ray(hit_point + EPS * nearest_hit.get_normal(),
-			       l.get_position() -
-			       (hit_point + EPS * nearest_hit.get_normal()));
-	bool is_lit = true;
-
-        for (const Object* o : objects) {
-	  HitCalculation hc = o->calculate_hit(light_ray);
-	  
-	  if (hc.is_hit()) {
-	    if (hc.get_distance() <
-		Vector(l.get_position() - hit_point).length())
-	      is_lit = false;
-	  }
-	}
-
-	if (is_lit) {
-          float factor = Util::shade_factor(l.get_position(),
-                                            hit_point, 
-                                            nearest_hit.get_normal());
-          shade += Vector(float(l.get_color().get_red()) /
-                          Color::COMPONENT_MAX * factor,
-                          float(l.get_color().get_green()) /
-                          Color::COMPONENT_MAX * factor,
-                          float(l.get_color().get_blue()) /
-                          Color::COMPONENT_MAX * factor);
-	}
-      }
-    
-      Color hit_col;
-      /* Base case: don't take reflection into acount, 
-	 but shade the accumulated light from light sources */
-      if (refl_depth == 0) {
-	hit_col = nearest_hit.get_color() *
-	  shade * nearest_hit.get_finish().get_diffusion();
+      if (no_shadow_no_reflection) {
+        // Simulate the camera as a light source 
+        
+        hit_col = nearest_hit.get_color() * 
+          Util::shade_factor(ray.get_origin(),
+                             hit_point,
+                             nearest_hit.get_normal());
       } else {
-	/* calculate reflected ray */
-	/* move EPS in the normal direction, to avoid rounding errors */
-	Ray refl_ray(hit_point + EPS * nearest_hit.get_normal(),
-                     ray.get_direction() -
-                     2 * nearest_hit.get_normal().dot(ray.get_direction())
-                     * nearest_hit.get_normal());
-	
-	Color refl_col = color_at_hit_point(x, y, refl_ray, refl_depth - 1,
-				 no_shadow_no_reflection);
-
-	hit_col = refl_col * nearest_hit.get_finish().get_reflection() +
-	  nearest_hit.get_color() * shade *
-	  nearest_hit.get_finish().get_diffusion();
-      }
-
-      if (num_fogs == 0) {
-        return hit_col;
-      } else {
-        Color result_col;
-        Vector acc;
-        Vector hc(hit_col.get_red(),
-                  hit_col.get_green(),
-                  hit_col.get_blue());
-
-        for (Fog* fog : fogs) {
-          Vector fc(fog->get_color().get_red(),
-                    fog->get_color().get_green(),
-                    fog->get_color().get_blue());
-          float c =
-            fog->calculate_contribution(ray, nearest_hit.get_distance());
-          acc += hc * (1 - c) + fc * c;
+        /* iterate over light sources */
+        for (const Light& l : lights) {
+          Ray light_ray = Ray(hit_point + EPS * nearest_hit.get_normal(),
+                              l.get_position() -
+                              (hit_point + EPS * nearest_hit.get_normal()));
+          bool is_lit = true;
+          
+          for (const Object* o : objects) {
+            HitCalculation hc = o->calculate_hit(light_ray);
+            
+            if (hc.is_hit()) {
+              if (hc.get_distance() <
+                  Vector(l.get_position() - hit_point).length())
+                is_lit = false;
+            }
+          }
+          
+          if (is_lit) {
+            float factor = Util::shade_factor(l.get_position(),
+                                              hit_point, 
+                                              nearest_hit.get_normal());
+            shade += Vector(float(l.get_color().get_red()) /
+                            Color::COMPONENT_MAX * factor,
+                            float(l.get_color().get_green()) /
+                            Color::COMPONENT_MAX * factor,
+                            float(l.get_color().get_blue()) /
+                            Color::COMPONENT_MAX * factor);
+          }
         }
 
-        acc *= 1.0f / num_fogs;
-
-        return Color(acc);
+        /* Base case: don't take reflection into acount, 
+           but shade the accumulated light from light sources */
+        if (refl_depth == 0) {
+          hit_col = nearest_hit.get_color() *
+            shade * nearest_hit.get_finish().get_diffusion();
+        } else {
+          /* calculate reflected ray */
+          /* move EPS in the normal direction, to avoid rounding errors */
+          Ray refl_ray(hit_point + EPS * nearest_hit.get_normal(),
+                       ray.get_direction() -
+                       2 * nearest_hit.get_normal().dot(ray.get_direction())
+                       * nearest_hit.get_normal());
+          
+          Color refl_col = color_at_hit_point(x, y, refl_ray, refl_depth - 1,
+                                              no_shadow_no_reflection);
+          
+          hit_col = refl_col * nearest_hit.get_finish().get_reflection() +
+            nearest_hit.get_color() * shade *
+            nearest_hit.get_finish().get_diffusion();
+        }
       }
+    }
+
+    if (num_fogs == 0) {
+      return hit_col;
+    } else {
+      Color result_col;
+      Vector acc;
+      Vector hc(hit_col.get_red(),
+                hit_col.get_green(),
+                hit_col.get_blue());
+      
+      for (Fog* fog : fogs) {
+        Vector fc(fog->get_color().get_red(),
+                  fog->get_color().get_green(),
+                  fog->get_color().get_blue());
+
+        if (least_distance == std::numeric_limits<float>::infinity()) {
+          acc += fc;
+        } else {
+          float c =
+            fog->calculate_contribution(ray, nearest_hit.get_distance());
+          std::cerr << "fc: " << fc << std::endl;
+          std::cerr << "contribution: " << c << std::endl;
+          acc += hc * (1.0f - c) + fc * c;
+        }
+      }
+      
+      acc *= 1.0f / num_fogs;
+      
+      std::cerr << "acc: " << acc << std::endl;
+      
+      return Color(acc);
     }
    }
 

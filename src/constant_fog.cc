@@ -23,6 +23,9 @@
 
 namespace Protracer {
 
+  ConstantFog::ConstantFog(const Color& color, float distance) :
+    Fog(color, distance) {}
+
   float
   ConstantFog::calculate_contribution(const Ray& r, float d) const
   {

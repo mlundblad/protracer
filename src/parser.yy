@@ -74,6 +74,8 @@ int yyerror(char *s);
 #include "rotation.h"
 #include "composed_transformation.h"
 #include "light.h"
+#include "fog.h"
+#include "constant_fog.h"
 #include "exception.h"
 
 #include "finish.h"
@@ -83,6 +85,7 @@ int yyerror(char *s);
 #include "bitmap.h"
 
 #include "parameters.h"
+#include "option.h"
 
   int yyparse();
   extern FILE        *yyin;
@@ -98,6 +101,18 @@ int yyerror(char *s);
     Protracer::Vector equator;
   };
 
+  struct FogItems {
+    Protracer::Option<double> fog_type;
+    Protracer::Option<double> distance;
+    Protracer::Option<Protracer::Color> color;
+
+    FogItems& operator+=(const FogItems& items) {
+      fog_type = !fog_type ? items.fog_type : fog_type;
+      distance = !distance ? items.distance : distance;
+      color = !color ? items.color : color;
+    }
+  };
+
 }
 
 %union {
@@ -110,6 +125,8 @@ int yyerror(char *s);
   Protracer::Object*      object;
   Protracer::Camera*      camera;
   Protracer::Light*       light;
+  Protracer::Fog*        fog;
+  FogItems               fog_items;
   Protracer::Color       color;
   SphereOptions   sphereOptions;
   std::list<Protracer::ObjectModification*>* objectMods;
@@ -213,6 +230,9 @@ int yyerror(char *s);
 %type <value_opt> opt_diffuse
 %type <value_opt> opt_reflection
 %type <light> light
+%type <fog> fog
+%type <fog_items> fog_items
+%type <fog_items> fog_item
 %type <color> background
 %type <value> opt_hole
 %type <logical> opt_open
@@ -239,7 +259,10 @@ item: object { global_scene->add_object($1); }
 | light      {
   global_scene->add_light(*$1);
   delete $1;
-} 
+}
+| fog {
+  global_scene->add_fog($1);
+}
 ;
 
 light: KEY_LIGHT LBRACE vector color_opt transformations_opt RBRACE {
@@ -285,6 +308,38 @@ light: KEY_LIGHT LBRACE vector color_opt transformations_opt RBRACE {
   free($3);
 }
 ;
+
+fog: KEY_FOG LBRACE fog_items RBRACE {
+  if (!$3.fog_type || $3.fog_type == 1) {
+    std::cerr << "fogcol: " << int(Protracer::Color($3.color).get_red()) << std::endl;
+    std::cerr << "distance: " << $3.distance << std::endl;
+    $$ = new Protracer::ConstantFog($3.color, $3.distance);
+  } else {
+    // TODO:
+  }
+
+};
+
+fog_items: fog_item {
+  $$ = $1;
+}
+| fog_item fog_items {
+  $$ = $2;
+  $$ += $1;
+};
+
+fog_item: KEY_DISTANCE number {
+  $$ = FogItems();
+  $$.distance = $2;
+}
+| KEY_FOG_TYPE number {
+  $$ = FogItems();
+  $$.fog_type = $2;
+}
+| color {
+  $$ = FogItems();
+  $$.color = $1;
+};
 
 color_opt: {
   // empty

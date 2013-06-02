@@ -39,6 +39,7 @@ protracer_SOURCES=bitmap.cc \
 	object.cc \
 	object.h \
 	object_modification.h \
+	option.h \
 	parameters.cc \
 	parameters.h \
 	parser.yy \

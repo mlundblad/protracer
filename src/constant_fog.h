@@ -25,6 +25,7 @@
 namespace Protracer {
   class ConstantFog : public Fog {
   public:
+    ConstantFog(const Color& color, float distance);
     float calculate_contribution(const Ray& ray, float distance) const;
   };
 }
